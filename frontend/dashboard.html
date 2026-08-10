@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Antonella Epigenética - Dashboard del Paciente</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#894d00",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-fixed-variant": "#6b3b00",
+                        "tertiary-container": "#ac6200",
+                        "on-surface": "#0b1c30",
+                        "primary-container": "#007bb9",
+                        "secondary": "#006591",
+                        "surface-variant": "#d3e4fe",
+                        "surface-container-high": "#dce9ff",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed-variant": "#004b73",
+                        "on-error": "#ffffff",
+                        "on-tertiary-fixed": "#2d1600",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-primary-container": "#fdfcff",
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed": "#001e2f",
+                        "surface-container": "#e5eeff",
+                        "tertiary-fixed": "#ffdcc0",
+                        "secondary-fixed": "#c9e6ff",
+                        "primary-fixed-dim": "#93ccff",
+                        "tertiary-fixed-dim": "#ffb875",
+                        "inverse-primary": "#93ccff",
+                        "on-secondary-container": "#004666",
+                        "on-background": "#0b1c30",
+                        "on-surface-variant": "#3f4850",
+                        "surface": "#f8f9ff",
+                        "secondary-container": "#39b8fd",
+                        "primary-fixed": "#cce5ff",
+                        "primary": "#006194",
+                        "on-primary-fixed": "#001d31",
+                        "on-tertiary": "#ffffff",
+                        "inverse-surface": "#213145",
+                        "error-container": "#ffdad6",
+                        "outline-variant": "#bfc7d2",
+                        "outline": "#707881",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-dim": "#cbdbf5",
+                        "on-tertiary-container": "#fffbff",
+                        "background": "#f8f9ff",
+                        "surface-tint": "#006398",
+                        "surface-bright": "#f8f9ff",
+                        "on-secondary-fixed-variant": "#004c6e",
+                        "surface-container-low": "#eff4ff",
+                        "secondary-fixed-dim": "#89ceff",
+                        "surface-container-highest": "#d3e4fe",
+                        "on-secondary": "#ffffff",
+                        "mint": "#4ADE80"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "20px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "xl": "32px",
+                        "sm": "8px",
+                        "gutter-mobile": "12px",
+                        "unit": "4px",
+                        "md": "16px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "display-lg-mobile": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "display-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "display-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "headline-lg": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        
+        .progress-bar-fill {
+            width: 0%;
+            transition: width 1.5s ease-out;
+        }
+    </style>
+<link rel="stylesheet" href="/style.css">
+<script type="module" src="/main.js"></script>
+</head>
+<body class="page-transition " class="bg-background text-on-background font-body-md min-h-screen flex">
+<!-- SideNavBar (Shared Component) -->
+<nav class="hidden md:flex flex-col h-screen p-md gap-sm border-r border-outline-variant bg-surface-container-low dark:bg-surface-container-lowest w-64 fixed left-0 top-0 z-40 transition-transform">
+<div class="mb-xl flex items-center gap-sm">
+<div class="font-headline-md text-headline-md font-bold text-primary">Antonella Epigenética</div>
+</div>
+<div class="flex items-center gap-md mb-lg p-sm rounded-lg hover:bg-surface-variant/50 transition-colors">
+<img alt="User profile picture" class="w-12 h-12 rounded-full object-cover shadow-sm" data-alt="A professional headshot of a young woman with a clear complexion, smiling softly, lit by soft natural daylight against a clean, minimalist white background. The style is premium, clinical, and optimistic, reflecting advanced bioscience and wellness. High resolution, shallow depth of field." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtVPy8EDlBoE490cB9347Etx5dAVWoR2bxXMJMxMDc3uQl5DDbSk1caBLFR8w3kL2rVeFJWu_F6efrURvLAMqdmCclkCwnS6jlxjAxfFiGk--ZGlNKLK5EdNoXHis1ud9o9CUhtTQyoVh0Q9S9ZN5YqftYxCKEmr17yInCZ49GSPAOCexiPi4kqZFBgf4jrAK10ji8Udl2CpwLi7Bn8Cxg3qwchJRgiedQaW51Vg_7ZWecHr-EzGBs"/>
+<div>
+<p class="font-headline-md text-headline-md text-on-surface">Antonella</p>
+<p class="font-label-md text-label-md text-on-surface-variant">Paciente Premium</p>
+</div>
+</div>
+<div class="flex-1 flex flex-col gap-sm overflow-y-auto pr-2">
+<!-- Mi Plan (Active) -->
+<a href="#" class="nav-item active flex items-center gap-md p-sm bg-primary-container text-on-primary-container rounded-lg font-bold transition-all duration-200 hover:-translate-y-[2px]" data-target="view-mi-plan">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">calendar_month</span>
+<span>Mi Plan</span>
+</a>
+<!-- Mis Citas -->
+<a href="#" class="nav-item flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-variant/50 rounded-lg transition-all duration-200 hover:-translate-y-[2px]" data-target="view-citas">
+<span class="material-symbols-outlined">event</span>
+<span>Mis Citas</span>
+</a>
+<!-- Evaluaciones -->
+<a href="#" class="nav-item flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-variant/50 rounded-lg transition-all duration-200 hover:-translate-y-[2px]" data-target="view-evaluaciones">
+<span class="material-symbols-outlined">biotech</span>
+<span>Evaluaciones</span>
+</a>
+<!-- Educación -->
+<a href="#" class="nav-item flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-variant/50 rounded-lg transition-all duration-200 hover:-translate-y-[2px]" data-target="view-educacion">
+<span class="material-symbols-outlined">school</span>
+<span>Educación</span>
+</a>
+<!-- Mensajes -->
+<a href="#" class="nav-item flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-variant/50 rounded-lg transition-all duration-200 hover:-translate-y-[2px]" data-target="view-mensajes">
+<span class="material-symbols-outlined">forum</span>
+<span>Mensajes</span>
+</a>
+
+<!-- Mi Perfil (Accordion) -->
+<div class="relative mt-2 border-t border-outline-variant pt-2">
+    <button id="perfil-accordion-btn" class="w-full flex items-center justify-between p-sm text-on-surface-variant hover:bg-surface-variant/50 rounded-lg transition-all duration-200">
+        <div class="flex items-center gap-md">
+            <span class="material-symbols-outlined">person</span>
+            <span>Mi Perfil</span>
+        </div>
+        <span class="material-symbols-outlined transition-transform duration-300" id="perfil-arrow">expand_more</span>
+    </button>
+    <!-- Sub-menu -->
+    <div id="perfil-submenu" class="flex flex-col gap-xs ml-10 mt-1 hidden overflow-hidden">
+        <a href="#" class="p-xs text-sm text-on-surface-variant hover:text-primary transition-colors">Datos Personales</a>
+        <a href="#" class="p-xs text-sm text-on-surface-variant hover:text-primary transition-colors">Historial Médico</a>
+        <a href="#" class="p-xs text-sm text-on-surface-variant hover:text-primary transition-colors">Facturación</a>
+    </div>
+</div>
+</div>
+<div class="mt-auto pt-lg border-t border-outline-variant flex flex-col gap-2">
+<!-- Botón temporal para que el cliente navegue al panel admin fácilmente -->
+<a class="flex items-center gap-md p-sm bg-primary/10 text-primary hover:bg-primary/20 rounded-lg font-bold transition-all duration-200" href="/admin.html">
+<span class="material-symbols-outlined">admin_panel_settings</span>
+<span>Ir a Panel Admin</span>
+</a>
+<a class="flex items-center gap-md p-sm text-error hover:bg-error-container/30 rounded-lg transition-colors transition-all duration-200" href="/index.html">
+<span class="material-symbols-outlined">logout</span>
+<span>Cerrar Sesión</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 md:ml-64 p-margin-mobile md:p-xl max-w-[1440px] min-h-screen">
+<!-- Header Mobile (Fallback for nav) -->
+<header class="md:hidden flex justify-between items-center mb-xl">
+<div class="font-headline-md text-headline-md font-bold text-primary">Antonella Epigenética</div>
+<img alt="User" class="w-10 h-10 rounded-full object-cover shadow-sm" data-alt="A professional headshot of a young woman with a clear complexion, smiling softly, lit by soft natural daylight against a clean, minimalist white background. The style is premium, clinical, and optimistic, reflecting advanced bioscience and wellness. High resolution, shallow depth of field." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfETS0KxIyp_pxtd8x0NsyKRvwj1ZAlg7HNYcP7ow4yw-hyIC0WKo0S9hUXLORVjx-92KW44VwbDdr2ag44EgodcrMXkH-EJBTbGAmCVwNcvbw4vYiGpfwKc5v6a-59r8ZlMyquSWWsgxq7SpOHQsoqxnxKqL7EqVe1zn87tVQSmiSIk6oxKVSWBaqOSkftDwnFehw9em93_j-RxPmqkYja2RGW_Gczricdf7q_qJIkT3CXfiB9qDu"/>
+</header>
+
+<!-- Skeleton Screens (Visible Initially) -->
+<div id="skeleton-view" class="w-full space-y-8 mt-2">
+    <div class="skeleton-loader h-12 w-48 mb-8"></div>
+    <!-- Progress Skeleton -->
+    <div class="skeleton-loader h-32 w-full rounded-xl"></div>
+    <!-- Grid Skeleton -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-6">
+        <div class="lg:col-span-7 skeleton-loader h-64 rounded-xl"></div>
+        <div class="lg:col-span-5 flex flex-col gap-4">
+            <div class="skeleton-loader h-8 w-1/2 mb-2"></div>
+            <div class="skeleton-loader h-24 w-full rounded-xl"></div>
+            <div class="skeleton-loader h-24 w-full rounded-xl"></div>
+        </div>
+    </div>
+</div><!-- Real Content (Hidden Initially) -->
+<div id="real-content" class="w-full fade-in-content hidden">
+
+    <!-- ============================================== -->
+    <!-- VIEW: MI PLAN (PANEL PRINCIPAL)                -->
+    <!-- ============================================== -->
+    <div id="view-mi-plan" class="view-section">
+        <h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface mb-lg fade-in-up">Hola, Antonella</h1>
+        
+        <!-- Top Metrics Row -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-md mb-xl fade-in-up delay-100">
+            <!-- Próxima Cita -->
+            <div class="bg-surface-container-lowest rounded-xl p-md shadow-sm border border-surface-variant flex items-center gap-4 hover:shadow-md transition-shadow">
+                <div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container shrink-0">
+                    <span class="material-symbols-outlined">calendar_clock</span>
+                </div>
+                <div>
+                    <p class="font-label-md text-on-surface-variant uppercase tracking-wider">Próxima Cita</p>
+                    <p class="font-headline-md font-bold text-on-surface">15 Nov, 10:00 AM</p>
+                    <p class="text-sm text-primary">Dra. Mónica López</p>
+                </div>
+            </div>
+
+            <!-- Progreso Protocolo -->
+            <div class="bg-surface-container-lowest rounded-xl p-md shadow-sm border border-surface-variant flex flex-col justify-center">
+                <div class="flex justify-between items-end mb-2">
+                    <div>
+                        <p class="font-label-md text-on-surface-variant uppercase tracking-wider">Progreso Protocolo</p>
+                        <p class="font-headline-md font-bold text-on-surface">Día 45 <span class="text-sm font-normal text-on-surface-variant">/ 90</span></p>
+                    </div>
+                    <span class="font-bold text-mint">50%</span>
+                </div>
+                <div class="w-full h-2 bg-surface-variant rounded-full overflow-hidden">
+                    <div class="h-full bg-mint rounded-full progress-bar-fill" style="width:50%"></div>
+                </div>
+            </div>
+
+            <!-- Notificaciones -->
+            <div class="bg-surface-container-lowest rounded-xl p-md shadow-sm border border-surface-variant flex items-center gap-4 hover:shadow-md transition-shadow cursor-pointer">
+                <div class="w-12 h-12 rounded-full bg-error-container flex items-center justify-center text-on-error-container shrink-0 relative">
+                    <span class="material-symbols-outlined">notifications_active</span>
+                    <span class="absolute top-0 right-0 w-3 h-3 bg-error rounded-full border-2 border-surface-container-lowest"></span>
+                </div>
+                <div>
+                    <p class="font-label-md text-on-surface-variant uppercase tracking-wider">Notificaciones</p>
+                    <p class="font-body-md text-on-surface leading-tight">Tienes <span class="font-bold">1</span> nuevo test epigenético listo para revisión.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Grid: Roadmap & Check-ins -->
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-lg fade-in-up delay-200">
+            
+            <!-- Roadmap de Hábitos (7 cols) -->
+            <section class="xl:col-span-8 bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant overflow-hidden">
+                <div class="p-lg border-b border-surface-variant flex justify-between items-center bg-surface/50 backdrop-blur-sm sticky top-0">
+                    <h3 class="font-headline-md text-headline-md text-on-surface flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">route</span> Mi Roadmap (30 Días)
+                    </h3>
+                </div>
+                <div class="p-lg space-y-6">
+                    <!-- Task 1 -->
+                    <div class="flex gap-4 items-start">
+                        <div class="w-8 h-8 rounded-full bg-mint flex items-center justify-center text-white shrink-0 mt-1">
+                            <span class="material-symbols-outlined text-sm">check</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-on-surface line-through text-on-surface-variant">Fase 1: Desintoxicación</h4>
+                            <p class="text-sm text-on-surface-variant">Completada con éxito el 10 de Octubre.</p>
+                        </div>
+                    </div>
+                    <!-- Task 2 (Current) -->
+                    <div class="flex gap-4 items-start">
+                        <div class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container border-2 border-primary flex items-center justify-center shrink-0 mt-1">
+                            <span class="material-symbols-outlined text-sm">nutrition</span>
+                        </div>
+                        <div class="flex-1 bg-surface-container-low p-4 rounded-lg border border-primary/20">
+                            <h4 class="font-bold text-primary">Fase 2: Suplementación NAD+ (Actual)</h4>
+                            <p class="text-sm text-on-surface-variant mt-1">Tomar 1 cápsula en ayunas. Enfocado en reactivar vías metabólicas letárgicas.</p>
+                            <div class="mt-3 flex gap-2">
+                                <button class="px-3 py-1 bg-primary text-white text-xs font-bold rounded-full hover:bg-secondary transition-colors">Marcar de hoy</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Task 3 -->
+                    <div class="flex gap-4 items-start">
+                        <div class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center text-outline shrink-0 mt-1">
+                            3
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-on-surface-variant">Fase 3: Optimización del Sueño</h4>
+                            <p class="text-sm text-on-surface-variant">Inicia en 15 días.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Formularios de Seguimiento (5 cols) -->
+            <section class="xl:col-span-4 flex flex-col gap-md">
+                <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant p-lg">
+                    <div class="w-12 h-12 bg-tertiary-container text-on-tertiary-container rounded-full flex items-center justify-center mb-4">
+                        <span class="material-symbols-outlined">assignment</span>
+                    </div>
+                    <h3 class="font-headline-md font-bold text-on-surface mb-2">Check-in Mensual</h3>
+                    <p class="text-sm text-on-surface-variant mb-6">Tu doctor necesita una actualización de tus síntomas y niveles de energía para ajustar el plan.</p>
+                    <button class="w-full py-3 bg-on-surface text-white rounded-lg font-bold hover:bg-outline transition-colors flex items-center justify-center gap-2">
+                        Comenzar Cuestionario <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                    </button>
+                </div>
+            </section>
+        </div>
+    </div>
+    
+    <!-- ============================================== -->
+    <!-- VIEW: EVALUACIONES Y RESULTADOS                -->
+    <!-- ============================================== -->
+    <div id="view-evaluaciones" class="view-section hidden">
+        <h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface mb-lg">Tus Resultados Epigenéticos</h1>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-lg mb-xl">
+            <!-- Informe Capilar Card -->
+            <div class="bg-surface-container-lowest rounded-xl p-lg shadow-sm border border-surface-variant hover:shadow-md transition-shadow relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-full -z-0"></div>
+                <div class="flex justify-between items-start relative z-10 mb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-primary-container text-on-primary-container rounded-lg flex items-center justify-center">
+                            <span class="material-symbols-outlined">science</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-on-surface text-lg">Informe Capilar</h3>
+                            <p class="text-xs text-on-surface-variant">Actualizado: 12 Oct 2024</p>
+                        </div>
+                    </div>
+                    <span class="px-2 py-1 bg-mint/20 text-mint text-[10px] font-bold rounded-full">Completado</span>
+                </div>
+                <div class="bg-surface-container-low p-4 rounded-lg mb-4 text-sm text-on-surface-variant border border-surface-variant">
+                    <p class="font-bold text-primary mb-1">Resumen Simplificado:</p>
+                    Tu sistema muestra niveles óptimos de vitaminas B, pero hay indicadores de estrés oxidativo alto. Sugerimos incrementar antioxidantes (Glutatión).
+                </div>
+                <button class="w-full py-2 border-2 border-primary text-primary rounded-lg font-bold hover:bg-primary hover:text-white transition-colors flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-sm">download</span> Descargar PDF Completo
+                </button>
+            </div>
+            
+            <!-- Bioresonancia Card -->
+            <div class="bg-surface-container-lowest rounded-xl p-lg shadow-sm border border-surface-variant hover:shadow-md transition-shadow relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-tertiary/5 rounded-bl-full -z-0"></div>
+                <div class="flex justify-between items-start relative z-10 mb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-surface-variant text-on-surface-variant rounded-lg flex items-center justify-center">
+                            <span class="material-symbols-outlined">waves</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-on-surface text-lg">Bioresonancia Magnética</h3>
+                            <p class="text-xs text-on-surface-variant">Fecha: 05 Nov 2024</p>
+                        </div>
+                    </div>
+                    <span class="px-2 py-1 bg-surface-variant text-on-surface-variant text-[10px] font-bold rounded-full">En Proceso</span>
+                </div>
+                <div class="bg-surface-container-low p-4 rounded-lg mb-4 text-sm text-on-surface-variant flex items-center justify-center h-[92px] border border-surface-variant">
+                    <p class="text-center italic">El laboratorio está analizando tus datos frecuenciales. Te notificaremos cuando esté listo.</p>
+                </div>
+                <button class="w-full py-2 bg-surface-variant text-on-surface-variant rounded-lg font-bold cursor-not-allowed opacity-50 flex items-center justify-center gap-2" disabled>
+                    <span class="material-symbols-outlined text-sm">hourglass_empty</span> Pendiente
+                </button>
+            </div>
+        </div>
+
+        <!-- Histórico Chart.js -->
+        <section class="bg-surface-container-lowest rounded-xl p-lg shadow-sm border border-surface-variant">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="font-headline-md font-bold text-on-surface flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary">monitoring</span> Evolución de Marcadores Clave
+                </h3>
+                <select class="text-sm bg-surface-container-low border border-surface-variant rounded-md px-2 py-1 outline-none text-on-surface">
+                    <option>Niveles de Energía</option>
+                    <option>Inflamación Sistémica</option>
+                    <option>Calidad del Sueño</option>
+                </select>
+            </div>
+            <div class="w-full h-[300px] relative">
+                <canvas id="historicalChart"></canvas>
+            </div>
+        </section>
+
+    </div> <!-- Fin View Evaluaciones -->
+
+    <!-- ============================================== -->
+    <!-- VIEW: MIS CITAS                                -->
+    <!-- ============================================== -->
+    <div id="view-citas" class="view-section hidden">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-lg gap-4">
+            <h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface fade-in-up">Mis Citas</h1>
+            <!-- TODO: Vincular con API de creación de citas de Google Calendar -->
+            <button class="bg-primary text-white px-5 py-2.5 rounded-lg font-bold hover:bg-secondary transition-all hover:shadow-md flex items-center gap-2 shadow-sm fade-in-up delay-100">
+                <span class="material-symbols-outlined text-sm">add</span> Agendar Nueva Cita
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-lg">
+            <!-- Columna Izquierda: Cita Próxima e Historial -->
+            <div class="xl:col-span-8 flex flex-col gap-6 fade-in-up delay-200">
+                <!-- Tarjeta de Próxima Cita -->
+                <div class="bg-surface-container-lowest rounded-xl p-lg shadow-sm border border-surface-variant relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -z-0"></div>
+                    <div class="flex items-center gap-2 mb-4 relative z-10">
+                        <span class="material-symbols-outlined text-primary">event_upcoming</span>
+                        <h3 class="font-headline-md font-bold text-on-surface">Tu Próxima Cita</h3>
+                    </div>
+                    
+                    <div class="bg-surface-container-low border border-primary/20 rounded-lg p-6 relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 hover:border-primary/40 transition-colors">
+                        <div class="flex items-start gap-5">
+                            <div class="bg-primary-container text-on-primary-container p-3 rounded-lg flex flex-col items-center justify-center min-w-[72px] shadow-inner">
+                                <span class="text-xs uppercase font-bold tracking-wider">Nov</span>
+                                <span class="text-3xl font-bold leading-none mt-1">15</span>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg text-on-surface mb-1">Revisión de Protocolo NAD+</h4>
+                                <div class="flex flex-col gap-1">
+                                    <p class="text-on-surface-variant flex items-center gap-2 text-sm">
+                                        <span class="material-symbols-outlined text-[16px]">schedule</span> 10:00 AM - 11:00 AM
+                                    </p>
+                                    <p class="text-on-surface-variant flex items-center gap-2 text-sm">
+                                        <span class="material-symbols-outlined text-[16px]">person</span> Dra. Mónica López
+                                    </p>
+                                    <p class="text-on-surface-variant flex items-center gap-2 text-sm">
+                                        <span class="material-symbols-outlined text-[16px]">videocam</span> Videollamada (Google Meet)
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-3 w-full md:w-auto">
+                            <!-- TODO: Generar link dinámico hacia Google Meet -->
+                            <button class="w-full md:w-auto bg-primary text-white px-5 py-2.5 rounded-lg font-bold hover:bg-secondary transition-colors flex items-center justify-center gap-2 text-sm shadow-sm hover:shadow">
+                                <span class="material-symbols-outlined text-[18px]">videocam</span> Unirse a Consulta
+                            </button>
+                            <!-- TODO: Descargar archivo .ics o redirigir a GCalendar -->
+                            <button class="w-full md:w-auto bg-surface-container-lowest border border-outline-variant text-on-surface px-5 py-2.5 rounded-lg font-bold hover:bg-surface-variant transition-colors flex items-center justify-center gap-2 text-sm">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Google_Calendar_icon_%282020%29.svg" alt="Google Calendar" class="w-4 h-4"> En Calendario
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Historial de Citas -->
+                <div class="bg-surface-container-lowest rounded-xl p-lg shadow-sm border border-surface-variant">
+                    <h3 class="font-headline-md font-bold text-on-surface mb-4">Historial de Citas</h3>
+                    <div class="flex flex-col gap-0 divide-y divide-surface-variant">
+                        <!-- Item Historial 1 -->
+                        <div class="py-4 flex justify-between items-center hover:bg-surface-variant/30 transition-colors px-3 -mx-3 rounded-lg cursor-default">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 bg-surface-variant text-on-surface-variant rounded-full flex items-center justify-center shrink-0">
+                                    <span class="material-symbols-outlined text-[18px]">check</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-on-surface text-sm">Toma de Muestra (Bioresonancia)</h4>
+                                    <p class="text-xs text-on-surface-variant mt-0.5">05 Nov 2024 • Laboratorio Central</p>
+                                </div>
+                            </div>
+                            <span class="px-3 py-1 bg-surface-variant text-on-surface-variant text-[11px] font-bold rounded-full">Completada</span>
+                        </div>
+                        <!-- Item Historial 2 -->
+                        <div class="py-4 flex justify-between items-center hover:bg-surface-variant/30 transition-colors px-3 -mx-3 rounded-lg cursor-default">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 bg-surface-variant text-on-surface-variant rounded-full flex items-center justify-center shrink-0">
+                                    <span class="material-symbols-outlined text-[18px]">check</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-on-surface text-sm">Consulta Inicial Epigenética</h4>
+                                    <p class="text-xs text-on-surface-variant mt-0.5">10 Oct 2024 • Dra. Mónica López</p>
+                                </div>
+                            </div>
+                            <span class="px-3 py-1 bg-surface-variant text-on-surface-variant text-[11px] font-bold rounded-full">Completada</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna Derecha: Widget Informativo Calendar -->
+            <div class="xl:col-span-4 flex flex-col gap-6 fade-in-up delay-300">
+                <div class="bg-surface-container-lowest rounded-xl p-lg shadow-sm border border-surface-variant text-center relative overflow-hidden">
+                    <!-- Decoración fondo -->
+                    <div class="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-surface-variant/50 to-transparent pointer-events-none"></div>
+                    
+                    <div class="w-16 h-16 mx-auto bg-surface-container-lowest shadow-sm rounded-2xl flex items-center justify-center mb-5 relative z-10 border border-surface-variant">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Google_Calendar_icon_%282020%29.svg" alt="Google Calendar" class="w-8 h-8">
+                    </div>
+                    
+                    <h3 class="font-headline-md font-bold text-on-surface mb-3 relative z-10">Sincronización Inteligente</h3>
+                    <p class="text-sm text-on-surface-variant mb-6 relative z-10 leading-relaxed">
+                        Tus citas se agendarán automáticamente a través de <strong>Google Calendar</strong>. 
+                        Recibirás invitaciones por correo electrónico con los enlaces seguros a <strong>Google Meet</strong>.
+                    </p>
+                    
+                    <div class="text-xs text-mint bg-mint/10 p-3 rounded-lg font-medium border border-mint/20 flex items-center justify-center gap-2 relative z-10">
+                        <span class="material-symbols-outlined text-[16px]">check_circle</span> 
+                        <span>Arquitectura lista para conectar API</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ============================================== -->
+    <!-- VIEW: EDUCACIÓN                                -->
+    <!-- ============================================== -->
+    <div id="view-educacion" class="view-section hidden">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-lg gap-4">
+            <div>
+                <h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface fade-in-up">Academia Epigenética</h1>
+                <p class="text-on-surface-variant mt-2 fade-in-up delay-100">Contenido exclusivo para optimizar tu salud y complementar tu protocolo.</p>
+            </div>
+            <!-- Barra de búsqueda rápida -->
+            <div class="relative w-full md:w-64 fade-in-up delay-100">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+                <input type="text" placeholder="Buscar temas, videos..." class="w-full bg-surface-container-lowest border border-surface-variant rounded-full pl-10 pr-4 py-2 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all shadow-sm">
+            </div>
+        </div>
+
+        <!-- Categoría 1: Masterclasses (Videos) -->
+        <h2 class="font-headline-md font-bold text-on-surface mb-4 mt-8 fade-in-up delay-200 flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary">play_circle</span> Masterclasses y Hábitos
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 fade-in-up delay-300">
+            <!-- Video Card 1 -->
+            <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant overflow-hidden group hover:-translate-y-1 hover:shadow-lg transition-all duration-300 cursor-pointer">
+                <!-- Thumbnail -->
+                <div class="h-48 bg-surface-variant relative overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=600&auto=format&fit=crop" alt="Thumbnail" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <span class="material-symbols-outlined text-white text-5xl drop-shadow-md">play_arrow</span>
+                    </div>
+                    <span class="absolute bottom-3 right-3 bg-black/70 text-white text-[11px] px-2 py-0.5 rounded font-medium backdrop-blur-sm">12:45</span>
+                </div>
+                <!-- Content -->
+                <div class="p-4">
+                    <span class="text-[10px] font-bold text-primary uppercase tracking-wider mb-1 block">Módulo 1</span>
+                    <h3 class="font-bold text-on-surface leading-tight mb-2 group-hover:text-primary transition-colors">¿Cómo actúan los precursores NAD+ en tu ADN?</h3>
+                    <p class="text-xs text-on-surface-variant line-clamp-2">Entiende la ciencia detrás del envejecimiento celular y cómo el suplemento de esta fase activa tus sirtuinas.</p>
+                </div>
+            </div>
+
+            <!-- Video Card 2 -->
+            <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant overflow-hidden group hover:-translate-y-1 hover:shadow-lg transition-all duration-300 cursor-pointer">
+                <div class="h-48 bg-surface-variant relative overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1511293714525-635c5cce022b?q=80&w=600&auto=format&fit=crop" alt="Thumbnail" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <span class="material-symbols-outlined text-white text-5xl drop-shadow-md">play_arrow</span>
+                    </div>
+                    <span class="absolute bottom-3 right-3 bg-black/70 text-white text-[11px] px-2 py-0.5 rounded font-medium backdrop-blur-sm">08:20</span>
+                </div>
+                <div class="p-4">
+                    <span class="text-[10px] font-bold text-primary uppercase tracking-wider mb-1 block">Módulo 2</span>
+                    <h3 class="font-bold text-on-surface leading-tight mb-2 group-hover:text-primary transition-colors">Optimización del Ritmo Circadiano</h3>
+                    <p class="text-xs text-on-surface-variant line-clamp-2">Guía paso a paso para configurar tu habitación y horarios para lograr un sueño profundo reparador.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Categoría 2: Recursos y Recetas (PDFs) -->
+        <h2 class="font-headline-md font-bold text-on-surface mb-4 mt-12 fade-in-up delay-200 flex items-center gap-2">
+            <span class="material-symbols-outlined text-secondary">menu_book</span> Guías Nutricionales y PDFs
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 fade-in-up delay-300 mb-8">
+            <!-- PDF Card 1 -->
+            <div class="bg-surface-container-lowest rounded-xl p-5 shadow-sm border border-surface-variant group hover:-translate-y-1 hover:shadow-md transition-all duration-300 flex flex-col h-full">
+                <div class="w-12 h-12 bg-secondary/10 text-secondary rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <span class="material-symbols-outlined text-2xl">picture_as_pdf</span>
+                </div>
+                <h3 class="font-bold text-on-surface text-sm mb-2">Recetario Antiinflamatorio Semanal</h3>
+                <p class="text-xs text-on-surface-variant mb-4 flex-1">Planes de comida adaptados a tu sensibilidad al gluten identificada en el test.</p>
+                <button class="w-full py-2 bg-surface border border-outline-variant text-on-surface text-xs font-bold rounded-lg hover:bg-surface-variant transition-colors flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-[16px]">download</span> Descargar PDF
+                </button>
+            </div>
+
+            <!-- PDF Card 2 -->
+            <div class="bg-surface-container-lowest rounded-xl p-5 shadow-sm border border-surface-variant group hover:-translate-y-1 hover:shadow-md transition-all duration-300 flex flex-col h-full">
+                <div class="w-12 h-12 bg-secondary/10 text-secondary rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <span class="material-symbols-outlined text-2xl">article</span>
+                </div>
+                <h3 class="font-bold text-on-surface text-sm mb-2">Guía de Ayuno Intermitente</h3>
+                <p class="text-xs text-on-surface-variant mb-4 flex-1">Cómo iniciar protocolos de ayuno 16/8 de manera segura y enfocada a mujeres.</p>
+                <button class="w-full py-2 bg-surface border border-outline-variant text-on-surface text-xs font-bold rounded-lg hover:bg-surface-variant transition-colors flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-[16px]">download</span> Descargar PDF
+                </button>
+            </div>
+        </div>
+    </div>
+    <div id="view-mensajes" class="view-section hidden h-[calc(100vh-6rem)]">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+            <div>
+                <h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface fade-in-up">Centro de Mensajes</h1>
+                <p class="text-on-surface-variant mt-2 fade-in-up delay-100">Comunicación directa y segura con tu equipo médico.</p>
+            </div>
+        </div>
+
+        <div class="bg-surface-container-lowest border border-surface-variant rounded-2xl shadow-sm overflow-hidden flex flex-col h-full max-h-[700px] fade-in-up delay-200">
+            
+            <!-- Chat Header -->
+            <div class="h-16 border-b border-surface-variant flex items-center justify-between px-6 bg-surface-container-lowest shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-primary-container text-on-primary-container rounded-full flex items-center justify-center font-bold relative">
+                        EQ
+                        <span class="absolute bottom-0 right-0 w-3 h-3 bg-mint border-2 border-surface-container-lowest rounded-full"></span>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold text-on-surface">Equipo Médico Antonella</h3>
+                        <p class="text-[11px] text-mint font-medium flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">verified</span> En línea</p>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button class="w-8 h-8 rounded-full hover:bg-surface-variant flex items-center justify-center text-on-surface-variant transition-colors">
+                        <span class="material-symbols-outlined text-[20px]">videocam</span>
+                    </button>
+                    <button class="w-8 h-8 rounded-full hover:bg-surface-variant flex items-center justify-center text-on-surface-variant transition-colors">
+                        <span class="material-symbols-outlined text-[20px]">more_vert</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chat Messages Area -->
+            <div class="flex-1 overflow-y-auto p-4 md:p-6 bg-surface-container-low flex flex-col gap-4">
+                
+                <!-- Date Header -->
+                <div class="text-center my-2">
+                    <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider bg-surface-variant px-3 py-1 rounded-full">Ayer</span>
+                </div>
+                
+                <!-- Doctor Message (Left) -->
+                <div class="flex gap-3 max-w-[85%] md:max-w-[70%]">
+                    <div class="w-8 h-8 bg-primary-container text-on-primary-container rounded-full flex items-center justify-center font-bold shrink-0 mt-1 text-xs">EQ</div>
+                    <div>
+                        <div class="bg-surface-container-lowest border border-surface-variant text-on-surface text-sm p-4 rounded-2xl rounded-tl-sm shadow-sm">
+                            ¡Hola Antonella! Revisamos tus últimos marcadores. Vamos muy bien con la glucosa, pero recuerda mantener el protocolo de ayuno 16/8 estricto esta semana. ¿Cómo te has sentido con los suplementos de NAD+?
+                        </div>
+                        <span class="text-[10px] text-on-surface-variant mt-1 ml-1 block">09:30 AM</span>
+                    </div>
+                </div>
+
+                <!-- Date Header -->
+                <div class="text-center my-2">
+                    <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider bg-surface-variant px-3 py-1 rounded-full">Hoy</span>
+                </div>
+
+                <!-- Patient Message (Right) -->
+                <div class="flex gap-3 max-w-[85%] md:max-w-[70%] self-end flex-row-reverse">
+                    <img src="https://ui-avatars.com/api/?name=Antonella+D&background=f8fafc&color=0f172a" class="w-8 h-8 rounded-full shrink-0 mt-1">
+                    <div>
+                        <div class="bg-primary text-white text-sm p-4 rounded-2xl rounded-tr-sm shadow-sm">
+                            Hola doctora, tengo una duda sobre el ayuno. ¿Puedo tomar café negro durante las horas de restricción?
+                        </div>
+                        <span class="text-[10px] text-on-surface-variant mt-1 mr-1 block text-right">Enviado 10:45 AM</span>
+                    </div>
+                </div>
+                
+                <!-- Doctor Message (Left) -->
+                <div class="flex gap-3 max-w-[85%] md:max-w-[70%]">
+                    <div class="w-8 h-8 bg-primary-container text-on-primary-container rounded-full flex items-center justify-center font-bold shrink-0 mt-1 text-xs">EQ</div>
+                    <div>
+                        <div class="bg-surface-container-lowest border border-surface-variant text-on-surface text-sm p-4 rounded-2xl rounded-tl-sm shadow-sm">
+                            Sí, por supuesto. El café negro (sin azúcar, leche ni edulcorantes) no rompe el ayuno y de hecho puede ayudarte a potenciar la autofagia.
+                        </div>
+                        <span class="text-[10px] text-on-surface-variant mt-1 ml-1 block">Recibido 10:50 AM</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Input Area -->
+            <div class="p-4 border-t border-surface-variant bg-surface-container-lowest">
+                <div class="flex items-end gap-2 bg-surface border border-outline-variant rounded-2xl p-2 focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all">
+                    <button class="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-xl shrink-0">
+                        <span class="material-symbols-outlined">attach_file</span>
+                    </button>
+                    <textarea placeholder="Escribe un mensaje al equipo médico..." rows="1" class="flex-1 bg-transparent border-none resize-none focus:ring-0 text-sm py-2 max-h-32 min-h-[40px]"></textarea>
+                    <button class="bg-primary hover:bg-secondary text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-sm shrink-0 transition-colors">
+                        <span class="material-symbols-outlined text-[20px] ml-1">send</span>
+                    </button>
+                </div>
+                <p class="text-[10px] text-center text-on-surface-variant mt-2">Mensajería encriptada de extremo a extremo (HIPAA Compliant).</p>
+            </div>
+        </div>
+    </div>
+
+</div> <!-- End Real Content -->
+
+<!-- FAB Support Chatbot -->
+<button id="chatbot-fab" class="fixed bottom-lg right-lg w-[56px] h-[56px] bg-primary text-white rounded-full flex items-center justify-center shadow-lg hover:-translate-y-1 hover:shadow-xl transition-all duration-300 z-50">
+    <span class="material-symbols-outlined text-[28px]">smart_toy</span>
+</button>
+
+<!-- Chatbot Window (Hidden by default) -->
+<div id="chatbot-window" class="fixed bottom-24 right-lg w-80 md:w-96 bg-surface-container-lowest rounded-2xl shadow-2xl border border-surface-variant z-50 hidden flex-col overflow-hidden transition-all duration-300">
+    <div class="bg-primary p-4 text-white flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined">smart_toy</span>
+            <span class="font-bold">Asistente Epigenético</span>
+        </div>
+        <button id="close-chatbot" class="text-white hover:text-gray-200"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <div id="chat-messages" class="p-4 h-64 overflow-y-auto bg-surface flex flex-col gap-3 text-sm">
+        <div class="bg-surface-variant text-on-surface p-3 rounded-lg rounded-tl-none self-start max-w-[80%]">
+            ¡Hola, Antonella! Soy tu asistente virtual. ¿En qué puedo ayudarte con tu protocolo hoy?
+        </div>
+    </div>
+    <div class="p-3 border-t border-surface-variant bg-surface-container-lowest flex gap-2">
+        <input type="text" id="chat-input" placeholder="Escribe un mensaje..." class="flex-1 bg-surface border border-outline-variant rounded-full px-4 py-2 text-sm focus:outline-none focus:border-primary">
+        <button id="chat-send-btn" class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center hover:bg-secondary transition-colors">
+            <span class="material-symbols-outlined text-sm">send</span>
+        </button>
+    </div>
+</div>
+
+<script>
+    // Toggle Chatbot logic
+    document.addEventListener('DOMContentLoaded', () => {
+        const fab = document.getElementById('chatbot-fab');
+        const chatbotWindow = document.getElementById('chatbot-window');
+        const closeBtn = document.getElementById('close-chatbot');
+        
+        if(fab && chatbotWindow && closeBtn) {
+            fab.addEventListener('click', () => {
+                chatbotWindow.classList.toggle('hidden');
+                chatbotWindow.classList.toggle('flex');
+            });
+            closeBtn.addEventListener('click', () => {
+                chatbotWindow.classList.add('hidden');
+                chatbotWindow.classList.remove('flex');
+            });
+        }
+
+        // Lógica del Chatbot (Comunicación con Backend RAG)
+        const chatInput = document.getElementById('chat-input');
+        const chatSendBtn = document.getElementById('chat-send-btn');
+        const chatMessages = document.getElementById('chat-messages');
+
+        if(chatInput && chatSendBtn && chatMessages) {
+            const sendMessage = async () => {
+                const message = chatInput.value.trim();
+                if(!message) return;
+
+                // Agregar mensaje del usuario a la UI
+                chatMessages.innerHTML += `
+                    <div class="bg-primary text-white p-3 rounded-lg rounded-tr-none self-end max-w-[80%] shadow-sm">
+                        ${message}
+                    </div>
+                `;
+                chatInput.value = '';
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                // Indicador de "Escribiendo..."
+                const loadingId = 'loading-' + Date.now();
+                chatMessages.innerHTML += `
+                    <div id="${loadingId}" class="bg-surface-variant text-on-surface p-3 rounded-lg rounded-tl-none self-start max-w-[80%] italic text-xs shadow-sm">
+                        <span class="animate-pulse">Consultando tu protocolo...</span>
+                    </div>
+                `;
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                try {
+                    const response = await fetch('http://localhost:3000/api/chat', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ message: message, patientId: "test-user-id" })
+                    });
+                    
+                    document.getElementById(loadingId)?.remove();
+                    
+                    if(response.ok) {
+                        const data = await response.json();
+                        chatMessages.innerHTML += `
+                            <div class="bg-surface-variant text-on-surface p-3 rounded-lg rounded-tl-none self-start max-w-[80%] shadow-sm whitespace-pre-wrap">
+                                ${data.reply}
+                            </div>
+                        `;
+                    } else {
+                        chatMessages.innerHTML += `
+                            <div class="bg-error-container text-on-error-container p-3 rounded-lg rounded-tl-none self-start max-w-[80%] text-xs shadow-sm">
+                                ⚠️ Error: Configura tus claves de API en el backend para que la IA responda.
+                            </div>
+                        `;
+                    }
+                } catch(e) {
+                    document.getElementById(loadingId)?.remove();
+                    chatMessages.innerHTML += `
+                        <div class="bg-error-container text-on-error-container p-3 rounded-lg rounded-tl-none self-start max-w-[80%] text-xs shadow-sm">
+                            ⚠️ El "Cerebro RAG" no está conectado. Necesitas iniciar el servidor Node.js en el puerto 3000.
+                        </div>
+                    `;
+                }
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            };
+
+            chatSendBtn.addEventListener('click', sendMessage);
+            chatInput.addEventListener('keypress', (e) => {
+                if(e.key === 'Enter') sendMessage();
+            });
+        }
+
+        // Animate protocol progress smoothly
+        setTimeout(() => {
+            const progressBar = document.querySelector('.progress-bar-fill');
+            if (progressBar) {
+                progressBar.style.width = '50%';
+            }
+        }, 300);
+    });
+</script>
+</body></html>
