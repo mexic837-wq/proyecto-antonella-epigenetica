@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Antonella Epigenética</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config from Style Guidance -->
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-error-container": "#93000a",
+                      "on-surface": "#0b1c30",
+                      "on-error": "#ffffff",
+                      "on-secondary": "#ffffff",
+                      "on-tertiary-fixed": "#2d1600",
+                      "surface-tint": "#006398",
+                      "primary-fixed": "#cce5ff",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-variant": "#d3e4fe",
+                      "error-container": "#ffdad6",
+                      "surface-bright": "#f8f9ff",
+                      "error": "#ba1a1a",
+                      "surface-dim": "#cbdbf5",
+                      "tertiary-fixed-dim": "#ffb875",
+                      "surface": "#f8f9ff",
+                      "primary": "#006194",
+                      "on-secondary-fixed-variant": "#004c6e",
+                      "secondary-fixed-dim": "#89ceff",
+                      "secondary": "#006591",
+                      "primary-container": "#007bb9",
+                      "primary-fixed-dim": "#93ccff",
+                      "secondary-fixed": "#c9e6ff",
+                      "on-tertiary-fixed-variant": "#6b3b00",
+                      "on-secondary-container": "#004666",
+                      "surface-container-low": "#eff4ff",
+                      "tertiary": "#894d00",
+                      "inverse-on-surface": "#eaf1ff",
+                      "secondary-container": "#39b8fd",
+                      "on-background": "#0b1c30",
+                      "inverse-primary": "#93ccff",
+                      "on-primary-fixed": "#001d31",
+                      "surface-container": "#e5eeff",
+                      "on-primary": "#ffffff",
+                      "background": "#f8f9ff",
+                      "tertiary-fixed": "#ffdcc0",
+                      "on-secondary-fixed": "#001e2f",
+                      "on-primary-container": "#fdfcff",
+                      "outline-variant": "#bfc7d2",
+                      "on-primary-fixed-variant": "#004b73",
+                      "inverse-surface": "#213145",
+                      "on-surface-variant": "#3f4850",
+                      "tertiary-container": "#ac6200",
+                      "surface-container-highest": "#d3e4fe",
+                      "surface-container-high": "#dce9ff",
+                      "outline": "#707881",
+                      "on-tertiary-container": "#fffbff",
+                      "on-tertiary": "#ffffff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "md": "16px",
+                      "margin-mobile": "20px",
+                      "gutter-mobile": "12px",
+                      "unit": "4px",
+                      "lg": "24px",
+                      "xl": "32px",
+                      "sm": "8px",
+                      "xs": "4px"
+              },
+              "fontFamily": {
+                      "body-md": ["Inter"],
+                      "label-md": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "display-lg-mobile": ["Inter"],
+                      "headline-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                      "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "display-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                      "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        /* Custom utilities for smooth transitions and animations */
+        .fade-up-element {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-up-element.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Hide scrollbar for clean look if needed */
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased overflow-x-hidden">
+<!-- TopAppBar -->
+<header class="bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-md fixed top-0 w-full z-50 border-b border-outline-variant/30 shadow-sm flex items-center justify-between px-margin-mobile h-16 transition-all duration-300" id="top-app-bar">
+<div class="flex items-center gap-2">
+<img alt="Antonella Epigenética Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AP1WRLvppzKWGHw6ZuOjXNMh4EybJDP2GKvq0h0V--lvgJ1fVWP3QucRCLOpGDm-rH9Tfv_37ZuJu6cGhL9r9KVNmQrgOTb4_m6OF5uLQi5XznfbcEjwXsedcWBZb4KV13EqlDaGfed9tWQ51jNIDRtJVClKznphU4JR-C-lv2YjsHdQFwa6EM6IGnkctUnVG4KPeVL1mqlRvzY3zhP1lyaVG2pgSkU3iU7PqjqEWRIXNW21ZJmgSMI0zhWANT0"/>
+<span class="font-headline-md text-headline-md-mobile text-primary dark:text-primary-fixed tracking-tight hidden sm:block">Antonella Epigenética</span>
+</div>
+<button class="p-2 text-primary dark:text-primary-fixed hover:opacity-80 transition-opacity active:scale-95 duration-150 rounded-full focus:outline-none focus:ring-2 focus:ring-primary/20" id="menu-toggle">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">menu</span>
+</button>
+</header>
+<!-- Navigation Drawer Overlay -->
+<div class="fixed inset-0 bg-on-surface/40 z-[55] hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm" id="drawer-overlay"></div>
+<!-- NavigationDrawer -->
+<nav class="bg-surface dark:bg-surface-container fixed inset-y-0 left-0 w-80 z-[60] shadow-2xl flex flex-col h-full py-8 transform -translate-x-full transition-transform duration-300 ease-in-out" id="nav-drawer">
+<div class="px-6 pb-6 flex items-center justify-between border-b border-outline-variant/20">
+<h2 class="font-headline-lg text-headline-lg text-primary">Menu</h2>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-highest rounded-full transition-colors active:scale-95" id="close-drawer">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="flex-1 overflow-y-auto py-4">
+<ul class="flex flex-col gap-1">
+<li>
+<a class="flex items-center gap-4 px-6 py-4 font-body-lg text-body-lg text-primary font-bold bg-primary-container/20 rounded-r-full tap-highlight-none" href="#">
+<span class="material-symbols-outlined">science</span>
+                        Our Science
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-4 px-6 py-4 font-body-lg text-body-lg text-on-surface-variant hover:bg-surface-container-highest transition-colors rounded-r-full tap-highlight-none" href="#">
+<span class="material-symbols-outlined">biotech</span>
+                        Programs
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-4 px-6 py-4 font-body-lg text-body-lg text-on-surface-variant hover:bg-surface-container-highest transition-colors rounded-r-full tap-highlight-none" href="#">
+<span class="material-symbols-outlined">grade</span>
+                        Reviews
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-4 px-6 py-4 font-body-lg text-body-lg text-on-surface-variant hover:bg-surface-container-highest transition-colors rounded-r-full tap-highlight-none" href="#">
+<span class="material-symbols-outlined">mail</span>
+                        Contact
+                    </a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="pt-16 pb-32 max-w-[1140px] mx-auto">
+<!-- Hero Section -->
+<section class="px-margin-mobile pt-12 pb-16 flex flex-col md:flex-row items-center gap-8 md:gap-12 relative overflow-hidden">
+<div class="flex-1 flex flex-col items-start z-10">
+<h1 class="font-display-lg-mobile text-display-lg-mobile md:font-display-lg md:text-display-lg text-on-surface tracking-tight mb-4 fade-up-element">
+                    Tu salud, reprogramada desde el núcleo.
+                </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-8 max-w-lg fade-up-element" style="transition-delay: 100ms;">
+                    Descubre el poder de la epigenética para optimizar tu bienestar celular con un protocolo científico exclusivo.
+                </p>
+<button class="w-full md:w-auto px-8 h-[56px] bg-secondary-container text-on-secondary-container rounded-full font-headline-md text-body-lg hover:bg-primary-container hover:text-on-primary-container transition-colors duration-200 active:scale-95 shadow-md flex items-center justify-center gap-2 fade-up-element" style="transition-delay: 200ms;">
+                    Iniciar mi Protocolo
+                    <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+</div>
+<div class="flex-1 w-full relative fade-up-element" style="transition-delay: 300ms;">
+<div class="absolute inset-0 bg-primary/5 rounded-3xl blur-3xl transform scale-110"></div>
+<img alt="Representación 3D de ADN" class="w-full h-auto object-cover rounded-3xl shadow-lg border border-surface-container-high relative z-10 max-h-[500px]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBpX5Ql6PmNGhD6gB2E8JcHLwRwdcZuO0xQGMIaXzoVp3wOXneFwPKYGnQ-AUiKEUCmxiOoKrHkOZAr9X8u5fZ59dY_qCX7win0tKM4odgQ32YaXO0rTzdiER465d0NaRqjrDAD5nIz0ovuf9xuuDCq58X2ggqqRZGai58tSnTULFqp5OUMP9mS4Cru8fhYVt623tl47BkTR8-sTN1ZXpGpP5YA3CxNm6aeUuNS84JAE7XI1h58rgwG"/>
+</div>
+</section>
+<!-- How it Works Section -->
+<section class="bg-surface-container-lowest px-margin-mobile py-16 md:py-24 rounded-t-[2.5rem] md:rounded-[2.5rem] shadow-[0_-4px_24px_rgba(0,0,0,0.02)] border-t md:border border-outline-variant/20 mx-0 md:mx-margin-mobile">
+<div class="text-center mb-12 fade-up-element">
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-2">El Camino a tu Óptimo Ser</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Tres pasos basados en ciencia para transformar tu salud.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+<!-- Step 1 -->
+<div class="bg-surface rounded-2xl p-8 border border-outline-variant/30 shadow-sm flex flex-col items-center text-center fade-up-element hover:shadow-md transition-shadow duration-300">
+<div class="w-16 h-16 bg-secondary-container/20 rounded-full flex items-center justify-center mb-6 text-primary">
+<span class="material-symbols-outlined text-[32px]" style="font-variation-settings: 'FILL' 1;">science</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-3">1. Toma de Muestra</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                        Kit de recolección en casa. Simple, indoloro y seguro para un análisis preciso.
+                    </p>
+</div>
+<!-- Step 2 -->
+<div class="bg-surface rounded-2xl p-8 border border-outline-variant/30 shadow-sm flex flex-col items-center text-center fade-up-element hover:shadow-md transition-shadow duration-300" style="transition-delay: 100ms;">
+<div class="w-16 h-16 bg-secondary-container/20 rounded-full flex items-center justify-center mb-6 text-primary">
+<span class="material-symbols-outlined text-[32px]" style="font-variation-settings: 'FILL' 1;">biotech</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-3">2. Análisis Genético</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                        Secuenciación de última generación en laboratorios certificados para descifrar tu código.
+                    </p>
+</div>
+<!-- Step 3 -->
+<div class="bg-surface rounded-2xl p-8 border border-outline-variant/30 shadow-sm flex flex-col items-center text-center fade-up-element hover:shadow-md transition-shadow duration-300" style="transition-delay: 200ms;">
+<div class="w-16 h-16 bg-secondary-container/20 rounded-full flex items-center justify-center mb-6 text-primary">
+<span class="material-symbols-outlined text-[32px]" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-3">3. Portal VIP</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                        Accede a tus resultados, protocolos personalizados y seguimiento continuo en tu dashboard.
+                    </p>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest dark:bg-surface-container-low w-full mt-auto border-t border-outline-variant/20 flex flex-col items-center gap-4 py-xl px-margin-mobile text-center pb-[100px] md:pb-xl">
+<div class="font-headline-md text-headline-md text-on-surface mb-2">Antonella Epigenética</div>
+<div class="flex flex-wrap justify-center gap-4 md:gap-6 mb-4">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors opacity-100" href="#">Privacy Policy</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors opacity-100" href="#">Terms of Service</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors opacity-100" href="#">Scientific Disclosure</a>
+</div>
+<div class="font-body-md text-body-md text-on-surface-variant">
+            © 2024 Antonella Epigenética. All rights reserved.
+        </div>
+</footer>
+<!-- Sticky CTA (Bottom) -->
+<div class="fixed bottom-0 left-0 w-full p-margin-mobile bg-gradient-to-t from-surface-container via-surface to-transparent z-[45] md:hidden">
+<button class="w-full h-[56px] bg-primary text-on-primary rounded-full font-headline-md text-body-lg shadow-[0_10px_30px_rgba(0,0,0,0.08)] active:scale-95 transition-all duration-200 flex items-center justify-center gap-2">
+            Ingresar al Portal VIP
+            <span class="material-symbols-outlined text-[20px]">login</span>
+</button>
+</div>
+<script>
+        // Drawer Toggle Logic
+        const menuToggle = document.getElementById('menu-toggle');
+        const closeDrawer = document.getElementById('close-drawer');
+        const drawer = document.getElementById('nav-drawer');
+        const overlay = document.getElementById('drawer-overlay');
+
+        function openDrawerMenu() {
+            drawer.classList.remove('-translate-x-full');
+            overlay.classList.remove('hidden');
+            // Small delay to allow display block to apply before opacity transition
+            setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        }
+
+        function closeDrawerMenu() {
+            drawer.classList.add('-translate-x-full');
+            overlay.classList.add('opacity-0');
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+                document.body.style.overflow = ''; // Restore scrolling
+            }, 300);
+        }
+
+        menuToggle.addEventListener('click', openDrawerMenu);
+        closeDrawer.addEventListener('click', closeDrawerMenu);
+        overlay.addEventListener('click', closeDrawerMenu);
+
+        // Scroll Animation Logic (Intersection Observer)
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target); // Run once
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-up-element').forEach(el => {
+            observer.observe(el);
+        });
+        
+        // Simple Top App Bar shadow on scroll
+        window.addEventListener('scroll', () => {
+            const appBar = document.getElementById('top-app-bar');
+            if (window.scrollY > 10) {
+                appBar.classList.add('shadow-md');
+                appBar.classList.remove('shadow-sm');
+            } else {
+                appBar.classList.remove('shadow-md');
+                appBar.classList.add('shadow-sm');
+            }
+        });
+    </script>
+</body></html>

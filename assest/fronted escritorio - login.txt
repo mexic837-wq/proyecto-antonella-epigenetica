@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Antonella Epigenética - Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "tertiary": "#894d00",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-fixed-variant": "#6b3b00",
+                        "tertiary-container": "#ac6200",
+                        "on-surface": "#0b1c30",
+                        "primary-container": "#007bb9",
+                        "secondary": "#006591",
+                        "surface-variant": "#d3e4fe",
+                        "surface-container-high": "#dce9ff",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed-variant": "#004b73",
+                        "on-error": "#ffffff",
+                        "on-tertiary-fixed": "#2d1600",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-primary-container": "#fdfcff",
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed": "#001e2f",
+                        "surface-container": "#e5eeff",
+                        "tertiary-fixed": "#ffdcc0",
+                        "secondary-fixed": "#c9e6ff",
+                        "primary-fixed-dim": "#93ccff",
+                        "tertiary-fixed-dim": "#ffb875",
+                        "inverse-primary": "#93ccff",
+                        "on-secondary-container": "#004666",
+                        "on-background": "#0b1c30",
+                        "on-surface-variant": "#3f4850",
+                        "surface": "#f8f9ff",
+                        "secondary-container": "#39b8fd",
+                        "primary-fixed": "#cce5ff",
+                        "primary": "#006194",
+                        "on-primary-fixed": "#001d31",
+                        "on-tertiary": "#ffffff",
+                        "inverse-surface": "#213145",
+                        "error-container": "#ffdad6",
+                        "outline-variant": "#bfc7d2",
+                        "outline": "#707881",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-dim": "#cbdbf5",
+                        "on-tertiary-container": "#fffbff",
+                        "background": "#f8f9ff",
+                        "surface-tint": "#006398",
+                        "surface-bright": "#f8f9ff",
+                        "on-secondary-fixed-variant": "#004c6e",
+                        "surface-container-low": "#eff4ff",
+                        "secondary-fixed-dim": "#89ceff",
+                        "surface-container-highest": "#d3e4fe",
+                        "on-secondary": "#ffffff"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "margin-mobile": "20px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "xl": "32px",
+                        "sm": "8px",
+                        "gutter-mobile": "12px",
+                        "unit": "4px",
+                        "md": "16px"
+                    },
+                    fontFamily: {
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "display-lg-mobile": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    },
+                    fontSize: {
+                        "label-md": ["12px", { lineHeight: "16px", letterSpacing: "0.02em", fontWeight: "500" }],
+                        "body-md": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+                        "display-lg": ["32px", { lineHeight: "40px", letterSpacing: "-0.02em", fontWeight: "700" }],
+                        "headline-md": ["20px", { lineHeight: "28px", fontWeight: "600" }],
+                        "body-lg": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+                        "display-lg-mobile": ["28px", { lineHeight: "36px", fontWeight: "700" }],
+                        "headline-lg": ["24px", { lineHeight: "32px", letterSpacing: "-0.01em", fontWeight: "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background antialiased h-screen w-screen overflow-hidden font-body-md flex">
+<!-- Split Screen Layout -->
+<div class="flex w-full h-full">
+<!-- Left Side: Image / Brand (Hidden on Mobile) -->
+<div class="hidden md:block md:w-1/2 relative bg-surface-variant">
+<!-- Background Image -->
+<img alt="Background" class="absolute inset-0 w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AP1WRLvqDgsomiP9KY4-kvctpr9ouQEFBDt06EuD85U0b2QroIbX0ou3gaUzH594BJah8f1sFnKS1feryozfIsH3a6NOVeziRT6LaKgE4ejKhyiuuLSbOd_hgtrgpsgJbktJLlQ7A6IJd7sEAMhUoKHEtkIjx8FQXrmdmZwcwG7lRCkU58Ga_xZP7fgFR4qGbxv7HbIyd4nCAFViBvKpvjR3U9_Hczbfd_wOUHsE0ZK3vr8gt4z-_SYct-neMw"/>
+<!-- Overlay -->
+<div class="absolute inset-0 bg-on-background/20 mix-blend-multiply"></div>
+<!-- Brand Text Over Image -->
+<div class="absolute bottom-xl left-xl z-10 glass-panel p-lg rounded-xl max-w-md">
+<h1 class="font-display-lg text-display-lg text-primary mb-sm">Antonella Epigenética</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Descubriendo el potencial de tu ADN para una vida más saludable.</p>
+</div>
+</div>
+<!-- Right Side: Login Form -->
+<div class="w-full md:w-1/2 bg-surface-container-lowest flex flex-col justify-center items-center p-margin-mobile md:p-xl h-full overflow-y-auto">
+<div class="w-full max-w-md space-y-xl">
+<!-- Header -->
+<div class="text-center md:text-left space-y-sm mb-lg">
+<h2 class="font-headline-lg text-headline-lg text-primary mb-xs">Portal de Pacientes VIP</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Ingresa a tu cuenta para acceder a tus resultados epigenéticos.</p>
+</div>
+<!-- Form -->
+<form action="#" class="space-y-lg w-full" method="POST">
+<!-- Email Field -->
+<div class="space-y-xs group">
+<label class="block font-label-md text-label-md text-on-surface group-focus-within:text-primary transition-colors" for="email">Correo Electrónico</label>
+<div class="relative">
+<span class="absolute inset-y-0 left-0 pl-sm flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline group-focus-within:text-primary transition-colors">mail</span>
+</span>
+<input class="w-full pl-[40px] pr-md py-md bg-surface border border-outline-variant rounded-DEFAULT focus:ring-2 focus:ring-primary focus:border-primary transition-all font-body-md text-body-md text-on-surface outline-none" id="email" name="email" placeholder="tu@email.com" required="" type="email"/>
+</div>
+</div>
+<!-- Password Field -->
+<div class="space-y-xs group">
+<div class="flex justify-between items-center">
+<label class="block font-label-md text-label-md text-on-surface group-focus-within:text-primary transition-colors" for="password">Contraseña</label>
+<a class="font-label-md text-label-md text-primary hover:underline" href="#">¿Olvidaste tu contraseña?</a>
+</div>
+<div class="relative">
+<span class="absolute inset-y-0 left-0 pl-sm flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline group-focus-within:text-primary transition-colors">lock</span>
+</span>
+<input class="w-full pl-[40px] pr-md py-md bg-surface border border-outline-variant rounded-DEFAULT focus:ring-2 focus:ring-primary focus:border-primary transition-all font-body-md text-body-md text-on-surface outline-none" id="password" name="password" placeholder="••••••••" required="" type="password"/>
+</div>
+</div>
+<!-- Remember Me -->
+<div class="flex items-center">
+<input class="h-4 w-4 text-primary focus:ring-primary border-outline-variant rounded text-primary" id="remember-me" name="remember-me" type="checkbox"/>
+<label class="ml-sm block font-body-md text-body-md text-on-surface-variant" for="remember-me">
+                            Recordarme en este dispositivo
+                        </label>
+</div>
+<!-- Submit Button -->
+<button class="w-full h-[56px] flex justify-center items-center bg-primary text-on-primary rounded-lg font-headline-md text-headline-md shadow-sm hover:bg-secondary hover:shadow-md transition-all duration-300 active:scale-[0.98]" type="submit">
+                        Ingresar
+                    </button>
+</form>
+<!-- Footer / Sign Up Link -->
+<div class="mt-xl text-center">
+<p class="font-body-md text-body-md text-on-surface-variant">
+                        ¿No tienes una cuenta?
+                        <a class="font-headline-md text-headline-md text-primary hover:underline ml-xs" href="#">Solicitar acceso</a>
+</p>
+</div>
+</div>
+</div>
+</div>
+</body></html>
