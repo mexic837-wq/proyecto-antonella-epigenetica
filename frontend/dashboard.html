@@ -39,9 +39,9 @@
                         "on-background": "#8C5E35",
                         
                         "surface": "#ffffff",
-                        "on-surface": "#8C5E35",
+                        "on-surface": "#4A3320",
                         "surface-variant": "#E8D8C8",
-                        "on-surface-variant": "#8C5E35",
+                        "on-surface-variant": "#5C3D23",
                         
                         "outline": "#8C5E35",
                         "outline-variant": "#CD7F32",
@@ -380,14 +380,76 @@
                 </div>
             </section>
 
-            <!-- Formularios de Seguimiento (5 cols) -->
+            <!-- Widgets de Interacción y Seguimiento (4 cols) -->
             <section class="xl:col-span-4 flex flex-col gap-md">
+                
+                <!-- 1. Check-in Diario (Nuevo) -->
+                <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant p-lg relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-20 h-20 bg-mint/5 rounded-bl-full -z-0"></div>
+                    <div class="flex items-center gap-3 mb-4 relative z-10">
+                        <div class="w-10 h-10 bg-mint/20 text-mint rounded-full flex items-center justify-center">
+                            <span class="material-symbols-outlined">bolt</span>
+                        </div>
+                        <h3 class="font-headline-md font-bold text-on-surface">Check-in Diario</h3>
+                    </div>
+                    <p class="text-sm text-on-surface-variant mb-4 relative z-10 font-medium">¿Cómo está tu nivel de energía hoy?</p>
+                    <div class="flex justify-between items-center mb-2 relative z-10">
+                        <span class="text-xs font-bold text-on-surface-variant">Bajo</span>
+                        <span class="text-xs font-bold text-on-surface-variant">Óptimo</span>
+                    </div>
+                    <input type="range" min="1" max="10" value="5" class="w-full h-2 bg-surface-variant rounded-lg appearance-none cursor-pointer accent-primary mb-4 relative z-10" id="daily-energy-slider">
+                    <div class="text-center mb-4 relative z-10">
+                        <span id="energy-value-display" class="font-bold text-xl text-primary">5</span><span class="text-xs text-on-surface-variant">/10</span>
+                    </div>
+                    <button class="w-full py-2 bg-primary text-white rounded-lg font-bold hover:bg-secondary transition-colors relative z-10" onclick="alert('Registro guardado y enviado a tu gráfica.')">
+                        Registrar Energía
+                    </button>
+                </div>
+
+                <!-- 2. Mi Despensa / Suplementos (Nuevo) -->
+                <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant p-lg">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 bg-primary-container text-on-primary-container rounded-full flex items-center justify-center">
+                            <span class="material-symbols-outlined">medication</span>
+                        </div>
+                        <div>
+                            <h3 class="font-headline-md font-bold text-on-surface">Mi Despensa</h3>
+                            <p class="text-xs text-primary font-bold">Fase Actual: NAD+</p>
+                        </div>
+                    </div>
+                    <p class="text-sm text-on-surface-variant mb-4 font-medium">Marca los suplementos que ya tienes en casa para esta fase.</p>
+                    <div class="flex flex-col gap-3 mb-4">
+                        <label class="flex justify-between items-center bg-surface-container-low p-3 rounded-lg border border-surface-variant hover:border-primary/50 transition-colors cursor-pointer">
+                            <div class="flex items-center gap-3">
+                                <input type="checkbox" class="w-4 h-4 text-primary bg-surface border-outline-variant rounded focus:ring-primary focus:ring-2">
+                                <span class="text-sm font-bold text-on-surface">NMN (500mg)</span>
+                            </div>
+                            <button class="text-[11px] bg-primary/10 text-primary font-bold px-3 py-1 rounded-full hover:bg-primary/20 transition-colors" onclick="event.preventDefault(); window.open('#', '_blank')">Comprar</button>
+                        </label>
+                        <label class="flex justify-between items-center bg-surface-container-low p-3 rounded-lg border border-surface-variant hover:border-primary/50 transition-colors cursor-pointer">
+                            <div class="flex items-center gap-3">
+                                <input type="checkbox" class="w-4 h-4 text-primary bg-surface border-outline-variant rounded focus:ring-primary focus:ring-2">
+                                <span class="text-sm font-bold text-on-surface">Resveratrol</span>
+                            </div>
+                            <button class="text-[11px] bg-primary/10 text-primary font-bold px-3 py-1 rounded-full hover:bg-primary/20 transition-colors" onclick="event.preventDefault(); window.open('#', '_blank')">Comprar</button>
+                        </label>
+                        <label class="flex justify-between items-center bg-surface-container-low p-3 rounded-lg border border-surface-variant hover:border-primary/50 transition-colors cursor-pointer">
+                            <div class="flex items-center gap-3">
+                                <input type="checkbox" class="w-4 h-4 text-primary bg-surface border-outline-variant rounded focus:ring-primary focus:ring-2">
+                                <span class="text-sm font-bold text-on-surface">Glutatión Liposomal</span>
+                            </div>
+                            <button class="text-[11px] bg-primary/10 text-primary font-bold px-3 py-1 rounded-full hover:bg-primary/20 transition-colors" onclick="event.preventDefault(); window.open('#', '_blank')">Comprar</button>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 3. Formularios de Seguimiento (Original) -->
                 <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant p-lg">
                     <div class="w-12 h-12 bg-tertiary-container text-on-tertiary-container rounded-full flex items-center justify-center mb-4">
                         <span class="material-symbols-outlined">assignment</span>
                     </div>
                     <h3 class="font-headline-md font-bold text-on-surface mb-2">Check-in Mensual</h3>
-                    <p class="text-sm text-on-surface-variant mb-6">Tu doctor necesita una actualización de tus síntomas y niveles de energía para ajustar el plan.</p>
+                    <p class="text-sm text-on-surface-variant mb-6 font-medium">Tu doctor necesita una actualización de tus síntomas y niveles de energía para ajustar el plan.</p>
                     <button class="w-full py-3 bg-on-surface text-white rounded-lg font-bold hover:bg-outline transition-colors flex items-center justify-center gap-2">
                         Comenzar Cuestionario <span class="material-symbols-outlined text-sm">arrow_forward</span>
                     </button>
@@ -611,11 +673,11 @@
             <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant overflow-hidden group hover:-translate-y-1 hover:shadow-lg transition-all duration-300 cursor-pointer">
                 <!-- Thumbnail -->
                 <div class="h-48 bg-surface-variant relative overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=600&auto=format&fit=crop" alt="Thumbnail" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=600&auto=format&fit=crop" alt="Thumbnail" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'w-full h-full bg-surface-variant flex items-center justify-center flex-col\'><span class=\'material-symbols-outlined text-5xl text-outline/50 mb-2\'>school</span><span class=\'text-xs text-outline/70 font-bold\'>Video no disponible</span></div>';">
                     <div class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <span class="material-symbols-outlined text-white text-5xl drop-shadow-md">play_arrow</span>
                     </div>
-                    <span class="absolute bottom-3 right-3 bg-black/70 text-white text-[11px] px-2 py-0.5 rounded font-medium backdrop-blur-sm">12:45</span>
+                    <span class="absolute bottom-3 right-3 bg-black/70 text-white text-[11px] px-2 py-0.5 rounded font-bold backdrop-blur-sm">12:45</span>
                 </div>
                 <!-- Content -->
                 <div class="p-4">
@@ -628,11 +690,11 @@
             <!-- Video Card 2 -->
             <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant overflow-hidden group hover:-translate-y-1 hover:shadow-lg transition-all duration-300 cursor-pointer">
                 <div class="h-48 bg-surface-variant relative overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1511293714525-635c5cce022b?q=80&w=600&auto=format&fit=crop" alt="Thumbnail" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <img src="https://images.unsplash.com/photo-1511293714525-635c5cce022b?q=80&w=600&auto=format&fit=crop" alt="Thumbnail" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'w-full h-full bg-surface-variant flex items-center justify-center flex-col\'><span class=\'material-symbols-outlined text-5xl text-outline/50 mb-2\'>school</span><span class=\'text-xs text-outline/70 font-bold\'>Video no disponible</span></div>';">
                     <div class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <span class="material-symbols-outlined text-white text-5xl drop-shadow-md">play_arrow</span>
                     </div>
-                    <span class="absolute bottom-3 right-3 bg-black/70 text-white text-[11px] px-2 py-0.5 rounded font-medium backdrop-blur-sm">08:20</span>
+                    <span class="absolute bottom-3 right-3 bg-black/70 text-white text-[11px] px-2 py-0.5 rounded font-bold backdrop-blur-sm">08:20</span>
                 </div>
                 <div class="p-4">
                     <span class="text-[10px] font-bold text-primary uppercase tracking-wider mb-1 block">Módulo 2</span>
@@ -846,6 +908,14 @@
     </div>
 
 </div> <!-- End Real Content -->
+</main> <!-- End Main Container -->
+
+<!-- Footer / Aviso Legal Médico -->
+<footer class="w-full md:ml-64 bg-surface-container-low border-t border-surface-variant py-4 px-6 text-center shrink-0 relative z-10">
+    <p class="text-[11px] text-on-surface-variant max-w-4xl mx-auto leading-relaxed font-medium">
+        <strong>Aviso Legal Médico:</strong> Los servicios de bienestar epigenético no sustituyen el consejo, diagnóstico o tratamiento médico profesional. Siempre consulte a su médico antes de iniciar cualquier nuevo protocolo.
+    </p>
+</footer>
 
 <!-- FAB Support Chatbot -->
 <button id="chatbot-fab" class="fixed bottom-lg right-lg w-[56px] h-[56px] bg-primary text-white rounded-full flex items-center justify-center shadow-lg hover:-translate-y-1 hover:shadow-xl transition-all duration-300 z-50">
@@ -897,57 +967,86 @@
         const chatSendBtn = document.getElementById('chat-send-btn');
         const chatMessages = document.getElementById('chat-messages');
 
+        // Configuración de Webhook (n8n o similar)
+        const WEBHOOK_URL = 'https://tu-instancia-n8n.com/webhook/chatbot-epigenetico';
+        
         if(chatInput && chatSendBtn && chatMessages) {
+            
+            // Función auxiliar para emitir eventos
+            const dispatchChatEvent = (eventName, detail) => {
+                const event = new CustomEvent(eventName, { detail });
+                document.dispatchEvent(event);
+            };
+
             const sendMessage = async () => {
                 const message = chatInput.value.trim();
                 if(!message) return;
 
-                // Agregar mensaje del usuario a la UI
+                // 1. Mostrar mensaje del usuario
                 chatMessages.innerHTML += `
-                    <div class="bg-primary text-white p-3 rounded-lg rounded-tr-none self-end max-w-[80%] shadow-sm">
+                    <div class="bg-primary text-white p-3 rounded-lg rounded-tr-none self-end max-w-[80%] shadow-sm text-sm">
                         ${message}
                     </div>
                 `;
                 chatInput.value = '';
                 chatMessages.scrollTop = chatMessages.scrollHeight;
 
-                // Indicador de "Escribiendo..."
+                // 2. Indicador de carga
                 const loadingId = 'loading-' + Date.now();
                 chatMessages.innerHTML += `
-                    <div id="${loadingId}" class="bg-surface-variant text-on-surface p-3 rounded-lg rounded-tl-none self-start max-w-[80%] italic text-xs shadow-sm">
-                        <span class="animate-pulse">Consultando tu protocolo...</span>
+                    <div id="${loadingId}" class="bg-surface-variant text-on-surface p-3 rounded-lg rounded-tl-none self-start max-w-[80%] italic text-xs shadow-sm flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[14px] animate-spin">sync</span>
+                        <span>Procesando...</span>
                     </div>
                 `;
                 chatMessages.scrollTop = chatMessages.scrollHeight;
 
+                // Emitir evento de envío para posible analítica
+                dispatchChatEvent('chatbot:messageSent', { message, timestamp: new Date() });
+
+                // 3. Llamada Asíncrona al Webhook
                 try {
-                    const response = await fetch('http://localhost:3000/api/chat', {
+                    const response = await fetch(WEBHOOK_URL, {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ message: message, patientId: "test-user-id" })
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({ 
+                            action: "incoming_message",
+                            message: message, 
+                            patientId: "antonella-001",
+                            context: {
+                                currentPhase: "NAD+",
+                                view: document.querySelector('.view-section:not(.hidden)')?.id || 'unknown'
+                            }
+                        })
                     });
                     
                     document.getElementById(loadingId)?.remove();
                     
                     if(response.ok) {
                         const data = await response.json();
+                        // Asume que n8n devuelve { reply: "..." }
+                        const botReply = data.reply || data.output || "Mensaje recibido. Tu asistente virtual te responderá pronto.";
+                        
                         chatMessages.innerHTML += `
-                            <div class="bg-surface-variant text-on-surface p-3 rounded-lg rounded-tl-none self-start max-w-[80%] shadow-sm whitespace-pre-wrap">
-                                ${data.reply}
+                            <div class="bg-surface-container-lowest border border-surface-variant text-on-surface p-3 rounded-lg rounded-tl-none self-start max-w-[80%] shadow-sm whitespace-pre-wrap text-sm">
+                                ${botReply}
                             </div>
                         `;
+                        dispatchChatEvent('chatbot:messageReceived', { reply: botReply });
                     } else {
-                        chatMessages.innerHTML += `
-                            <div class="bg-error-container text-on-error-container p-3 rounded-lg rounded-tl-none self-start max-w-[80%] text-xs shadow-sm">
-                                ⚠️ Error: Configura tus claves de API en el backend para que la IA responda.
-                            </div>
-                        `;
+                        throw new Error("Webhook responded with status " + response.status);
                     }
-                } catch(e) {
+                } catch(error) {
+                    console.warn("Chatbot webhook not reachable, using fallback.");
                     document.getElementById(loadingId)?.remove();
+                    
+                    // Fallback visual si el webhook falla o no está configurado (modo demo)
                     chatMessages.innerHTML += `
                         <div class="bg-error-container text-on-error-container p-3 rounded-lg rounded-tl-none self-start max-w-[80%] text-xs shadow-sm">
-                            ⚠️ El "Cerebro RAG" no está conectado. Necesitas iniciar el servidor Node.js en el puerto 3000.
+                            ⚠️ Módulo de IA desconectado. Conecte este componente a su flujo de n8n o backend para habilitar respuestas dinámicas.
                         </div>
                     `;
                 }
