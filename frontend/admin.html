@@ -20,19 +20,19 @@
                     },
                     colors: {
                         primary: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            500: '#0ea5e9',
-                            600: '#0284c7', // Brand color
-                            700: '#0369a1',
-                            900: '#0c4a6e',
+                            50: '#F5F5DC',
+                            100: '#E8D8C8',
+                            500: '#CD7F32',
+                            600: '#D4AF37', // Brand color (Gold)
+                            700: '#8C5E35',
+                            900: '#4A3219',
                         },
                         clinical: {
-                            bg: '#f8fafc', // Very subtle gray/blue for background
-                            surface: '#ffffff',
-                            border: '#e2e8f0',
-                            text: '#0f172a',
-                            muted: '#64748b'
+                            bg: '#ffffff', // Blanco para el fondo
+                            surface: '#F5F5DC', // Beige para la barra lateral y tarjetas
+                            border: '#E8D8C8', // Beige Cálido
+                            text: '#8C5E35', // Bronce Profundo
+                            muted: '#CD7F32' // Bronce Clásico
                         }
                     }
                 }
@@ -62,13 +62,8 @@
     <nav class="hidden md:flex flex-col w-64 bg-clinical-surface border-r border-clinical-border fixed h-full z-40 shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
         
         <!-- Logo Area -->
-        <div class="p-6 flex items-center gap-3 border-b border-clinical-border">
-            <div class="w-10 h-10 bg-primary-50 rounded-xl flex items-center justify-center text-primary-600">
-                <span class="material-symbols-outlined text-[24px]">vital_signs</span>
-            </div>
-            <div>
-                <h1 class="font-bold text-sm tracking-tight text-clinical-text leading-tight">Antonella<br>Epigenética</h1>
-            </div>
+        <div class="pb-4 mb-4 border-b border-clinical-border flex items-center justify-center w-full p-6">
+            <img src="/Antonella_Logo_SF.png" alt="Antonella Epigenética Logo" class="h-16 w-auto object-contain drop-shadow-sm" />
         </div>
 
         <!-- Navigation Links -->
@@ -104,6 +99,14 @@
                     <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
                 </div>
                 <span class="text-sm">Bandeja Entrada</span>
+            </a>
+        </div>
+
+        <!-- Back to Dashboard -->
+        <div class="px-4 pb-4">
+            <a href="/dashboard.html" class="flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-primary-50 text-primary-700 hover:bg-primary-100 rounded-xl font-medium transition-colors text-sm border border-primary-100">
+                <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                Volver al Panel Paciente
             </a>
         </div>
 

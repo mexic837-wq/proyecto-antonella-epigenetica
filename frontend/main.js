@@ -31,6 +31,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 1500); // Simulate 1.5s network load
     }
 
+    // Sidebar Toggle Logic
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('main-content');
+
+    if (sidebarToggle && sidebar && mainContent) {
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded-main');
+        });
+    }
+
     // 0.6 Three.js DNA Animation
     const container = document.getElementById('canvas-container');
     if (container) {
@@ -424,9 +436,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (navItems.length > 0 && viewSections.length > 0) {
         navItems.forEach(item => {
             item.addEventListener('click', (e) => {
-                e.preventDefault();
                 const targetId = item.getAttribute('data-target');
                 if (!targetId) return;
+                e.preventDefault();
 
                 // Update active state on nav items
                 navItems.forEach(nav => nav.classList.remove('active', 'bg-primary-container', 'text-on-primary-container'));
@@ -512,4 +524,93 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     }
+    // 8. Prevent Google Translate from breaking Material Icons
+    document.querySelectorAll('.material-symbols-outlined').forEach(icon => {
+        icon.classList.add('notranslate');
+        icon.setAttribute('translate', 'no');
+    });
+
+    // 9. Custom Native i18n Translation System
+    const i18nDictionary = {
+        'es': {
+            'nav_plan': 'Mi Plan',
+            'nav_appointments': 'Mis Citas',
+            'nav_evaluations': 'Evaluaciones',
+            'nav_education': 'Educación',
+            'nav_messages': 'Mensajes',
+            'nav_profile': 'Mi Perfil',
+            'nav_personal_data': 'Datos Personales',
+            'nav_medical_history': 'Historial Médico',
+            'nav_billing': 'Facturación',
+            'nav_settings': 'Ajustes',
+            'nav_admin': 'Ir a Panel Admin',
+            'nav_logout': 'Cerrar Sesión',
+            'settings_lang_desc': 'Selecciona tu idioma preferido para la plataforma.'
+        },
+        'en': {
+            'nav_plan': 'My Plan',
+            'nav_appointments': 'My Appointments',
+            'nav_evaluations': 'Evaluations',
+            'nav_education': 'Education',
+            'nav_messages': 'Messages',
+            'nav_profile': 'My Profile',
+            'nav_personal_data': 'Personal Data',
+            'nav_medical_history': 'Medical History',
+            'nav_billing': 'Billing',
+            'nav_settings': 'Settings',
+            'nav_admin': 'Go to Admin Panel',
+            'nav_logout': 'Logout',
+            'settings_lang_desc': 'Select your preferred language for the platform.'
+        }
+    };
+
+    function applyTranslations(lang) {
+        if (!i18nDictionary[lang]) return;
+        const elements = document.querySelectorAll('[data-i18n]');
+        elements.forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (i18nDictionary[lang][key]) {
+                el.innerText = i18nDictionary[lang][key];
+            }
+        });
+        localStorage.setItem('preferred_lang', lang);
+    }
+
+    const langSelect = document.getElementById('language-select');
+    if (langSelect) {
+        // Initialize
+        const savedLang = localStorage.getItem('preferred_lang') || 'es';
+        langSelect.value = savedLang;
+        applyTranslations(savedLang);
+
+        // On change
+        langSelect.addEventListener('change', (e) => {
+            applyTranslations(e.target.value);
+        });
+    }
+
+    // 10. Dark Mode Toggle Logic
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+    if (darkModeToggle) {
+        // Initialize state from localStorage or system preference
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            darkModeToggle.checked = true;
+        } else {
+            document.documentElement.classList.remove('dark');
+            darkModeToggle.checked = false;
+        }
+
+        // Toggle event listener
+        darkModeToggle.addEventListener('change', () => {
+            if (darkModeToggle.checked) {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+    }
+
 });
