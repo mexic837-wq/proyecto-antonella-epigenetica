@@ -70,8 +70,13 @@
         <div class="flex-1 overflow-y-auto py-6 px-4 flex flex-col gap-1">
             <p class="text-[10px] font-bold uppercase tracking-wider text-clinical-muted mb-2 px-3">Gestión General</p>
             
-            <a href="#" class="admin-nav-item active flex items-center gap-3 px-3 py-2.5 rounded-xl bg-primary-50 text-primary-700 font-medium transition-all duration-200" data-target="admin-usuarios">
-                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">group</span>
+            <a href="#" class="admin-nav-item active flex items-center gap-3 px-3 py-2.5 rounded-xl bg-primary-50 text-primary-700 font-medium transition-all duration-200" data-target="admin-dashboard">
+                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+                <span class="text-sm">Dashboard General</span>
+            </a>
+            
+            <a href="#" class="admin-nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-clinical-muted hover:bg-slate-50 hover:text-clinical-text font-medium transition-all duration-200" data-target="admin-usuarios">
+                <span class="material-symbols-outlined text-[20px]">group</span>
                 <span class="text-sm">Pacientes & Staff</span>
             </a>
             
@@ -99,6 +104,11 @@
                     <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
                 </div>
                 <span class="text-sm">Bandeja Entrada</span>
+            </a>
+
+            <a href="#" class="admin-nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-clinical-muted hover:bg-slate-50 hover:text-clinical-text font-medium transition-all duration-200" data-target="admin-promociones">
+                <span class="material-symbols-outlined text-[20px]">local_offer</span>
+                <span class="text-sm">Promociones</span>
             </a>
         </div>
 
@@ -131,9 +141,62 @@
     <main class="flex-1 md:ml-64 p-6 lg:p-10 max-w-7xl mx-auto w-full">
         
         <!-- ============================================== -->
+        <!-- VISTA: DASHBOARD GENERAL                       -->
+        <!-- ============================================== -->
+        <div id="admin-dashboard" class="admin-view-section">
+            <header class="mb-8">
+                <h2 class="text-2xl font-bold tracking-tight text-clinical-text">Resumen de la Clínica</h2>
+                <p class="text-sm text-clinical-muted mt-1">Monitoreo general de pacientes y resultados.</p>
+            </header>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- KPI 1 -->
+                <div class="bg-clinical-surface border border-clinical-border p-6 rounded-2xl shadow-sm flex items-center gap-4">
+                    <div class="w-12 h-12 bg-primary-50 text-primary-600 rounded-xl flex items-center justify-center">
+                        <span class="material-symbols-outlined text-2xl">group</span>
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-clinical-muted">Pacientes Activos</p>
+                        <p class="text-2xl font-bold text-clinical-text">1,245</p>
+                    </div>
+                </div>
+                <!-- KPI Ingresos -->
+                <div class="bg-clinical-surface border border-clinical-border p-6 rounded-2xl shadow-sm flex items-center gap-4">
+                    <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center">
+                        <span class="material-symbols-outlined text-2xl">payments</span>
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-clinical-muted">Ingresos (Suscrip.)</p>
+                        <p class="text-2xl font-bold text-clinical-text">$24.5K</p>
+                    </div>
+                </div>
+                <!-- KPI 2 -->
+                <div class="bg-clinical-surface border border-clinical-border p-6 rounded-2xl shadow-sm flex items-center gap-4">
+                    <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center">
+                        <span class="material-symbols-outlined text-2xl">event_available</span>
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-clinical-muted">Citas de Hoy</p>
+                        <p class="text-2xl font-bold text-clinical-text">8</p>
+                    </div>
+                </div>
+                <!-- KPI 3 -->
+                <div class="bg-clinical-surface border border-clinical-border p-6 rounded-2xl shadow-sm flex items-center gap-4">
+                    <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center">
+                        <span class="material-symbols-outlined text-2xl">assignment_late</span>
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-clinical-muted">Reportes Pendientes</p>
+                        <p class="text-2xl font-bold text-clinical-text">12</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
         <!-- VISTA: PACIENTES Y STAFF                       -->
         <!-- ============================================== -->
-        <div id="admin-usuarios" class="admin-view-section">
+        <div id="admin-usuarios" class="admin-view-section hidden">
             <header class="flex justify-between items-center mb-8">
                 <div>
                     <h2 class="text-2xl font-bold tracking-tight text-clinical-text">Pacientes & Staff</h2>
@@ -164,9 +227,9 @@
                     <table class="w-full text-left text-sm">
                         <thead class="bg-slate-50/50 text-clinical-muted font-medium border-b border-clinical-border">
                             <tr>
-                                <th class="px-6 py-4 font-medium">Perfil</th>
-                                <th class="px-6 py-4 font-medium">Rol</th>
-                                <th class="px-6 py-4 font-medium">Fase Protocolo</th>
+                                <th class="px-6 py-4 font-medium">Nombre del paciente</th>
+                                <th class="px-6 py-4 font-medium">Fase actual del protocolo</th>
+                                <th class="px-6 py-4 font-medium">Estado del reporte</th>
                                 <th class="px-6 py-4 font-medium text-right">Acciones</th>
                             </tr>
                         </thead>
@@ -182,45 +245,50 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200/60">
-                                        Paciente
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4">
                                     <div class="flex items-center gap-2">
                                         <div class="w-full bg-slate-100 rounded-full h-1.5 max-w-[100px]">
                                             <div class="bg-emerald-500 h-1.5 rounded-full" style="width: 50%"></div>
                                         </div>
-                                        <span class="text-xs font-medium text-clinical-text">Día 45</span>
+                                        <span class="text-xs font-medium text-clinical-text">Fase 2 (Día 45)</span>
                                     </div>
                                 </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200/60">
+                                        Pendiente de Análisis
+                                    </span>
+                                </td>
                                 <td class="px-6 py-4 text-right">
-                                    <button class="text-clinical-muted hover:text-primary-600 transition-colors p-2 hover:bg-primary-50 rounded-lg">
-                                        <span class="material-symbols-outlined text-[20px]">edit</span>
+                                    <button class="bg-white border border-clinical-border text-clinical-text hover:bg-slate-50 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors shadow-sm" onclick="document.querySelectorAll('.admin-view-section').forEach(el => el.classList.add('hidden')); document.getElementById('admin-perfil-paciente').classList.remove('hidden');">
+                                        Ver Perfil
                                     </button>
                                 </td>
                             </tr>
                             <tr class="hover:bg-slate-50/50 transition-colors group">
                                 <td class="px-6 py-4">
                                     <div class="flex items-center gap-3">
-                                        <img src="https://ui-avatars.com/api/?name=Dra+Lopez&background=e0f2fe&color=0369a1" class="w-10 h-10 rounded-full border border-clinical-border">
+                                        <img src="https://ui-avatars.com/api/?name=Carlos+J&background=e0f2fe&color=0369a1" class="w-10 h-10 rounded-full border border-clinical-border">
                                         <div>
-                                            <p class="font-semibold text-clinical-text">Dra. Mónica López</p>
-                                            <p class="text-xs text-clinical-muted mt-0.5">monica@antonella.com</p>
+                                            <p class="font-semibold text-clinical-text">Carlos J.</p>
+                                            <p class="text-xs text-clinical-muted mt-0.5">carlos@ejemplo.com</p>
                                         </div>
                                     </div>
                                 </td>
+                                <td class="px-6 py-4 text-clinical-text text-sm">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-full bg-slate-100 rounded-full h-1.5 max-w-[100px]">
+                                            <div class="bg-primary-500 h-1.5 rounded-full" style="width: 100%"></div>
+                                        </div>
+                                        <span class="text-xs font-medium text-clinical-text">Completado</span>
+                                    </div>
+                                </td>
                                 <td class="px-6 py-4">
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-primary-50 text-primary-700 border border-primary-200/60">
-                                        Staff Médico
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200/60">
+                                        Reporte Entregado
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 text-clinical-muted text-xs">
-                                    N/A
-                                </td>
                                 <td class="px-6 py-4 text-right">
-                                    <button class="text-clinical-muted hover:text-primary-600 transition-colors p-2 hover:bg-primary-50 rounded-lg">
-                                        <span class="material-symbols-outlined text-[20px]">edit</span>
+                                    <button class="bg-white border border-clinical-border text-clinical-text hover:bg-slate-50 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors shadow-sm" onclick="document.querySelectorAll('.admin-view-section').forEach(el => el.classList.add('hidden')); document.getElementById('admin-perfil-paciente').classList.remove('hidden');">
+                                        Ver Perfil
                                     </button>
                                 </td>
                             </tr>
@@ -239,23 +307,36 @@
                 <p class="text-sm text-clinical-muted mt-1">Sube los PDFs biomarcadores para que la IA extraiga los datos al dashboard del paciente.</p>
             </header>
 
-            <div class="bg-clinical-surface border-2 border-dashed border-slate-300 rounded-3xl p-12 flex flex-col items-center justify-center text-center transition-colors hover:border-primary-400 hover:bg-primary-50/50 group">
-                <div class="w-16 h-16 bg-primary-50 text-primary-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+            <div class="bg-clinical-surface border-2 border-dashed border-slate-300 rounded-3xl p-12 flex flex-col items-center justify-center text-center transition-colors hover:border-primary-400 hover:bg-primary-50/50 group cursor-pointer relative overflow-hidden" onclick="document.getElementById('pdf-upload').click()" id="dropzone">
+                <input type="file" id="pdf-upload" class="hidden" accept=".pdf,.jpg,.png" onchange="handleFileSelect(event)">
+                <div class="w-16 h-16 bg-primary-50 text-primary-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300" id="drop-icon">
                     <span class="material-symbols-outlined text-[32px]">cloud_upload</span>
                 </div>
-                <h3 class="text-lg font-semibold text-clinical-text mb-2">Arrastra el archivo PDF aquí</h3>
-                <p class="text-sm text-clinical-muted mb-8 max-w-sm">Soportado: PDF, JPG, PNG (Max 10MB). El archivo será procesado por el motor de extracción.</p>
+                <h3 class="text-lg font-semibold text-clinical-text mb-2" id="drop-text">Arrastra el archivo PDF aquí o haz clic</h3>
+                <p class="text-sm text-clinical-muted mb-8 max-w-sm" id="drop-subtext">Soportado: PDF, JPG, PNG (Max 10MB). El archivo será procesado por el motor de extracción.</p>
                 
-                <div class="flex flex-col sm:flex-row gap-3 w-full max-w-md">
+                <div class="flex flex-col sm:flex-row gap-3 w-full max-w-md" onclick="event.stopPropagation()">
                     <select class="flex-1 px-4 py-2.5 bg-white border border-clinical-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 shadow-sm text-clinical-text">
                         <option value="" disabled selected>Asignar a paciente...</option>
                         <option>Antonella D. (ID: 1042)</option>
                     </select>
-                    <button class="bg-clinical-text text-white hover:bg-black px-6 py-2.5 rounded-xl text-sm font-medium transition-all shadow-sm">
-                        Examinar
+                    <button class="bg-clinical-text text-white hover:bg-black px-6 py-2.5 rounded-xl text-sm font-medium transition-all shadow-sm" onclick="alert('Simulando subida de archivo...')">
+                        Subir Archivo
                     </button>
                 </div>
             </div>
+
+            <script>
+                function handleFileSelect(event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        document.getElementById('drop-text').innerText = file.name;
+                        document.getElementById('drop-subtext').innerText = 'Listo para subir (' + (file.size / 1024 / 1024).toFixed(2) + ' MB)';
+                        document.getElementById('drop-icon').innerHTML = '<span class="material-symbols-outlined text-[32px]">description</span>';
+                        document.getElementById('dropzone').classList.add('border-primary-500', 'bg-primary-50/30');
+                    }
+                }
+            </script>
 
             <!-- Recent Uploads List -->
             <h4 class="font-semibold text-clinical-text mt-10 mb-4">Subidas Recientes</h4>
@@ -440,13 +521,25 @@
                     </div>
 
                     <!-- Input Area -->
-                    <div class="p-4 border-t border-clinical-border bg-white">
+                    <div class="p-4 border-t border-clinical-border bg-white flex flex-col gap-3">
+                        
+                        <!-- Plantillas por Diagnóstico -->
+                        <div class="flex items-center justify-between">
+                            <label class="text-xs font-bold text-clinical-muted uppercase tracking-wider">Plantillas por Diagnóstico</label>
+                            <select class="text-sm bg-slate-50 border border-clinical-border rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 text-clinical-text cursor-pointer" onchange="const textarea = document.getElementById('crm-textarea'); if(this.value) { textarea.value = this.value; textarea.focus(); }">
+                                <option value="" selected>Seleccionar plantilla...</option>
+                                <option value="Hola [Nombre], observando los últimos reportes del protocolo de tu pequeño, he notado mejoras en los niveles de energía. Sugiero mantener la dosificación de NAD+.">Seguimiento General (TEA)</option>
+                                <option value="Hola [Nombre], es momento de agendar nuestra revisión mensual para ajustar las dosis del suplemento.">Recordatorio Cita (TDAH)</option>
+                                <option value="Hola [Nombre], hemos recibido los resultados del último test de microbiota. Hay algunas inflamaciones que debemos abordar con probióticos.">Resultados Listos (Selectividad)</option>
+                            </select>
+                        </div>
+
                         <div class="flex items-end gap-2 bg-slate-50 border border-clinical-border rounded-2xl p-2 focus-within:ring-2 focus-within:ring-primary-500/20 focus-within:border-primary-500 transition-all">
                             <button class="p-2 text-clinical-muted hover:text-primary-600 transition-colors rounded-xl shrink-0">
                                 <span class="material-symbols-outlined">attach_file</span>
                             </button>
-                            <textarea placeholder="Escribe tu respuesta médica..." rows="1" class="flex-1 bg-transparent border-none resize-none focus:ring-0 text-sm py-2 max-h-32 min-h-[40px]"></textarea>
-                            <button class="bg-primary-600 hover:bg-primary-700 text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-sm shrink-0 transition-colors">
+                            <textarea id="crm-textarea" placeholder="Escribe tu respuesta médica..." rows="1" class="flex-1 bg-transparent border-none resize-none focus:ring-0 text-sm py-2 max-h-32 min-h-[40px]"></textarea>
+                            <button class="bg-primary-600 hover:bg-primary-700 text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-sm shrink-0 transition-colors" onclick="const textarea = document.getElementById('crm-textarea'); if(textarea.value) { alert('Mensaje enviado (Simulado)'); textarea.value = ''; }">
                                 <span class="material-symbols-outlined text-[20px] ml-1">send</span>
                             </button>
                         </div>
@@ -464,11 +557,40 @@
                     <h2 class="text-2xl font-bold tracking-tight text-clinical-text">Gestor de Educación</h2>
                     <p class="text-sm text-clinical-muted mt-1">Administra el contenido de la Academia Epigenética.</p>
                 </div>
-                <button class="bg-clinical-text text-white hover:bg-black px-4 py-2.5 rounded-lg text-sm font-medium transition-all shadow-sm flex items-center gap-2">
-                    <span class="material-symbols-outlined text-[18px]">add</span>
-                    Subir Contenido
-                </button>
             </header>
+
+            <!-- Formulario Añadir Clase -->
+            <div class="bg-clinical-surface border border-clinical-border rounded-2xl p-6 shadow-sm mb-8">
+                <h3 class="font-semibold text-clinical-text mb-4 text-lg">Añadir Nueva Clase</h3>
+                <form class="grid grid-cols-1 md:grid-cols-2 gap-4" onsubmit="event.preventDefault(); alert('Clase añadida exitosamente.');">
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-clinical-text mb-1">Título de la Clase</label>
+                        <input type="text" placeholder="Ej: Importancia del Sueño" class="w-full p-2.5 bg-white border border-clinical-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 text-clinical-text" required>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-clinical-text mb-1">Descripción</label>
+                        <textarea rows="2" placeholder="Breve descripción del contenido..." class="w-full p-2.5 bg-white border border-clinical-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 text-clinical-text" required></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-clinical-text mb-1">URL del Video</label>
+                        <input type="url" placeholder="https://vimeo.com/..." class="w-full p-2.5 bg-white border border-clinical-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 text-clinical-text" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-clinical-text mb-1">Módulo</label>
+                        <select class="w-full p-2.5 bg-white border border-clinical-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 text-clinical-text" required>
+                            <option value="" disabled selected>Selecciona un módulo...</option>
+                            <option>Módulo 1: Fundamentos Epigenéticos</option>
+                            <option>Módulo 2: Nutrición Celular</option>
+                            <option>Módulo 3: Optimización del Sueño</option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-2 flex justify-end mt-2">
+                        <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white px-6 py-2.5 rounded-xl text-sm font-medium transition-colors shadow-sm flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[18px]">publish</span> Publicar Clase
+                        </button>
+                    </div>
+                </form>
+            </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Content Card 1 -->
@@ -504,6 +626,203 @@
                         </div>
                         <h3 class="font-bold text-clinical-text text-sm mb-1 leading-tight">Recetario Antiinflamatorio</h3>
                         <p class="text-xs text-clinical-muted">Pendiente de revisión médica final.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- VISTA: PERFIL PACIENTE (PEDIÁTRICO)            -->
+        <!-- ============================================== -->
+        <div id="admin-perfil-paciente" class="admin-view-section hidden">
+            <header class="flex justify-between items-center mb-8">
+                <div class="flex items-center gap-4">
+                    <button class="w-10 h-10 bg-slate-50 border border-clinical-border rounded-xl flex items-center justify-center hover:bg-slate-100 transition-colors" onclick="document.querySelectorAll('.admin-view-section').forEach(el => el.classList.add('hidden')); document.getElementById('admin-usuarios').classList.remove('hidden');">
+                        <span class="material-symbols-outlined text-[20px] text-clinical-muted">arrow_back</span>
+                    </button>
+                    <div>
+                        <h2 class="text-2xl font-bold tracking-tight text-clinical-text flex items-center gap-3">
+                            Antonella D. 
+                            <span class="px-2 py-0.5 bg-primary-50 text-primary-700 text-xs rounded-full border border-primary-200">ID: 1042</span>
+                        </h2>
+                        <p class="text-sm text-clinical-muted mt-1">Expediente Pediátrico Activo</p>
+                    </div>
+                </div>
+                <button class="bg-clinical-text text-white hover:bg-black px-4 py-2.5 rounded-lg text-sm font-medium transition-all shadow-sm flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[18px]">edit_note</span>
+                    Editar Historia Clínica
+                </button>
+            </header>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Panel Principal: Triaje y Bio -->
+                <div class="lg:col-span-2 flex flex-col gap-6">
+                    <div class="bg-clinical-surface border border-clinical-border rounded-2xl p-6 shadow-sm relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-amber-50 rounded-bl-full -z-0"></div>
+                        <h3 class="font-bold text-clinical-text mb-4 text-lg relative z-10 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-amber-600">health_and_safety</span> Triaje Inicial Pediátrico
+                        </h3>
+                        
+                        <div class="grid grid-cols-2 gap-4 relative z-10">
+                            <div class="bg-slate-50 border border-clinical-border p-4 rounded-xl">
+                                <p class="text-[11px] font-bold uppercase tracking-wider text-clinical-muted mb-1">Edad Actual</p>
+                                <p class="font-bold text-clinical-text text-lg">4 Años, 2 Meses</p>
+                            </div>
+                            <div class="bg-slate-50 border border-clinical-border p-4 rounded-xl border-l-4 border-l-primary-500">
+                                <p class="text-[11px] font-bold uppercase tracking-wider text-clinical-muted mb-1">Diagnóstico Principal</p>
+                                <p class="font-bold text-primary-700 text-lg">Trastorno del Espectro Autista (TEA)</p>
+                            </div>
+                            <div class="bg-slate-50 border border-clinical-border p-4 rounded-xl">
+                                <p class="text-[11px] font-bold uppercase tracking-wider text-clinical-muted mb-1">Tiempo de Evolución Sintomatológica</p>
+                                <p class="font-bold text-clinical-text text-lg">1 Año, 8 Meses</p>
+                            </div>
+                            <div class="bg-slate-50 border border-clinical-border p-4 rounded-xl border-l-4 border-l-red-500">
+                                <p class="text-[11px] font-bold uppercase tracking-wider text-clinical-muted mb-1">Observaciones de Vacunas</p>
+                                <p class="font-bold text-red-700 text-sm leading-tight mt-1">Reacción adversa reportada post-vacunación a los 18 meses (Pico febril, regresión del habla).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panel Lateral: Estado de Protocolo -->
+                <div class="flex flex-col gap-6">
+                    <div class="bg-clinical-surface border border-clinical-border rounded-2xl p-6 shadow-sm">
+                        <h3 class="font-bold text-clinical-text mb-4">Estado del Protocolo</h3>
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xl border border-emerald-200">
+                                45
+                            </div>
+                            <div>
+                                <p class="font-bold text-clinical-text">Fase 2 (Días 30-60)</p>
+                                <p class="text-xs text-clinical-muted mt-0.5">Suplementación y Enzimas</p>
+                            </div>
+                        </div>
+                        <div class="w-full bg-slate-100 rounded-full h-2 mb-2">
+                            <div class="bg-emerald-500 h-2 rounded-full" style="width: 50%"></div>
+                        </div>
+                        <p class="text-xs text-right font-medium text-emerald-700">50% Completado</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- VISTA: PROMOCIONES Y REFERIDOS                 -->
+        <!-- ============================================== -->
+        <div id="admin-promociones" class="admin-view-section hidden">
+            <header class="flex justify-between items-center mb-8">
+                <div>
+                    <h2 class="text-2xl font-bold tracking-tight text-clinical-text">Promociones y Referidos</h2>
+                    <p class="text-sm text-clinical-muted mt-1">Gestiona descuentos, códigos promocionales y el programa de invitados.</p>
+                </div>
+            </header>
+
+            <!-- KPIs -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                <div class="bg-clinical-surface border border-clinical-border rounded-xl p-5 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-bold text-clinical-muted uppercase tracking-wider mb-1">Códigos Activos</p>
+                        <p class="text-2xl font-black text-clinical-text">14</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                        <span class="material-symbols-outlined">local_offer</span>
+                    </div>
+                </div>
+                <div class="bg-clinical-surface border border-clinical-border rounded-xl p-5 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-bold text-clinical-muted uppercase tracking-wider mb-1">Total Descuentos (Mes)</p>
+                        <p class="text-2xl font-black text-clinical-text">$1,250</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
+                        <span class="material-symbols-outlined">savings</span>
+                    </div>
+                </div>
+                <div class="bg-clinical-surface border border-clinical-border rounded-xl p-5 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-bold text-clinical-muted uppercase tracking-wider mb-1">Top Referidos</p>
+                        <p class="text-sm font-bold text-clinical-text mt-1">Antonella D.</p>
+                        <p class="text-xs text-primary-600">3 amigos invitados</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center">
+                        <span class="material-symbols-outlined">workspace_premium</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Generador de Cupones -->
+                <div class="lg:col-span-1">
+                    <div class="bg-clinical-surface border border-clinical-border rounded-2xl p-6 shadow-sm">
+                        <h3 class="font-bold text-clinical-text mb-4">Generar Cupón</h3>
+                        <form onsubmit="event.preventDefault(); alert('Cupón creado exitosamente.');">
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-clinical-muted uppercase tracking-wider mb-1">Nombre / Código</label>
+                                    <input type="text" placeholder="Ej. VERANO26" class="w-full bg-slate-50 border border-clinical-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary-500" required>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-clinical-muted uppercase tracking-wider mb-1">% de Descuento</label>
+                                    <input type="number" placeholder="Ej. 15" class="w-full bg-slate-50 border border-clinical-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary-500" required>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-clinical-muted uppercase tracking-wider mb-1">Expiración</label>
+                                    <input type="date" class="w-full bg-slate-50 border border-clinical-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary-500" required>
+                                </div>
+                                <button type="submit" class="w-full mt-2 py-2 bg-clinical-text text-white font-bold text-sm rounded-lg hover:bg-black transition-colors shadow-sm">
+                                    Crear Descuento
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Tabla de Gestión -->
+                <div class="lg:col-span-2">
+                    <div class="bg-clinical-surface border border-clinical-border rounded-2xl shadow-sm overflow-hidden">
+                        <div class="px-6 py-4 border-b border-clinical-border flex justify-between items-center bg-slate-50/50">
+                            <h3 class="font-bold text-clinical-text">Códigos Activos</h3>
+                            <div class="relative">
+                                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-clinical-muted text-[16px]">search</span>
+                                <input type="text" placeholder="Buscar cupón..." class="pl-9 pr-3 py-1.5 bg-white border border-clinical-border rounded-lg text-sm focus:outline-none focus:border-primary-500 w-48">
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-50 border-b border-clinical-border">
+                                        <th class="px-6 py-3 text-[10px] font-bold text-clinical-muted uppercase tracking-wider">Código</th>
+                                        <th class="px-6 py-3 text-[10px] font-bold text-clinical-muted uppercase tracking-wider">Creador</th>
+                                        <th class="px-6 py-3 text-[10px] font-bold text-clinical-muted uppercase tracking-wider">Descuento</th>
+                                        <th class="px-6 py-3 text-[10px] font-bold text-clinical-muted uppercase tracking-wider">Usos</th>
+                                        <th class="px-6 py-3 text-[10px] font-bold text-clinical-muted uppercase tracking-wider text-right">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-clinical-border">
+                                    <tr class="hover:bg-slate-50/50 transition-colors group">
+                                        <td class="px-6 py-3">
+                                            <span class="font-mono font-bold text-primary-700 bg-primary-50 px-2 py-0.5 rounded border border-primary-100 text-xs">ANTO-AD2026</span>
+                                        </td>
+                                        <td class="px-6 py-3 text-sm text-clinical-text font-medium">Antonella D. (Paciente)</td>
+                                        <td class="px-6 py-3 text-sm text-clinical-muted">15%</td>
+                                        <td class="px-6 py-3 text-sm text-clinical-text font-bold">3</td>
+                                        <td class="px-6 py-3 text-right">
+                                            <button class="text-xs font-bold text-red-600 hover:text-red-800 transition-colors" onclick="this.innerText='Desactivado'; this.classList.add('opacity-50');">Desactivar</button>
+                                        </td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50/50 transition-colors group">
+                                        <td class="px-6 py-3">
+                                            <span class="font-mono font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded border border-slate-200 text-xs">VERANO26</span>
+                                        </td>
+                                        <td class="px-6 py-3 text-sm text-clinical-text font-medium">Admin Clínico</td>
+                                        <td class="px-6 py-3 text-sm text-clinical-muted">20%</td>
+                                        <td class="px-6 py-3 text-sm text-clinical-text font-bold">12</td>
+                                        <td class="px-6 py-3 text-right">
+                                            <button class="text-xs font-bold text-red-600 hover:text-red-800 transition-colors" onclick="this.innerText='Desactivado'; this.classList.add('opacity-50');">Desactivar</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
