@@ -187,14 +187,14 @@
 </head>
 <body class="page-transition bg-background text-on-background font-body-md min-h-screen flex">
 <!-- SideNavBar (Shared Component) -->
-<nav id="sidebar" class="hidden md:flex flex-col h-screen p-md gap-sm border-r border-outline-variant bg-surface-container-low dark:bg-surface-container-lowest w-64 fixed left-0 top-0 z-40 transition-transform">
+<nav id="sidebar" class="hidden md:flex flex-col h-screen p-md gap-sm border-r border-outline-variant bg-surface-container-low dark:bg-surface-container-lowest w-64 fixed left-0 top-0 z-40 transition-all duration-300 ease-in-out">
 <button id="sidebar-toggle" class="sidebar-toggle-btn">
     <span class="material-symbols-outlined">chevron_left</span>
 </button>
-<div class="pb-md mb-md border-b border-outline-variant flex items-center justify-center w-full">
+<div class="pb-md mb-md border-b border-outline-variant flex items-center justify-center w-full h-16 box-content">
 <img src="/Antonella_Logo_SF.png" alt="Antonella Epigenética Logo" class="nav-logo h-16 w-auto object-contain drop-shadow-sm transition-all" />
-<div class="nav-logo-collapsed w-10 h-10 overflow-hidden flex items-center justify-center rounded-full hover:scale-110 transition-transform duration-500 ease-in-out cursor-pointer">
-    <img src="/Antonella_Logo_SF.png" alt="Mariposa Logo" class="w-full h-[250%] object-cover object-top scale-150 translate-y-2 drop-shadow-sm" />
+<div class="nav-logo-collapsed w-14 h-14 flex items-center justify-center translate-x-1 hover:scale-105 transition-transform duration-500 ease-in-out cursor-pointer">
+    <img src="/antonella_logo_pequeno.png" alt="Mariposa Logo" class="w-full h-full object-contain drop-shadow-sm scale-110" />
 </div>
 </div>
 <div class="user-profile-container flex items-center gap-md mb-lg p-sm rounded-lg hover:bg-surface-variant/50 transition-colors cursor-pointer overflow-hidden">
@@ -242,9 +242,9 @@
     </button>
     <!-- Sub-menu -->
     <div id="perfil-submenu" class="flex flex-col gap-xs ml-10 mt-1 hidden overflow-hidden">
-        <a href="#" class="p-xs text-sm text-on-surface-variant hover:text-primary transition-colors" data-i18n="nav_personal_data">Datos Personales</a>
-        <a href="#" class="p-xs text-sm text-on-surface-variant hover:text-primary transition-colors" data-i18n="nav_medical_history">Historial Médico</a>
-        <a href="#" class="p-xs text-sm text-on-surface-variant hover:text-primary transition-colors" data-i18n="nav_billing">Facturación</a>
+        <a href="#" class="nav-item p-xs text-sm text-on-surface-variant hover:text-primary transition-colors" data-target="view-datos-personales" data-i18n="nav_personal_data">Datos Personales</a>
+        <a href="#" class="nav-item p-xs text-sm text-on-surface-variant hover:text-primary transition-colors" data-target="view-historial-medico" data-i18n="nav_medical_history">Historial Médico</a>
+        <a href="#" class="nav-item p-xs text-sm text-on-surface-variant hover:text-primary transition-colors" data-target="view-facturacion" data-i18n="nav_billing">Facturación</a>
         <a href="#" class="nav-item p-xs text-sm text-on-surface-variant hover:text-primary transition-colors" data-target="view-ajustes" data-i18n="nav_settings">Ajustes</a>
     </div>
 </div>
@@ -320,15 +320,14 @@
                 </div>
             </div>
 
-            <!-- Notificaciones -->
-            <div class="bg-surface-container-lowest rounded-xl p-md shadow-sm border border-surface-variant flex items-center gap-4 hover:shadow-md transition-shadow cursor-pointer">
-                <div class="w-12 h-12 rounded-full bg-error-container flex items-center justify-center text-on-error-container shrink-0 relative">
-                    <span class="material-symbols-outlined">notifications_active</span>
-                    <span class="absolute top-0 right-0 w-3 h-3 bg-error rounded-full border-2 border-surface-container-lowest"></span>
+            <!-- Notificaciones (Empty State) -->
+            <div class="bg-surface-container-lowest rounded-xl p-md shadow-sm border border-surface-variant flex items-center gap-4 hover:shadow-md transition-shadow cursor-default group">
+                <div class="w-12 h-12 rounded-full bg-surface-variant flex items-center justify-center text-outline-variant shrink-0 group-hover:bg-primary-container group-hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined">notifications_off</span>
                 </div>
                 <div>
                     <p class="font-label-md text-on-surface-variant uppercase tracking-wider">Notificaciones</p>
-                    <p class="font-body-md text-on-surface leading-tight">Tienes <span class="font-bold">1</span> nuevo test epigenético listo para revisión.</p>
+                    <p class="font-body-md text-on-surface-variant/70 leading-tight italic text-sm">No hay notificaciones nuevas</p>
                 </div>
             </div>
         </div>
@@ -363,7 +362,9 @@
                             <h4 class="font-bold text-primary">Fase 2: Suplementación NAD+ (Actual)</h4>
                             <p class="text-sm text-on-surface-variant mt-1">Tomar 1 cápsula en ayunas. Enfocado en reactivar vías metabólicas letárgicas.</p>
                             <div class="mt-3 flex gap-2">
-                                <button class="px-3 py-1 bg-primary text-white text-xs font-bold rounded-full hover:bg-secondary transition-colors">Marcar de hoy</button>
+                                <button id="btn-marcar-hoy" class="px-3 py-1 bg-primary text-white text-xs font-bold rounded-full hover:bg-secondary transition-colors flex items-center gap-1" onclick="marcarHoy()">
+                                    Marcar de hoy
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -380,9 +381,29 @@
                 </div>
             </section>
 
-            <!-- Formularios de Seguimiento (5 cols) -->
+            <!-- Sidebar Widgets (5 cols) -->
             <section class="xl:col-span-4 flex flex-col gap-md">
-                <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant p-lg">
+                
+                <!-- Video Instructivo Card -->
+                <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant p-lg relative overflow-hidden group cursor-pointer" onclick="document.getElementById('video-modal').classList.remove('hidden')">
+                    <!-- Overlay Play Button -->
+                    <div class="absolute inset-0 bg-black/20 flex items-center justify-center z-10 group-hover:bg-black/30 transition-colors">
+                        <div class="w-12 h-12 bg-white/90 text-primary rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined text-2xl ml-1">play_arrow</span>
+                        </div>
+                    </div>
+                    <!-- Thumbnail Background -->
+                    <div class="absolute inset-0 bg-cover bg-center opacity-40 group-hover:opacity-50 transition-opacity" style="background-image: url('https://images.unsplash.com/photo-1581093458791-9f3c3900df4b?q=80&w=400&auto=format&fit=crop');"></div>
+                    
+                    <div class="relative z-20">
+                        <span class="px-2 py-1 bg-primary text-white text-[10px] font-bold uppercase rounded-md shadow-sm mb-3 inline-block">Tutorial</span>
+                        <h3 class="font-headline-md font-bold text-on-surface mb-2 dark:text-white">Recolección de Muestra Capilar</h3>
+                        <p class="text-sm text-on-surface-variant dark:text-gray-200">Aprende paso a paso cómo tomar la muestra en casa de forma correcta para el análisis epigenético.</p>
+                    </div>
+                </div>
+
+                <!-- Formularios de Seguimiento -->
+                <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant p-lg mt-4">
                     <div class="w-12 h-12 bg-tertiary-container text-on-tertiary-container rounded-full flex items-center justify-center mb-4">
                         <span class="material-symbols-outlined">assignment</span>
                     </div>
@@ -396,6 +417,44 @@
         </div>
     </div>
     
+    <!-- Video Modal -->
+    <div id="video-modal" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="document.getElementById('video-modal').classList.add('hidden')"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl px-4">
+            <div class="bg-surface rounded-2xl overflow-hidden shadow-2xl">
+                <div class="flex justify-between items-center p-4 border-b border-outline-variant bg-surface-container-lowest">
+                    <h3 class="font-bold text-on-surface flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">play_circle</span>
+                        Tutorial de Recolección Capilar
+                    </h3>
+                    <button onclick="document.getElementById('video-modal').classList.add('hidden')" class="text-on-surface-variant hover:text-error transition-colors">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <!-- Aspect Ratio Container for Video -->
+                <div class="relative w-full aspect-video bg-black flex items-center justify-center">
+                    <!-- Simulador de Reproductor -->
+                    <div class="absolute inset-0 flex flex-col items-center justify-center text-white/50">
+                        <span class="material-symbols-outlined text-6xl mb-2">smart_display</span>
+                        <p>Simulador de Reproductor de Video</p>
+                    </div>
+                    <!-- Controles Simulados -->
+                    <div class="absolute bottom-0 w-full p-4 bg-gradient-to-t from-black/80 to-transparent flex gap-4 items-center">
+                        <span class="material-symbols-outlined text-white cursor-pointer hover:text-primary">play_arrow</span>
+                        <div class="flex-1 h-1 bg-white/30 rounded-full">
+                            <div class="w-1/3 h-full bg-primary rounded-full relative">
+                                <div class="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full"></div>
+                            </div>
+                        </div>
+                        <span class="text-white text-xs font-mono">01:23 / 04:50</span>
+                        <span class="material-symbols-outlined text-white cursor-pointer hover:text-primary">volume_up</span>
+                        <span class="material-symbols-outlined text-white cursor-pointer hover:text-primary">fullscreen</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- ============================================== -->
     <!-- VIEW: EVALUACIONES Y RESULTADOS                -->
     <!-- ============================================== -->
@@ -440,7 +499,15 @@
                             <p class="text-xs text-on-surface-variant">Fecha: 05 Nov 2024</p>
                         </div>
                     </div>
-                    <span class="px-2 py-1 bg-surface-variant text-on-surface-variant text-[10px] font-bold rounded-full">En Proceso</span>
+                    <div class="group relative">
+                        <span class="px-2 py-1 bg-surface-variant text-on-surface-variant text-[10px] font-bold rounded-full flex items-center gap-1 cursor-help">
+                            En Proceso <span class="material-symbols-outlined text-[12px]">info</span>
+                        </span>
+                        <!-- Tooltip -->
+                        <div class="hidden group-hover:block absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-on-surface text-white text-[10px] rounded shadow-lg z-50 text-center font-normal">
+                            Tu muestra está siendo analizada. Los resultados suelen tardar entre 5 a 7 días hábiles.
+                        </div>
+                    </div>
                 </div>
                 <div class="bg-surface-container-low p-4 rounded-lg mb-4 text-sm text-on-surface-variant flex items-center justify-center h-[92px] border border-surface-variant">
                     <p class="text-center italic">El laboratorio está analizando tus datos frecuenciales. Te notificaremos cuando esté listo.</p>
@@ -450,6 +517,55 @@
                 </button>
             </div>
         </div>
+
+        <!-- Gráfico de Progreso Adaptativo (Tracker Cualitativo) -->
+        <section class="bg-surface-container-lowest rounded-xl p-lg shadow-sm border border-surface-variant mb-xl">
+            <h3 class="font-headline-md font-bold text-on-surface flex items-center gap-2 mb-2">
+                <span class="material-symbols-outlined text-primary">battery_charging_full</span> Tu Energía Hoy
+            </h3>
+            <p class="text-sm text-on-surface-variant mb-6">Ayuda a tu médico a correlacionar tus biomarcadores con cómo te sientes día a día.</p>
+            
+            <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
+                <!-- Nivel 1 -->
+                <label class="flex-1 w-full relative cursor-pointer group">
+                    <input type="radio" name="energia" class="peer sr-only">
+                    <div class="p-4 border-2 border-surface-variant rounded-xl text-center peer-checked:border-error peer-checked:bg-error/10 hover:border-error/50 transition-all">
+                        <span class="material-symbols-outlined text-3xl text-error mb-2">battery_0_bar</span>
+                        <p class="font-bold text-on-surface text-sm">Agotado</p>
+                    </div>
+                </label>
+                <!-- Nivel 2 -->
+                <label class="flex-1 w-full relative cursor-pointer group">
+                    <input type="radio" name="energia" class="peer sr-only">
+                    <div class="p-4 border-2 border-surface-variant rounded-xl text-center peer-checked:border-amber-500 peer-checked:bg-amber-500/10 hover:border-amber-500/50 transition-all">
+                        <span class="material-symbols-outlined text-3xl text-amber-500 mb-2">battery_3_bar</span>
+                        <p class="font-bold text-on-surface text-sm">Cansado</p>
+                    </div>
+                </label>
+                <!-- Nivel 3 -->
+                <label class="flex-1 w-full relative cursor-pointer group">
+                    <input type="radio" name="energia" class="peer sr-only" checked>
+                    <div class="p-4 border-2 border-surface-variant rounded-xl text-center peer-checked:border-primary peer-checked:bg-primary/10 hover:border-primary/50 transition-all">
+                        <span class="material-symbols-outlined text-3xl text-primary mb-2">battery_5_bar</span>
+                        <p class="font-bold text-on-surface text-sm">Normal</p>
+                    </div>
+                </label>
+                <!-- Nivel 4 -->
+                <label class="flex-1 w-full relative cursor-pointer group">
+                    <input type="radio" name="energia" class="peer sr-only">
+                    <div class="p-4 border-2 border-surface-variant rounded-xl text-center peer-checked:border-mint peer-checked:bg-mint/10 hover:border-mint/50 transition-all">
+                        <span class="material-symbols-outlined text-3xl text-mint mb-2">battery_full</span>
+                        <p class="font-bold text-on-surface text-sm">Con Energía</p>
+                    </div>
+                </label>
+            </div>
+            <div class="mt-4 flex justify-end">
+                <button class="px-6 py-2 bg-primary text-white text-sm font-bold rounded-lg hover:bg-secondary transition-colors" onclick="showToast('Progreso guardado. ¡Sigue así!')">
+                    Guardar Registro
+                </button>
+            </div>
+        </section>
+
 
         <!-- Histórico Chart.js -->
         <section class="bg-surface-container-lowest rounded-xl p-lg shadow-sm border border-surface-variant">
@@ -463,7 +579,12 @@
                     <option>Calidad del Sueño</option>
                 </select>
             </div>
-            <div class="w-full h-[300px] relative">
+            <div class="w-full h-[300px] relative" id="chart-container">
+                <!-- Skeleton Loader -->
+                <div id="chart-skeleton" class="absolute inset-0 bg-surface-container-lowest flex items-end gap-2 p-4 z-10">
+                    <div class="w-full h-full bg-surface-variant/50 animate-pulse rounded-lg"></div>
+                </div>
+                <!-- Actual Chart -->
                 <canvas id="historicalChart"></canvas>
             </div>
         </section>
@@ -706,50 +827,13 @@
             </div>
 
             <!-- Chat Messages Area -->
-            <div class="flex-1 overflow-y-auto p-4 md:p-6 bg-surface-container-low flex flex-col gap-4">
+            <div class="flex-1 overflow-y-auto p-4 md:p-6 bg-surface-container-low flex flex-col items-center justify-center text-center">
                 
-                <!-- Date Header -->
-                <div class="text-center my-2">
-                    <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider bg-surface-variant px-3 py-1 rounded-full">Ayer</span>
+                <div class="w-16 h-16 bg-surface-variant text-outline-variant rounded-full flex items-center justify-center mb-4">
+                    <span class="material-symbols-outlined text-[32px]">speaker_notes_off</span>
                 </div>
-                
-                <!-- Doctor Message (Left) -->
-                <div class="flex gap-3 max-w-[85%] md:max-w-[70%]">
-                    <div class="w-8 h-8 bg-primary-container text-on-primary-container rounded-full flex items-center justify-center font-bold shrink-0 mt-1 text-xs">EQ</div>
-                    <div>
-                        <div class="bg-surface-container-lowest border border-surface-variant text-on-surface text-sm p-4 rounded-2xl rounded-tl-sm shadow-sm">
-                            ¡Hola Antonella! Revisamos tus últimos marcadores. Vamos muy bien con la glucosa, pero recuerda mantener el protocolo de ayuno 16/8 estricto esta semana. ¿Cómo te has sentido con los suplementos de NAD+?
-                        </div>
-                        <span class="text-[10px] text-on-surface-variant mt-1 ml-1 block">09:30 AM</span>
-                    </div>
-                </div>
-
-                <!-- Date Header -->
-                <div class="text-center my-2">
-                    <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider bg-surface-variant px-3 py-1 rounded-full">Hoy</span>
-                </div>
-
-                <!-- Patient Message (Right) -->
-                <div class="flex gap-3 max-w-[85%] md:max-w-[70%] self-end flex-row-reverse">
-                    <img src="https://ui-avatars.com/api/?name=Antonella+D&background=f8fafc&color=0f172a" class="w-8 h-8 rounded-full shrink-0 mt-1">
-                    <div>
-                        <div class="bg-primary text-white text-sm p-4 rounded-2xl rounded-tr-sm shadow-sm">
-                            Hola doctora, tengo una duda sobre el ayuno. ¿Puedo tomar café negro durante las horas de restricción?
-                        </div>
-                        <span class="text-[10px] text-on-surface-variant mt-1 mr-1 block text-right">Enviado 10:45 AM</span>
-                    </div>
-                </div>
-                
-                <!-- Doctor Message (Left) -->
-                <div class="flex gap-3 max-w-[85%] md:max-w-[70%]">
-                    <div class="w-8 h-8 bg-primary-container text-on-primary-container rounded-full flex items-center justify-center font-bold shrink-0 mt-1 text-xs">EQ</div>
-                    <div>
-                        <div class="bg-surface-container-lowest border border-surface-variant text-on-surface text-sm p-4 rounded-2xl rounded-tl-sm shadow-sm">
-                            Sí, por supuesto. El café negro (sin azúcar, leche ni edulcorantes) no rompe el ayuno y de hecho puede ayudarte a potenciar la autofagia.
-                        </div>
-                        <span class="text-[10px] text-on-surface-variant mt-1 ml-1 block">Recibido 10:50 AM</span>
-                    </div>
-                </div>
+                <h3 class="text-on-surface font-bold mb-1">No hay mensajes recientes</h3>
+                <p class="text-on-surface-variant text-sm max-w-xs">Escribe aquí para comunicarte directamente con tu equipo médico asignado.</p>
 
             </div>
 
@@ -770,82 +854,461 @@
     </div>
 
     <!-- ============================================== -->
+    <!-- VIEW: DATOS PERSONALES                         -->
+    <!-- ============================================== -->
+    <div id="view-datos-personales" class="view-section hidden">
+        <h1 class="font-display-lg text-display-lg text-on-surface mb-lg fade-in-up">Datos Personales</h1>
+        
+        <div class="bg-surface-container-lowest rounded-2xl p-xl shadow-sm border border-surface-variant fade-in-up delay-100">
+            <form onsubmit="event.preventDefault(); showToast('Datos actualizados exitosamente');">
+                <div class="flex flex-col md:flex-row gap-8 mb-8">
+                    <!-- Foto de Perfil -->
+                    <div class="flex flex-col items-center gap-4 shrink-0">
+                        <div class="relative w-24 h-24 rounded-full overflow-hidden border-2 border-primary group cursor-pointer">
+                            <img src="https://ui-avatars.com/api/?name=Antonella+D&background=f8fafc&color=0f172a" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <span class="material-symbols-outlined text-white">photo_camera</span>
+                            </div>
+                        </div>
+                        <button type="button" class="text-xs font-bold text-primary hover:text-secondary transition-colors">Cambiar Foto</button>
+                    </div>
+
+                    <!-- Campos del Formulario -->
+                    <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-on-surface mb-1">Nombre</label>
+                            <input type="text" value="Antonella" class="w-full p-2.5 bg-surface border border-outline-variant rounded-lg focus:ring-primary focus:border-primary text-sm text-on-surface" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-on-surface mb-1">Apellido</label>
+                            <input type="text" value="D." class="w-full p-2.5 bg-surface border border-outline-variant rounded-lg focus:ring-primary focus:border-primary text-sm text-on-surface" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-on-surface mb-1">Correo Electrónico</label>
+                            <input type="email" value="antonella@example.com" class="w-full p-2.5 bg-surface border border-outline-variant rounded-lg focus:ring-primary focus:border-primary text-sm text-on-surface" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-on-surface mb-1">Número de Teléfono</label>
+                            <input type="tel" value="+1 (555) 012-3456" class="w-full p-2.5 bg-surface border border-outline-variant rounded-lg focus:ring-primary focus:border-primary text-sm text-on-surface" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-on-surface mb-1">Fecha de Nacimiento</label>
+                            <input type="date" value="2019-06-15" class="w-full p-2.5 bg-surface border border-outline-variant rounded-lg focus:ring-primary focus:border-primary text-sm text-on-surface" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-on-surface mb-1">Género</label>
+                            <select class="w-full p-2.5 bg-surface border border-outline-variant rounded-lg focus:ring-primary focus:border-primary text-sm text-on-surface">
+                                <option>Femenino</option>
+                                <option>Masculino</option>
+                                <option>Otro</option>
+                                <option>Prefiero no decirlo</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-on-surface mb-1">Dirección Física</label>
+                            <input type="text" value="123 Wellness Avenue, Miami, FL 33132" class="w-full p-2.5 bg-surface border border-outline-variant rounded-lg focus:ring-primary focus:border-primary text-sm text-on-surface">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-3 border-t border-surface-variant pt-6">
+                    <button type="button" class="px-6 py-2.5 bg-surface border border-outline-variant text-on-surface text-sm font-bold rounded-lg hover:bg-surface-variant transition-colors">Cancelar</button>
+                    <button type="submit" class="px-6 py-2.5 bg-primary text-white text-sm font-bold rounded-lg hover:bg-secondary transition-colors shadow-sm">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- VIEW: HISTORIAL MÉDICO                         -->
+    <!-- ============================================== -->
+    <div id="view-historial-medico" class="view-section hidden">
+        <h1 class="font-display-lg text-display-lg text-on-surface mb-lg fade-in-up">Historial Médico</h1>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 fade-in-up delay-100">
+            
+            <!-- Resumen Clínico -->
+            <div class="lg:col-span-2 flex flex-col gap-6">
+                <!-- Diagnósticos Previos -->
+                <div class="bg-surface-container-lowest rounded-2xl p-xl shadow-sm border border-surface-variant relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -z-0"></div>
+                    <div class="flex justify-between items-start relative z-10 mb-6">
+                        <h2 class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">medical_information</span> Diagnósticos Activos
+                        </h2>
+                        <button class="text-xs font-bold text-primary hover:text-secondary flex items-center gap-1 transition-colors">
+                            <span class="material-symbols-outlined text-sm">add</span> Añadir
+                        </button>
+                    </div>
+                    
+                    <div class="space-y-4 relative z-10">
+                        <div class="p-4 bg-surface-container-low border border-surface-variant rounded-xl flex justify-between items-center group hover:border-primary/30 transition-colors">
+                            <div>
+                                <h3 class="font-bold text-on-surface">Trastorno del Espectro Autista (TEA)</h3>
+                                <p class="text-xs text-on-surface-variant mt-1">Diagnosticado en Ene 2023 por Dr. R. Martínez</p>
+                            </div>
+                            <button class="w-8 h-8 rounded-full hover:bg-surface-variant text-on-surface-variant flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <span class="material-symbols-outlined text-sm">edit</span>
+                            </button>
+                        </div>
+                        <div class="p-4 bg-surface-container-low border border-surface-variant rounded-xl flex justify-between items-center group hover:border-primary/30 transition-colors">
+                            <div>
+                                <h3 class="font-bold text-on-surface">Selectividad Alimentaria Severa</h3>
+                                <p class="text-xs text-on-surface-variant mt-1">Diagnosticado en Mar 2023 por Nutrición Pediátrica</p>
+                            </div>
+                            <button class="w-8 h-8 rounded-full hover:bg-surface-variant text-on-surface-variant flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <span class="material-symbols-outlined text-sm">edit</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alergias y Sensibilidades -->
+                <div class="bg-surface-container-lowest rounded-2xl p-xl shadow-sm border border-surface-variant">
+                    <div class="flex justify-between items-start mb-6">
+                        <h2 class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-2">
+                            <span class="material-symbols-outlined text-error">coronavirus</span> Alergias y Sensibilidades
+                        </h2>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1.5 bg-error/10 text-error font-bold text-xs rounded-lg flex items-center gap-2 border border-error/20">
+                            Gluten <button class="hover:text-black"><span class="material-symbols-outlined text-[14px]">close</span></button>
+                        </span>
+                        <span class="px-3 py-1.5 bg-error/10 text-error font-bold text-xs rounded-lg flex items-center gap-2 border border-error/20">
+                            Caseína (Lácteos) <button class="hover:text-black"><span class="material-symbols-outlined text-[14px]">close</span></button>
+                        </span>
+                        <span class="px-3 py-1.5 bg-amber-500/10 text-amber-600 font-bold text-xs rounded-lg flex items-center gap-2 border border-amber-500/20">
+                            Colorante Rojo 40 <button class="hover:text-black"><span class="material-symbols-outlined text-[14px]">close</span></button>
+                        </span>
+                        
+                        <button class="px-3 py-1.5 bg-surface border border-dashed border-outline-variant text-on-surface-variant font-bold text-xs rounded-lg flex items-center gap-1 hover:border-primary hover:text-primary transition-colors">
+                            <span class="material-symbols-outlined text-[14px]">add</span> Nueva alergia
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel Lateral: Vacunas y Antecedentes -->
+            <div class="flex flex-col gap-6">
+                <!-- Vacunación -->
+                <div class="bg-surface-container-lowest rounded-2xl p-xl shadow-sm border border-surface-variant">
+                    <h2 class="font-headline-sm text-headline-sm text-on-surface mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-mint">vaccines</span> Esquema de Vacunación
+                    </h2>
+                    <div class="bg-amber-500/10 border-l-4 border-amber-500 p-4 rounded-r-lg mb-4">
+                        <p class="text-xs font-bold text-amber-700">Observación Clínica Crítica:</p>
+                        <p class="text-xs text-amber-900 mt-1">Reacción adversa (pico febril alto y regresión neurológica) reportada tras vacuna MMR a los 18 meses. Esquema actual pausado por recomendación médica.</p>
+                    </div>
+                    <button class="w-full py-2 bg-surface border border-outline-variant text-on-surface font-bold text-xs rounded-lg hover:bg-surface-variant transition-colors flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-sm">upload_file</span> Subir Cartilla (PDF)
+                    </button>
+                </div>
+
+                <!-- Antecedentes Familiares -->
+                <div class="bg-surface-container-lowest rounded-2xl p-xl shadow-sm border border-surface-variant">
+                    <h2 class="font-headline-sm text-headline-sm text-on-surface mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-on-surface-variant">family_history</span> Antecedentes Familiares
+                    </h2>
+                    <ul class="space-y-3 text-sm text-on-surface">
+                        <li class="flex items-start gap-2">
+                            <span class="material-symbols-outlined text-[16px] text-primary shrink-0 mt-0.5">person</span>
+                            <div>
+                                <span class="font-bold">Madre:</span> Hipotiroidismo de Hashimoto
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="material-symbols-outlined text-[16px] text-primary shrink-0 mt-0.5">person</span>
+                            <div>
+                                <span class="font-bold">Padre:</span> Sin antecedentes relevantes
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="material-symbols-outlined text-[16px] text-primary shrink-0 mt-0.5">group</span>
+                            <div>
+                                <span class="font-bold">Abuelos:</span> Diabetes Tipo II (Materno)
+                            </div>
+                        </li>
+                    </ul>
+                    <button class="mt-4 w-full py-2 bg-surface-variant text-on-surface font-bold text-xs rounded-lg hover:bg-outline-variant transition-colors">
+                        Editar Antecedentes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- VIEW: FACTURACIÓN                              -->
+    <!-- ============================================== -->
+    <div id="view-facturacion" class="view-section hidden">
+        <h1 class="font-display-lg text-display-lg text-on-surface mb-lg fade-in-up">Facturación y Suscripciones</h1>
+        
+        <div class="flex flex-col gap-8 fade-in-up delay-100">
+            <!-- Métodos de Pago -->
+            <div class="bg-surface-container-lowest rounded-2xl p-xl shadow-sm border border-surface-variant flex flex-col gap-md mb-6">
+                <h2 class="font-headline-sm text-headline-sm text-on-surface mb-4">Métodos de Pago</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Zelle -->
+                    <label class="relative cursor-pointer group">
+                        <input type="radio" name="payment_method" class="peer sr-only" checked>
+                        <div class="p-4 border-2 border-surface-variant rounded-xl text-center peer-checked:border-primary peer-checked:bg-primary/5 hover:border-primary/50 transition-all">
+                            <div class="h-8 flex items-center justify-center mb-2">
+                                <span class="font-bold text-purple-700 text-lg">Zelle</span>
+                            </div>
+                            <p class="text-xs text-on-surface-variant">Transferencia Directa</p>
+                        </div>
+                    </label>
+                    <!-- Stripe -->
+                    <label class="relative cursor-pointer group">
+                        <input type="radio" name="payment_method" class="peer sr-only">
+                        <div class="p-4 border-2 border-surface-variant rounded-xl text-center peer-checked:border-primary peer-checked:bg-primary/5 hover:border-primary/50 transition-all">
+                            <div class="h-8 flex items-center justify-center mb-2">
+                                <span class="font-bold text-indigo-500 text-lg">Stripe</span>
+                            </div>
+                            <p class="text-xs text-on-surface-variant">Tarjeta de Crédito</p>
+                        </div>
+                    </label>
+                    <!-- PayPal -->
+                    <label class="relative cursor-pointer group">
+                        <input type="radio" name="payment_method" class="peer sr-only">
+                        <div class="p-4 border-2 border-surface-variant rounded-xl text-center peer-checked:border-primary peer-checked:bg-primary/5 hover:border-primary/50 transition-all">
+                            <div class="h-8 flex items-center justify-center mb-2">
+                                <span class="font-bold text-blue-700 text-lg italic">PayPal</span>
+                            </div>
+                            <p class="text-xs text-on-surface-variant">Pago Seguro</p>
+                        </div>
+                    </label>
+                </div>
+                <button class="mt-4 px-6 py-2 bg-primary text-white text-sm font-bold rounded-lg hover:bg-secondary transition-colors w-max" onclick="showToast('Método de pago guardado')">
+                    Guardar Método
+                </button>
+            </div>
+
+            <!-- Planes de Suscripción -->
+            <div class="bg-surface-container-lowest rounded-2xl p-xl shadow-sm border border-surface-variant flex flex-col gap-md">
+                <h2 class="font-headline-sm text-headline-sm text-on-surface mb-2">Planes de Suscripción</h2>
+                <p class="text-sm text-on-surface-variant mb-4">Elige el nivel de acompañamiento clínico que mejor se adapte a tus necesidades.</p>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                    <!-- Basic -->
+                    <div class="border border-surface-variant rounded-xl p-4 flex flex-col hover:border-primary/50 transition-colors">
+                        <h3 class="font-bold text-on-surface text-lg">Básico</h3>
+                        <p class="text-xs text-on-surface-variant mb-4">Seguimiento</p>
+                        <ul class="text-xs text-on-surface space-y-2 mb-6 flex-1">
+                            <li class="flex gap-2 items-start"><span class="material-symbols-outlined text-[14px] text-primary">check</span> Acceso a plataforma</li>
+                            <li class="flex gap-2 items-start"><span class="material-symbols-outlined text-[14px] text-primary">check</span> Descarga de reportes</li>
+                            <li class="flex gap-2 items-start"><span class="material-symbols-outlined text-[14px] text-primary">check</span> Triaje 24/7</li>
+                        </ul>
+                        <button class="w-full py-2 bg-surface-variant text-on-surface font-bold rounded-lg text-sm hover:bg-outline-variant transition-colors" onclick="showToast('Plan Básico Seleccionado')">Elegir Básico</button>
+                    </div>
+                    <!-- Premium -->
+                    <div class="border-2 border-primary rounded-xl p-4 flex flex-col relative shadow-md">
+                        <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-bold uppercase px-3 py-1 rounded-full">Recomendado</div>
+                        <h3 class="font-bold text-primary text-lg mt-2">Premium</h3>
+                        <p class="text-xs text-on-surface-variant mb-4">Protocolo 90 Días</p>
+                        <ul class="text-xs text-on-surface space-y-2 mb-6 flex-1">
+                            <li class="flex gap-2 items-start"><span class="material-symbols-outlined text-[14px] text-primary">check</span> Todo lo del Básico</li>
+                            <li class="flex gap-2 items-start"><span class="material-symbols-outlined text-[14px] text-primary">check</span> Sincronización de citas</li>
+                            <li class="flex gap-2 items-start"><span class="material-symbols-outlined text-[14px] text-primary">check</span> Masterclasses (Academia)</li>
+                            <li class="flex gap-2 items-start"><span class="material-symbols-outlined text-[14px] text-primary">check</span> Chat directo con médicos</li>
+                        </ul>
+                        <button class="w-full py-2 bg-primary text-white font-bold rounded-lg text-sm hover:bg-secondary transition-colors" onclick="showToast('Plan Premium Seleccionado')">Plan Actual</button>
+                    </div>
+                    <!-- Elite -->
+                    <div class="border border-surface-variant rounded-xl p-4 flex flex-col hover:border-mint transition-colors">
+                        <h3 class="font-bold text-mint text-lg">Elite</h3>
+                        <p class="text-xs text-on-surface-variant mb-4">Acompañamiento Integral</p>
+                        <ul class="text-xs text-on-surface space-y-2 mb-6 flex-1">
+                            <li class="flex gap-2 items-start"><span class="material-symbols-outlined text-[14px] text-mint">check</span> Todo lo del Premium</li>
+                            <li class="flex gap-2 items-start"><span class="material-symbols-outlined text-[14px] text-mint">check</span> Gestión prioritaria de suplementos</li>
+                            <li class="flex gap-2 items-start"><span class="material-symbols-outlined text-[14px] text-mint">check</span> Rediseño semanal de recetas</li>
+                            <li class="flex gap-2 items-start"><span class="material-symbols-outlined text-[14px] text-mint">check</span> Soporte VIP</li>
+                        </ul>
+                        <button class="w-full py-2 bg-surface-variant text-on-surface font-bold rounded-lg text-sm hover:bg-outline-variant transition-colors" onclick="showToast('Plan Elite Seleccionado')">Elegir Elite</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Programa de Referidos -->
+            <div class="bg-primary/5 rounded-2xl p-xl shadow-sm border border-primary/20 flex flex-col gap-md relative overflow-hidden mt-2">
+                <div class="absolute top-0 right-0 w-48 h-48 bg-primary/10 rounded-bl-full -z-0"></div>
+                <h2 class="font-headline-sm text-headline-sm text-primary mb-2 flex items-center gap-2 relative z-10">
+                    <span class="material-symbols-outlined">redeem</span> Programa de Referidos
+                </h2>
+                <p class="text-sm text-on-surface-variant mb-4 relative z-10">¡Invita a un amigo y ambos obtienen un 15% de descuento en su próximo mes de suscripción!</p>
+                
+                <div class="flex flex-col sm:flex-row items-center gap-2 mb-6 relative z-10">
+                    <input type="text" id="referral-code" value="ANTO-AD2026" readonly class="w-full sm:w-auto flex-1 max-w-xs p-3 bg-white border border-outline-variant rounded-xl text-center font-bold tracking-widest text-primary focus:outline-none">
+                    <button onclick="const btn = this; navigator.clipboard.writeText('ANTO-AD2026'); btn.innerHTML = '¡Copiado!'; btn.classList.add('bg-secondary'); showToast('Código copiado al portapapeles'); setTimeout(() => { btn.innerHTML = 'Copiar Código'; btn.classList.remove('bg-secondary'); }, 3000);" class="w-full sm:w-auto px-6 py-3 bg-primary text-white font-bold rounded-xl hover:bg-primary/90 transition-colors shadow-sm">
+                        Copiar Código
+                    </button>
+                </div>
+
+                <div class="relative z-10">
+                    <h3 class="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-3">Tus Referidos Exitosos</h3>
+                    <div class="space-y-2 max-w-md">
+                        <div class="flex items-center justify-between p-3 bg-white/60 border border-primary/10 rounded-lg">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-xs">MG</div>
+                                <span class="font-medium text-sm text-on-surface">María G.</span>
+                            </div>
+                            <span class="text-xs font-bold text-mint flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">check_circle</span> Cupón Aplicado</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================== -->
     <!-- VIEW: AJUSTES                                  -->
     <!-- ============================================== -->
     <div id="view-ajustes" class="view-section hidden">
         <h1 class="font-display-lg text-display-lg text-on-surface mb-lg fade-in-up">Ajustes</h1>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-lg fade-in-up delay-100">
-            
-            <!-- Preferences -->
-            <div class="bg-surface-container-lowest rounded-2xl p-xl shadow-sm border border-surface-variant flex flex-col gap-md">
-                <div class="flex items-center gap-3 border-b border-surface-variant pb-4 mb-2">
-                    <span class="material-symbols-outlined text-primary text-2xl">palette</span>
-                    <h2 class="font-headline-sm text-headline-sm text-on-surface dark:text-white">Apariencia</h2>
-                </div>
-                
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="font-bold text-on-surface dark:text-white">Modo Oscuro</p>
-                        <p class="text-sm text-on-surface-variant dark:text-gray-400">Cambia la paleta a colores oscuros.</p>
+        <div class="flex flex-col md:flex-row gap-8 fade-in-up delay-100">
+            <!-- Sidebar Tabs -->
+            <div class="w-full md:w-64 flex flex-col gap-2 shrink-0 border-r border-surface-variant pr-0 md:pr-4">
+                <button class="ajustes-tab active flex items-center gap-3 w-full p-3 rounded-lg bg-primary-container text-on-primary-container font-bold text-left transition-colors" data-tab="tab-cuenta">
+                    <span class="material-symbols-outlined">shield_person</span> Cuenta y Seguridad
+                </button>
+                <button class="ajustes-tab flex items-center gap-3 w-full p-3 rounded-lg text-on-surface hover:bg-surface-variant font-medium text-left transition-colors" data-tab="tab-notificaciones">
+                    <span class="material-symbols-outlined">notifications</span> Notificaciones
+                </button>
+                <button class="ajustes-tab flex items-center gap-3 w-full p-3 rounded-lg text-on-surface hover:bg-surface-variant font-medium text-left transition-colors" data-tab="tab-preferencias">
+                    <span class="material-symbols-outlined">settings</span> Preferencias
+                </button>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="flex-1">
+                <!-- Tab: Cuenta y Seguridad -->
+                <div id="tab-cuenta" class="ajustes-content block animate-fade-in">
+                    <div class="bg-surface-container-lowest rounded-2xl p-xl shadow-sm border border-surface-variant flex flex-col gap-md mb-6">
+                        <h2 class="font-headline-sm text-headline-sm text-on-surface mb-4">Cambiar Contraseña</h2>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-on-surface mb-1">Contraseña Actual</label>
+                                <input type="password" class="w-full p-2.5 bg-surface border border-outline-variant rounded-lg focus:ring-primary focus:border-primary text-sm text-on-surface" placeholder="••••••••">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-on-surface mb-1">Nueva Contraseña</label>
+                                <input type="password" class="w-full p-2.5 bg-surface border border-outline-variant rounded-lg focus:ring-primary focus:border-primary text-sm text-on-surface" placeholder="••••••••">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-on-surface mb-1">Confirmar Nueva Contraseña</label>
+                                <input type="password" class="w-full p-2.5 bg-surface border border-outline-variant rounded-lg focus:ring-primary focus:border-primary text-sm text-on-surface" placeholder="••••••••">
+                            </div>
+                            <button class="mt-2 px-4 py-2 bg-primary text-white rounded-lg font-bold text-sm hover:bg-secondary transition-colors" onclick="showToast('Contraseña actualizada con éxito')">Actualizar Contraseña</button>
+                        </div>
                     </div>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="dark-mode-toggle" class="sr-only peer">
-                        <div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
-                    </label>
-                </div>
-            </div>
-
-            <!-- Language -->
-            <div class="bg-surface-container-lowest rounded-2xl p-xl shadow-sm border border-surface-variant flex flex-col gap-md">
-                <div class="flex items-center gap-3 border-b border-surface-variant pb-4 mb-2">
-                    <span class="material-symbols-outlined text-primary text-2xl">language</span>
-                    <h2 class="font-headline-sm text-headline-sm text-on-surface dark:text-white">Idioma</h2>
-                </div>
-                <div>
-                    <p class="text-sm text-on-surface-variant dark:text-gray-400 mb-4" data-i18n="settings_lang_desc">Selecciona tu idioma preferido para la plataforma.</p>
-                    <select id="language-select" class="bg-surface border border-outline-variant text-on-surface text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary dark:focus:border-primary transition-colors">
-                        <option value="es">Español (ES)</option>
-                        <option value="en">English (EN)</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- Notifications -->
-            <div class="bg-surface-container-lowest rounded-2xl p-xl shadow-sm border border-surface-variant flex flex-col gap-md">
-                <div class="flex items-center gap-3 border-b border-surface-variant pb-4 mb-2">
-                    <span class="material-symbols-outlined text-primary text-2xl">notifications</span>
-                    <h2 class="font-headline-sm text-headline-sm text-on-surface dark:text-white">Notificaciones</h2>
-                </div>
-                
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="font-bold text-on-surface dark:text-white">Alertas por Correo</p>
-                        <p class="text-sm text-on-surface-variant dark:text-gray-400">Recibir resúmenes semanales.</p>
+                    
+                    <div class="bg-surface-container-lowest rounded-2xl p-xl shadow-sm border border-surface-variant flex flex-col gap-md">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h2 class="font-headline-sm text-headline-sm text-on-surface">Autenticación en 2 Pasos (2FA)</h2>
+                                <p class="text-sm text-on-surface-variant mt-1">Añade una capa extra de seguridad a tu cuenta.</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer" onchange="showToast(this.checked ? '2FA Activado' : '2FA Desactivado')">
+                                <div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                            </label>
+                        </div>
                     </div>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" checked class="sr-only peer">
-                        <div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
-                    </label>
                 </div>
-            </div>
 
-            <!-- Privacy -->
-            <div class="bg-surface-container-lowest rounded-2xl p-xl shadow-sm border border-surface-variant flex flex-col gap-md">
-                <div class="flex items-center gap-3 border-b border-surface-variant pb-4 mb-2">
-                    <span class="material-symbols-outlined text-primary text-2xl">security</span>
-                    <h2 class="font-headline-sm text-headline-sm text-on-surface dark:text-white">Privacidad</h2>
+                <!-- Tab: Notificaciones -->
+                <div id="tab-notificaciones" class="ajustes-content hidden animate-fade-in">
+                    <div class="bg-surface-container-lowest rounded-2xl p-xl shadow-sm border border-surface-variant flex flex-col gap-md mb-6">
+                        <h2 class="font-headline-sm text-headline-sm text-on-surface mb-4">Canales de Comunicación</h2>
+                        <div class="space-y-4">
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="checkbox" checked class="w-4 h-4 text-primary bg-surface border-outline-variant rounded focus:ring-primary">
+                                <span class="text-sm text-on-surface font-medium">Correo Electrónico (Email)</span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 text-primary bg-surface border-outline-variant rounded focus:ring-primary">
+                                <span class="text-sm text-on-surface font-medium">Mensajes SMS</span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="checkbox" checked class="w-4 h-4 text-primary bg-surface border-outline-variant rounded focus:ring-primary">
+                                <span class="text-sm text-on-surface font-medium">Notificaciones Push (Navegador)</span>
+                            </label>
+                        </div>
+                        <button class="mt-4 px-4 py-2 bg-surface border border-outline-variant text-on-surface rounded-lg font-bold text-sm hover:bg-surface-variant w-max" onclick="showToast('Preferencias de canales guardadas')">Guardar Preferencias</button>
+                    </div>
+
+                    <div class="bg-surface-container-lowest rounded-2xl p-xl shadow-sm border border-surface-variant flex flex-col gap-md">
+                        <h2 class="font-headline-sm text-headline-sm text-on-surface mb-4">Tipos de Alertas</h2>
+                        <div class="space-y-4">
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="checkbox" checked class="w-4 h-4 text-primary bg-surface border-outline-variant rounded focus:ring-primary">
+                                <span class="text-sm text-on-surface font-medium">Recordatorios diarios de hábitos</span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="checkbox" checked class="w-4 h-4 text-primary bg-surface border-outline-variant rounded focus:ring-primary">
+                                <span class="text-sm text-on-surface font-medium">Próximas citas médicas</span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="checkbox" checked class="w-4 h-4 text-primary bg-surface border-outline-variant rounded focus:ring-primary">
+                                <span class="text-sm text-on-surface font-medium">Resultados de laboratorio listos</span>
+                            </label>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <p class="text-sm text-on-surface-variant dark:text-gray-400 mb-4">Descarga una copia de tu expediente médico.</p>
-                    <button class="w-full py-2 bg-primary/10 text-primary hover:bg-primary/20 rounded-xl font-bold transition-colors">Solicitar Datos</button>
+
+                <!-- Tab: Preferencias -->
+                <div id="tab-preferencias" class="ajustes-content hidden animate-fade-in">
+                    <div class="bg-surface-container-lowest rounded-2xl p-xl shadow-sm border border-surface-variant flex flex-col gap-md mb-6">
+                        <h2 class="font-headline-sm text-headline-sm text-on-surface mb-4">Apariencia e Idioma</h2>
+                        <div class="flex items-center justify-between border-b border-surface-variant pb-4 mb-4">
+                            <div>
+                                <p class="font-bold text-on-surface">Modo Oscuro</p>
+                                <p class="text-sm text-on-surface-variant">Cambia la paleta a colores oscuros.</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="dark-mode-toggle" class="sr-only peer">
+                                <div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-bold text-on-surface">Idioma de la plataforma</p>
+                                <p class="text-sm text-on-surface-variant">Selecciona tu idioma preferido.</p>
+                            </div>
+                            <select id="language-select" class="bg-surface border border-outline-variant text-on-surface text-sm rounded-lg focus:ring-primary focus:border-primary block p-2 transition-colors w-40">
+                                <option value="es">Español (ES)</option>
+                                <option value="en">English (EN)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="bg-surface-container-lowest rounded-2xl p-xl shadow-sm border border-surface-variant flex flex-col gap-md">
+                        <h2 class="font-headline-sm text-headline-sm text-on-surface mb-4">Integraciones</h2>
+                        <div class="flex items-center justify-between p-4 border border-surface-variant rounded-xl bg-surface">
+                            <div class="flex items-center gap-4">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Google_Calendar_icon_%282020%29.svg" alt="Google Calendar" class="w-8 h-8">
+                                <div>
+                                    <p class="font-bold text-on-surface">Google Calendar</p>
+                                    <p class="text-xs text-on-surface-variant">Sincroniza tus citas automáticamente.</p>
+                                </div>
+                            </div>
+                            <button class="px-4 py-2 border border-outline-variant text-on-surface text-sm font-bold rounded-lg hover:bg-surface-variant transition-colors" onclick="toggleIntegration(this)">
+                                Conectar
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
-            
         </div>
-    </div>
+            
+        </div> <!-- End Real Content -->
+</main> <!-- End Main Container -->
 
-</div> <!-- End Real Content -->
+<!-- Toast Notification Container -->
+<div id="toast-container" class="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
 <!-- FAB Support Chatbot -->
 <button id="chatbot-fab" class="fixed bottom-lg right-lg w-[56px] h-[56px] bg-primary text-white rounded-full flex items-center justify-center shadow-lg hover:-translate-y-1 hover:shadow-xl transition-all duration-300 z-50">
@@ -967,9 +1430,115 @@
                 progressBar.style.width = '50%';
             }
         }, 300);
+
+        // Skeleton Loader logic
+        setTimeout(() => {
+            const skeleton = document.getElementById('chart-skeleton');
+            if (skeleton) {
+                skeleton.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+                setTimeout(() => skeleton.remove(), 500);
+            }
+        }, 2000);
     });
+
+    // Función "Marcar de hoy"
+    window.marcarHoy = function() {
+        const btn = document.getElementById('btn-marcar-hoy');
+        if (btn) {
+            btn.innerHTML = '<span class="material-symbols-outlined text-sm">check</span> Completado';
+            btn.classList.remove('bg-primary', 'hover:bg-secondary');
+            btn.classList.add('bg-surface-variant', 'text-on-surface-variant', 'cursor-not-allowed');
+            btn.disabled = true;
+            
+            showToast('¡Excelente! Has registrado tu suplementación de hoy');
+        }
+    };
+
+    // Función Toast
+    window.showToast = function(message) {
+        const container = document.getElementById('toast-container');
+        if (!container) return;
+
+        const toast = document.createElement('div');
+        toast.className = 'bg-primary-container text-on-primary-container px-4 py-2 rounded-lg shadow-lg font-bold text-sm flex items-center gap-2 transform translate-y-full opacity-0 transition-all duration-300';
+        toast.innerHTML = `<span class="material-symbols-outlined">check_circle</span> ${message}`;
+        
+        container.appendChild(toast);
+        
+        // Show
+        setTimeout(() => {
+            toast.classList.remove('translate-y-full', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+        }, 10);
+        
+        // Hide
+        setTimeout(() => {
+            toast.classList.remove('translate-y-0', 'opacity-100');
+            toast.classList.add('translate-y-full', 'opacity-0');
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+        // Hide
+        setTimeout(() => {
+            toast.classList.remove('translate-y-0', 'opacity-100');
+            toast.classList.add('translate-y-full', 'opacity-0');
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    };
+
+    // Tabs Ajustes Logic
+    document.addEventListener('DOMContentLoaded', () => {
+        const tabs = document.querySelectorAll('.ajustes-tab');
+        const contents = document.querySelectorAll('.ajustes-content');
+        
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active states
+                tabs.forEach(t => {
+                    t.classList.remove('bg-primary-container', 'text-on-primary-container', 'active');
+                    t.classList.add('text-on-surface', 'hover:bg-surface-variant');
+                });
+                contents.forEach(c => {
+                    c.classList.add('hidden');
+                    c.classList.remove('block');
+                });
+                
+                // Add active state
+                tab.classList.remove('text-on-surface', 'hover:bg-surface-variant');
+                tab.classList.add('bg-primary-container', 'text-on-primary-container', 'active');
+                
+                const target = document.getElementById(tab.getAttribute('data-tab'));
+                if(target) {
+                    target.classList.remove('hidden');
+                    target.classList.add('block');
+                }
+            });
+        });
+    });
+
+    // Toggle Integration Logic
+    window.toggleIntegration = function(btn) {
+        if(btn.innerText.trim() === 'Conectar') {
+            btn.innerText = 'Desconectar';
+            btn.classList.remove('bg-surface', 'text-on-surface', 'border-outline-variant');
+            btn.classList.add('bg-error-container', 'text-on-error-container', 'border-error');
+            showToast('Google Calendar conectado exitosamente');
+        } else {
+            btn.innerText = 'Conectar';
+            btn.classList.remove('bg-error-container', 'text-on-error-container', 'border-error');
+            btn.classList.add('bg-surface', 'text-on-surface', 'border-outline-variant');
+            showToast('Google Calendar desconectado');
+        }
+    };
+
 </script>
 <style>
+.animate-fade-in {
+    animation: fadeInTab 0.3s ease-out forwards;
+}
+@keyframes fadeInTab {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 .dark body {
     background-color: #000000 !important;
 }
