@@ -183,7 +183,10 @@
         }
     </style>
 <link rel="stylesheet" href="/style.css">
-<script type="module" src="/main.js"></script>
+    <script src="/cmsService.js?v=2"></script>
+    <script src="/patientServices.js?v=2"></script>
+    <script src="/webhook_service.js?v=2"></script>
+    <script type="module" src="/main.js?v=2"></script>
 </head>
 <body class="page-transition bg-background text-on-background font-body-md min-h-screen flex">
 <!-- SideNavBar (Shared Component) -->
@@ -290,7 +293,7 @@
     <!-- VIEW: MI PLAN (PANEL PRINCIPAL)                -->
     <!-- ============================================== -->
     <div id="view-mi-plan" class="view-section">
-        <h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface mb-lg fade-in-up">Hola, Antonella</h1>
+        <h1 id="dash-welcome-msg" class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface mb-lg fade-in-up">Hola, Antonella</h1>
         
         <!-- Top Metrics Row -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-md mb-xl fade-in-up delay-100">
@@ -301,8 +304,8 @@
                 </div>
                 <div>
                     <p class="font-label-md text-on-surface-variant uppercase tracking-wider">Próxima Cita</p>
-                    <p class="font-headline-md font-bold text-on-surface">15 Nov, 10:00 AM</p>
-                    <p class="text-sm text-primary">Dra. Mónica López</p>
+                    <p class="font-headline-md font-bold text-on-surface">N/A</p>
+                    <p class="text-sm text-primary">N/A</p>
                 </div>
             </div>
 
@@ -311,12 +314,12 @@
                 <div class="flex justify-between items-end mb-2">
                     <div>
                         <p class="font-label-md text-on-surface-variant uppercase tracking-wider">Progreso Protocolo</p>
-                        <p class="font-headline-md font-bold text-on-surface">Día 45 <span class="text-sm font-normal text-on-surface-variant">/ 90</span></p>
+                        <p class="font-headline-md font-bold text-on-surface">Día 0 <span class="text-sm font-normal text-on-surface-variant">/ 90</span></p>
                     </div>
-                    <span class="font-bold text-mint">50%</span>
+                    <span class="font-bold text-mint">0%</span>
                 </div>
                 <div class="w-full h-2 bg-surface-variant rounded-full overflow-hidden">
-                    <div class="h-full bg-mint rounded-full progress-bar-fill" style="width:50%"></div>
+                    <div class="h-full bg-mint rounded-full progress-bar-fill" style="width:0%"></div>
                 </div>
             </div>
 
@@ -343,40 +346,8 @@
                     </h3>
                 </div>
                 <div class="p-lg space-y-6">
-                    <!-- Task 1 -->
-                    <div class="flex gap-4 items-start">
-                        <div class="w-8 h-8 rounded-full bg-mint flex items-center justify-center text-white shrink-0 mt-1">
-                            <span class="material-symbols-outlined text-sm">check</span>
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-on-surface line-through text-on-surface-variant">Fase 1: Desintoxicación</h4>
-                            <p class="text-sm text-on-surface-variant">Completada con éxito el 10 de Octubre.</p>
-                        </div>
-                    </div>
-                    <!-- Task 2 (Current) -->
-                    <div class="flex gap-4 items-start">
-                        <div class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container border-2 border-primary flex items-center justify-center shrink-0 mt-1">
-                            <span class="material-symbols-outlined text-sm">nutrition</span>
-                        </div>
-                        <div class="flex-1 bg-surface-container-low p-4 rounded-lg border border-primary/20">
-                            <h4 class="font-bold text-primary">Fase 2: Suplementación NAD+ (Actual)</h4>
-                            <p class="text-sm text-on-surface-variant mt-1">Tomar 1 cápsula en ayunas. Enfocado en reactivar vías metabólicas letárgicas.</p>
-                            <div class="mt-3 flex gap-2">
-                                <button id="btn-marcar-hoy" class="px-3 py-1 bg-primary text-white text-xs font-bold rounded-full hover:bg-secondary transition-colors flex items-center gap-1" onclick="marcarHoy()">
-                                    Marcar de hoy
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Task 3 -->
-                    <div class="flex gap-4 items-start">
-                        <div class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center text-outline shrink-0 mt-1">
-                            3
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-on-surface-variant">Fase 3: Optimización del Sueño</h4>
-                            <p class="text-sm text-on-surface-variant">Inicia en 15 días.</p>
-                        </div>
+                    <div class="flex justify-center items-center py-8">
+                        <p class="text-on-surface-variant text-sm font-medium">Aún no se ha asignado un protocolo o fases para tu roadmap.</p>
                     </div>
                 </div>
             </section>
@@ -409,11 +380,203 @@
                     </div>
                     <h3 class="font-headline-md font-bold text-on-surface mb-2">Check-in Mensual</h3>
                     <p class="text-sm text-on-surface-variant mb-6">Tu doctor necesita una actualización de tus síntomas y niveles de energía para ajustar el plan.</p>
-                    <button class="w-full py-3 bg-on-surface text-white rounded-lg font-bold hover:bg-outline transition-colors flex items-center justify-center gap-2">
+                    <button id="btn-start-checkin" class="w-full py-3 bg-on-surface text-white rounded-lg font-bold hover:bg-outline transition-colors flex items-center justify-center gap-2">
                         Comenzar Cuestionario <span class="material-symbols-outlined text-sm">arrow_forward</span>
                     </button>
                 </div>
             </section>
+        </div>
+    </div>
+    
+    <!-- Check-in Mensual Modal -->
+    <div id="checkin-modal" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" id="checkin-backdrop"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl bg-surface rounded-3xl p-8 shadow-2xl flex flex-col max-h-[90vh]">
+            
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="font-display-sm text-on-surface">Check-in Mensual</h2>
+                <button id="btn-close-checkin" class="w-10 h-10 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center hover:bg-outline-variant transition-colors">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <!-- Stepper Indicators -->
+            <div class="flex items-center gap-2 mb-8" id="checkin-indicators">
+                <div class="flex-1 h-2 rounded-full bg-primary transition-colors step-indicator" data-step="1"></div>
+                <div class="flex-1 h-2 rounded-full bg-surface-variant transition-colors step-indicator" data-step="2"></div>
+                <div class="flex-1 h-2 rounded-full bg-surface-variant transition-colors step-indicator" data-step="3"></div>
+                <div class="flex-1 h-2 rounded-full bg-surface-variant transition-colors step-indicator" data-step="4"></div>
+            </div>
+
+            <!-- Content Area (Scrollable) -->
+            <div class="flex-1 overflow-y-auto pr-2 relative" id="checkin-content-area">
+                
+                <!-- STEP 1: Energía -->
+                <div class="checkin-step block" id="checkin-step-1">
+                    <h3 class="font-bold text-lg text-on-surface mb-2">Paso 1: Energía y Sistema Gastrointestinal</h3>
+                    
+                    <div class="mb-6">
+                        <label class="block text-sm font-bold text-on-surface-variant mb-3">¿Cómo ha estado tu nivel de energía general este mes?</label>
+                        <div class="grid grid-cols-2 gap-3" id="energy-options">
+                            <label class="relative cursor-pointer group">
+                                <input type="radio" name="chk_energy" value="Agotado" class="peer sr-only">
+                                <div class="p-4 border-2 border-surface-variant rounded-xl text-center peer-checked:border-primary peer-checked:bg-primary/5 hover:border-primary/30 transition-all flex flex-col items-center gap-2">
+                                    <span class="material-symbols-outlined text-red-500">battery_0_bar</span>
+                                    <span class="font-semibold text-sm">Agotado</span>
+                                </div>
+                            </label>
+                            <label class="relative cursor-pointer group">
+                                <input type="radio" name="chk_energy" value="Cansado" class="peer sr-only">
+                                <div class="p-4 border-2 border-surface-variant rounded-xl text-center peer-checked:border-primary peer-checked:bg-primary/5 hover:border-primary/30 transition-all flex flex-col items-center gap-2">
+                                    <span class="material-symbols-outlined text-orange-500">battery_3_bar</span>
+                                    <span class="font-semibold text-sm">Cansado</span>
+                                </div>
+                            </label>
+                            <label class="relative cursor-pointer group">
+                                <input type="radio" name="chk_energy" value="Normal" class="peer sr-only">
+                                <div class="p-4 border-2 border-surface-variant rounded-xl text-center peer-checked:border-primary peer-checked:bg-primary/5 hover:border-primary/30 transition-all flex flex-col items-center gap-2">
+                                    <span class="material-symbols-outlined text-blue-500">battery_5_bar</span>
+                                    <span class="font-semibold text-sm">Normal</span>
+                                </div>
+                            </label>
+                            <label class="relative cursor-pointer group">
+                                <input type="radio" name="chk_energy" value="Con Energía" class="peer sr-only">
+                                <div class="p-4 border-2 border-surface-variant rounded-xl text-center peer-checked:border-primary peer-checked:bg-primary/5 hover:border-primary/30 transition-all flex flex-col items-center gap-2">
+                                    <span class="material-symbols-outlined text-mint">battery_full_alt</span>
+                                    <span class="font-semibold text-sm">Con Energía</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-on-surface-variant mb-2">¿Cómo evaluarías tu regularidad digestiva e inflamación abdominal?</label>
+                        <p class="text-xs text-on-surface-variant mb-4">1: Muy inflamado/Irregular — 5: Excelente digestión</p>
+                        <input type="range" min="1" max="5" value="3" class="w-full accent-primary" id="chk_digestion">
+                        <div class="flex justify-between text-xs text-on-surface-variant mt-2 font-bold">
+                            <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 2: Adherencia -->
+                <div class="checkin-step hidden" id="checkin-step-2">
+                    <h3 class="font-bold text-lg text-on-surface mb-4">Paso 2: Adherencia Nutricional (Protocolo)</h3>
+                    <p class="text-sm text-on-surface-variant mb-4">Durante este mes, ¿has logrado evitar los alimentos señalados en tu perfil?</p>
+                    
+                    <div class="space-y-3 mb-6">
+                        <label class="flex items-start gap-3 p-3 border border-surface-variant rounded-lg hover:bg-surface-variant/30 cursor-pointer transition-colors">
+                            <input type="checkbox" class="chk-adherence mt-1 accent-primary w-4 h-4 rounded text-primary focus:ring-primary" value="Gluten, Lácteos y Azúcar">
+                            <span class="text-sm font-medium text-on-surface">Gluten, Lácteos de vaca y Azúcar refinada</span>
+                        </label>
+                        <label class="flex items-start gap-3 p-3 border border-surface-variant rounded-lg hover:bg-surface-variant/30 cursor-pointer transition-colors">
+                            <input type="checkbox" class="chk-adherence mt-1 accent-primary w-4 h-4 rounded text-primary focus:ring-primary" value="Restrictivos Temporales">
+                            <span class="text-sm font-medium text-on-surface">Alimentos restrictivos temporales (Ej. Cerdo, Atún, Nueces)</span>
+                        </label>
+                        <label class="flex items-start gap-3 p-3 border border-surface-variant rounded-lg hover:bg-surface-variant/30 cursor-pointer transition-colors">
+                            <input type="checkbox" class="chk-adherence mt-1 accent-primary w-4 h-4 rounded text-primary focus:ring-primary" value="Aditivos">
+                            <span class="text-sm font-medium text-on-surface">Aditivos y edulcorantes (Ej. Aspartamo, Glutamato)</span>
+                        </label>
+                    </div>
+
+                    <div class="bg-primary/5 p-4 rounded-xl border border-primary/20">
+                        <label class="block text-sm font-bold text-primary mb-3">¿Cumpliste la dieta antiinflamatoria en un 80% o más?</label>
+                        <div class="flex gap-4">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="chk_80_rule" value="Si" class="accent-primary w-4 h-4 text-primary focus:ring-primary">
+                                <span class="text-sm font-medium">Sí</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="chk_80_rule" value="No" class="accent-primary w-4 h-4 text-primary focus:ring-primary">
+                                <span class="text-sm font-medium">No</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 3: Hábitos -->
+                <div class="checkin-step hidden" id="checkin-step-3">
+                    <h3 class="font-bold text-lg text-on-surface mb-4">Paso 3: Hábitos de Estilo de Vida y Entorno</h3>
+                    <p class="text-sm text-on-surface-variant mb-4">¿Cuáles de los siguientes hábitos lograste incorporar a tu rutina diaria?</p>
+                    
+                    <div class="space-y-3">
+                        <label class="flex items-center gap-3 p-3 border border-surface-variant rounded-lg hover:bg-surface-variant/30 cursor-pointer transition-colors">
+                            <input type="checkbox" class="chk-habits accent-primary w-4 h-4 rounded text-primary focus:ring-primary" value="Sol">
+                            <span class="text-sm font-medium text-on-surface">Exposición solar (15-20 min matutinos)</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 border border-surface-variant rounded-lg hover:bg-surface-variant/30 cursor-pointer transition-colors">
+                            <input type="checkbox" class="chk-habits accent-primary w-4 h-4 rounded text-primary focus:ring-primary" value="Grounding">
+                            <span class="text-sm font-medium text-on-surface">Grounding (Caminar descalzo 10-15 min)</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 border border-surface-variant rounded-lg hover:bg-surface-variant/30 cursor-pointer transition-colors">
+                            <input type="checkbox" class="chk-habits accent-primary w-4 h-4 rounded text-primary focus:ring-primary" value="Sueño">
+                            <span class="text-sm font-medium text-on-surface">Higiene del sueño (Cenar antes de las 8pm)</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 border border-surface-variant rounded-lg hover:bg-surface-variant/30 cursor-pointer transition-colors">
+                            <input type="checkbox" class="chk-habits accent-primary w-4 h-4 rounded text-primary focus:ring-primary" value="Hidratacion">
+                            <span class="text-sm font-medium text-on-surface">Hidratación (1.5 - 2 litros al día)</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 border border-surface-variant rounded-lg hover:bg-surface-variant/30 cursor-pointer transition-colors">
+                            <input type="checkbox" class="chk-habits accent-primary w-4 h-4 rounded text-primary focus:ring-primary" value="Electrosmog">
+                            <span class="text-sm font-medium text-on-surface">Reducción de Electrosmog (Apagar Wi-Fi de noche)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- STEP 4: Suplementación -->
+                <div class="checkin-step hidden" id="checkin-step-4">
+                    <h3 class="font-bold text-lg text-on-surface mb-4">Paso 4: Suplementación y Observaciones</h3>
+                    
+                    <div class="mb-6">
+                        <label class="block text-sm font-bold text-on-surface-variant mb-3">¿Has sido constante con tu fase actual de suplementación?</label>
+                        <div class="flex flex-col gap-3">
+                            <label class="flex items-center gap-3 p-3 border border-surface-variant rounded-lg cursor-pointer">
+                                <input type="radio" name="chk_supps" value="Todos los dias" class="accent-primary w-4 h-4 text-primary focus:ring-primary">
+                                <span class="text-sm font-medium">Todos los días</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-3 border border-surface-variant rounded-lg cursor-pointer">
+                                <input type="radio" name="chk_supps" value="La mayoria" class="accent-primary w-4 h-4 text-primary focus:ring-primary">
+                                <span class="text-sm font-medium">La mayoría de los días</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-3 border border-surface-variant rounded-lg cursor-pointer">
+                                <input type="radio" name="chk_supps" value="Olvide" class="accent-primary w-4 h-4 text-primary focus:ring-primary">
+                                <span class="text-sm font-medium">Olvidé varias tomas</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-sm font-bold text-on-surface-variant mb-2">Notas adicionales para tu médico</label>
+                        <textarea id="chk_notes" class="w-full p-3 border border-surface-variant rounded-xl bg-surface-container-lowest focus:ring-2 focus:ring-primary/20 focus:outline-none text-sm" rows="3" placeholder="Reacciones a suplementos, dudas, etc..."></textarea>
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="block text-sm font-bold text-on-surface-variant mb-2">Adjuntar análisis (Opcional)</label>
+                        <div class="border-2 border-dashed border-outline-variant rounded-xl p-6 flex flex-col items-center justify-center text-center hover:bg-surface-variant/30 transition-colors cursor-pointer" onclick="document.getElementById('chk_file').click()">
+                            <span class="material-symbols-outlined text-3xl text-primary mb-2">upload_file</span>
+                            <p class="font-bold text-sm text-primary">Subir PDF</p>
+                            <p class="text-xs text-on-surface-variant mt-1">Arrastra y suelta tu archivo aquí</p>
+                            <input type="file" id="chk_file" class="hidden" accept=".pdf,.jpg,.png">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer / Buttons -->
+            <div class="flex justify-between items-center mt-6 pt-6 border-t border-surface-variant">
+                <button id="btn-checkin-prev" class="px-6 py-2.5 rounded-xl font-bold text-on-surface-variant hover:bg-surface-variant transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                    Atrás
+                </button>
+                <div class="flex gap-3 items-center">
+                    <span id="checkin-error" class="text-xs text-red-500 font-bold hidden">Faltan campos obligatorios.</span>
+                    <button id="btn-checkin-next" class="px-6 py-2.5 bg-primary text-white rounded-xl font-bold hover:bg-secondary transition-colors flex items-center gap-2">
+                        Siguiente <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                    </button>
+                </div>
+            </div>
+
         </div>
     </div>
     
@@ -455,6 +618,80 @@
         </div>
     </div>
 
+    <!-- Modal Historial Médico (Añadir Diagnóstico) -->
+    <div id="add-diagnosis-modal" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="document.getElementById('add-diagnosis-modal').classList.add('hidden')"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg px-4">
+            <div class="bg-surface rounded-2xl overflow-hidden shadow-2xl flex flex-col">
+                <div class="flex justify-between items-center p-4 border-b border-outline-variant bg-surface-container-lowest">
+                    <h3 class="font-bold text-on-surface flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">add_circle</span>
+                        Añadir Diagnóstico
+                    </h3>
+                    <button onclick="document.getElementById('add-diagnosis-modal').classList.add('hidden')" class="text-on-surface-variant hover:text-error transition-colors">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <div class="p-6">
+                    <form id="add-diagnosis-form" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-bold text-on-surface mb-1">Nombre del Diagnóstico</label>
+                            <input type="text" id="diag-name" class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg p-3 text-sm focus:outline-none focus:border-primary" placeholder="Ej: Deficiencia de Vitamina D" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-on-surface mb-1">Fecha de Diagnóstico</label>
+                            <input type="date" id="diag-date" class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg p-3 text-sm focus:outline-none focus:border-primary" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-on-surface mb-1">Doctor / Especialista</label>
+                            <input type="text" id="diag-doctor" class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg p-3 text-sm focus:outline-none focus:border-primary" placeholder="Ej: Dr. Pérez" required>
+                        </div>
+                        <button type="submit" class="w-full mt-4 py-3 bg-primary text-white rounded-lg font-bold hover:bg-secondary transition-colors">
+                            Guardar Diagnóstico
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Check-in Modal -->
+    <div id="checkin-modal" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="document.getElementById('checkin-modal').classList.add('hidden')"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-xl px-4 max-h-[90vh] overflow-y-auto">
+            <div class="bg-surface rounded-2xl overflow-hidden shadow-2xl flex flex-col">
+                <div class="flex justify-between items-center p-4 border-b border-outline-variant bg-surface-container-lowest sticky top-0 z-10">
+                    <h3 class="font-bold text-on-surface flex items-center gap-2 text-lg">
+                        <span class="material-symbols-outlined text-primary">fact_check</span>
+                        Check-in Mensual de Bienestar
+                    </h3>
+                    <button onclick="document.getElementById('checkin-modal').classList.add('hidden')" class="text-on-surface-variant hover:text-error transition-colors">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <div class="p-6 overflow-y-auto space-y-6">
+                    <form id="checkin-form" class="space-y-5">
+                        <!-- Energía y Foco -->
+                        <div>
+                            <label class="block text-sm font-bold text-on-surface mb-2">Niveles de Energía y Enfoque</label>
+                            <div class="grid grid-cols-2 gap-2 text-sm">
+                                <label class="flex items-center gap-2 p-2 border border-outline-variant rounded-lg hover:bg-surface-container-low cursor-pointer">
+                                    <input type="radio" name="energia" value="calmo" class="accent-primary" required> Más calmo y enfocado
+                                </label>
+                                <label class="flex items-center gap-2 p-2 border border-outline-variant rounded-lg hover:bg-surface-container-low cursor-pointer">
+                                    <input type="radio" name="energia" value="hiperactivo" class="accent-primary"> Hiperactividad aumentada
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full py-3 bg-primary text-white rounded-lg font-bold hover:bg-secondary transition-colors shadow-sm">
+                            Enviar Actualización
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- ============================================== -->
     <!-- VIEW: EVALUACIONES Y RESULTADOS                -->
     <!-- ============================================== -->
@@ -481,7 +718,7 @@
                     <p class="font-bold text-primary mb-1">Resumen Simplificado:</p>
                     Tu sistema muestra niveles óptimos de vitaminas B, pero hay indicadores de estrés oxidativo alto. Sugerimos incrementar antioxidantes (Glutatión).
                 </div>
-                <button class="w-full py-2 border-2 border-primary text-primary rounded-lg font-bold hover:bg-primary hover:text-white transition-colors flex items-center justify-center gap-2">
+                <button class="w-full py-2 border-2 border-primary text-primary rounded-lg font-bold hover:bg-primary hover:text-white transition-colors flex items-center justify-center gap-2" onclick="showToast('Descargando reporte...')">
                     <span class="material-symbols-outlined text-sm">download</span> Descargar PDF Completo
                 </button>
             </div>
@@ -598,7 +835,10 @@
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-lg gap-4">
             <h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface fade-in-up">Mis Citas</h1>
             <!-- TODO: Vincular con API de creación de citas de Google Calendar -->
-            <button class="bg-primary text-white px-5 py-2.5 rounded-lg font-bold hover:bg-secondary transition-all hover:shadow-md flex items-center gap-2 shadow-sm fade-in-up delay-100">
+            <button class="bg-primary text-white px-5 py-2.5 rounded-lg font-bold hover:bg-secondary transition-all hover:shadow-md flex items-center gap-2 shadow-sm fade-in-up delay-100" onclick="showToast('Programando check-in automático...')">
+                <span class="material-symbols-outlined text-[20px]">add</span> Programar Check-in Automático
+            </button>
+            <button class="bg-primary text-white px-5 py-2.5 rounded-lg font-bold hover:bg-secondary transition-all hover:shadow-md flex items-center gap-2 shadow-sm fade-in-up delay-100" onclick="showToast('Abriendo calendario para agendar...')">
                 <span class="material-symbols-outlined text-sm">add</span> Agendar Nueva Cita
             </button>
         </div>
@@ -614,70 +854,16 @@
                         <h3 class="font-headline-md font-bold text-on-surface">Tu Próxima Cita</h3>
                     </div>
                     
-                    <div class="bg-surface-container-low border border-primary/20 rounded-lg p-6 relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 hover:border-primary/40 transition-colors">
-                        <div class="flex items-start gap-5">
-                            <div class="bg-primary-container text-on-primary-container p-3 rounded-lg flex flex-col items-center justify-center min-w-[72px] shadow-inner">
-                                <span class="text-xs uppercase font-bold tracking-wider">Nov</span>
-                                <span class="text-3xl font-bold leading-none mt-1">15</span>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-lg text-on-surface mb-1">Revisión de Protocolo NAD+</h4>
-                                <div class="flex flex-col gap-1">
-                                    <p class="text-on-surface-variant flex items-center gap-2 text-sm">
-                                        <span class="material-symbols-outlined text-[16px]">schedule</span> 10:00 AM - 11:00 AM
-                                    </p>
-                                    <p class="text-on-surface-variant flex items-center gap-2 text-sm">
-                                        <span class="material-symbols-outlined text-[16px]">person</span> Dra. Mónica López
-                                    </p>
-                                    <p class="text-on-surface-variant flex items-center gap-2 text-sm">
-                                        <span class="material-symbols-outlined text-[16px]">videocam</span> Videollamada (Google Meet)
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="flex flex-col gap-3 w-full md:w-auto">
-                            <!-- TODO: Generar link dinámico hacia Google Meet -->
-                            <button class="w-full md:w-auto bg-primary text-white px-5 py-2.5 rounded-lg font-bold hover:bg-secondary transition-colors flex items-center justify-center gap-2 text-sm shadow-sm hover:shadow">
-                                <span class="material-symbols-outlined text-[18px]">videocam</span> Unirse a Consulta
-                            </button>
-                            <!-- TODO: Descargar archivo .ics o redirigir a GCalendar -->
-                            <button class="w-full md:w-auto bg-surface-container-lowest border border-outline-variant text-on-surface px-5 py-2.5 rounded-lg font-bold hover:bg-surface-variant transition-colors flex items-center justify-center gap-2 text-sm">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Google_Calendar_icon_%282020%29.svg" alt="Google Calendar" class="w-4 h-4"> En Calendario
-                            </button>
-                        </div>
+                    <div class="bg-surface-container-low border border-primary/20 rounded-lg p-6 relative z-10 flex justify-center items-center gap-6 hover:border-primary/40 transition-colors">
+                        <p class="text-on-surface-variant text-sm">No tienes citas programadas próximamente.</p>
                     </div>
                 </div>
 
                 <!-- Historial de Citas -->
                 <div class="bg-surface-container-lowest rounded-xl p-lg shadow-sm border border-surface-variant">
                     <h3 class="font-headline-md font-bold text-on-surface mb-4">Historial de Citas</h3>
-                    <div class="flex flex-col gap-0 divide-y divide-surface-variant">
-                        <!-- Item Historial 1 -->
-                        <div class="py-4 flex justify-between items-center hover:bg-surface-variant/30 transition-colors px-3 -mx-3 rounded-lg cursor-default">
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 bg-surface-variant text-on-surface-variant rounded-full flex items-center justify-center shrink-0">
-                                    <span class="material-symbols-outlined text-[18px]">check</span>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-on-surface text-sm">Toma de Muestra (Bioresonancia)</h4>
-                                    <p class="text-xs text-on-surface-variant mt-0.5">05 Nov 2024 • Laboratorio Central</p>
-                                </div>
-                            </div>
-                            <span class="px-3 py-1 bg-surface-variant text-on-surface-variant text-[11px] font-bold rounded-full">Completada</span>
-                        </div>
-                        <!-- Item Historial 2 -->
-                        <div class="py-4 flex justify-between items-center hover:bg-surface-variant/30 transition-colors px-3 -mx-3 rounded-lg cursor-default">
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 bg-surface-variant text-on-surface-variant rounded-full flex items-center justify-center shrink-0">
-                                    <span class="material-symbols-outlined text-[18px]">check</span>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-on-surface text-sm">Consulta Inicial Epigenética</h4>
-                                    <p class="text-xs text-on-surface-variant mt-0.5">10 Oct 2024 • Dra. Mónica López</p>
-                                </div>
-                            </div>
-                            <span class="px-3 py-1 bg-surface-variant text-on-surface-variant text-[11px] font-bold rounded-full">Completada</span>
-                        </div>
+                    <div class="flex flex-col gap-0 divide-y divide-surface-variant text-center py-6">
+                        <p class="text-sm text-on-surface-variant">No hay historial de citas.</p>
                     </div>
                 </div>
             </div>
@@ -776,8 +962,8 @@
                 </div>
                 <h3 class="font-bold text-on-surface text-sm mb-2">Recetario Antiinflamatorio Semanal</h3>
                 <p class="text-xs text-on-surface-variant mb-4 flex-1">Planes de comida adaptados a tu sensibilidad al gluten identificada en el test.</p>
-                <button class="w-full py-2 bg-surface border border-outline-variant text-on-surface text-xs font-bold rounded-lg hover:bg-surface-variant transition-colors flex items-center justify-center gap-2">
-                    <span class="material-symbols-outlined text-[16px]">download</span> Descargar PDF
+                <button class="w-full py-2 bg-surface border border-outline-variant text-on-surface text-xs font-bold rounded-lg hover:bg-surface-variant transition-colors flex items-center justify-center gap-2" onclick="showToast('Abriendo contenido educativo...')">
+                    Leer Artículo <span class="material-symbols-outlined text-sm">arrow_forward</span>
                 </button>
             </div>
 
@@ -817,10 +1003,10 @@
                     </div>
                 </div>
                 <div class="flex gap-2">
-                    <button class="w-8 h-8 rounded-full hover:bg-surface-variant flex items-center justify-center text-on-surface-variant transition-colors">
+                    <button class="w-8 h-8 rounded-full hover:bg-surface-variant flex items-center justify-center text-on-surface-variant transition-colors" onclick="showToast('Iniciando videollamada...')">
                         <span class="material-symbols-outlined text-[20px]">videocam</span>
                     </button>
-                    <button class="w-8 h-8 rounded-full hover:bg-surface-variant flex items-center justify-center text-on-surface-variant transition-colors">
+                    <button class="w-8 h-8 rounded-full hover:bg-surface-variant flex items-center justify-center text-on-surface-variant transition-colors" onclick="showToast('Opciones del chat')">
                         <span class="material-symbols-outlined text-[20px]">more_vert</span>
                     </button>
                 </div>
@@ -840,11 +1026,12 @@
             <!-- Input Area -->
             <div class="p-4 border-t border-surface-variant bg-surface-container-lowest">
                 <div class="flex items-end gap-2 bg-surface border border-outline-variant rounded-2xl p-2 focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all">
-                    <button class="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-xl shrink-0">
+                    <input type="file" id="patient-chat-upload" class="hidden" accept="image/*,.pdf" onchange="if(this.files[0]) showToast('Archivo adjuntado: ' + this.files[0].name)">
+                    <button class="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-xl shrink-0" onclick="document.getElementById('patient-chat-upload').click()">
                         <span class="material-symbols-outlined">attach_file</span>
                     </button>
                     <textarea placeholder="Escribe un mensaje al equipo médico..." rows="1" class="flex-1 bg-transparent border-none resize-none focus:ring-0 text-sm py-2 max-h-32 min-h-[40px]"></textarea>
-                    <button class="bg-primary hover:bg-secondary text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-sm shrink-0 transition-colors">
+                    <button class="bg-primary hover:bg-secondary text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-sm shrink-0 transition-colors" onclick="showToast('Mensaje enviado al equipo médico')">
                         <span class="material-symbols-outlined text-[20px] ml-1">send</span>
                     </button>
                 </div>
@@ -870,7 +1057,7 @@
                                 <span class="material-symbols-outlined text-white">photo_camera</span>
                             </div>
                         </div>
-                        <button type="button" class="text-xs font-bold text-primary hover:text-secondary transition-colors">Cambiar Foto</button>
+                        <button type="button" class="text-xs font-bold text-primary hover:text-secondary transition-colors" onclick="showToast('Abriendo selector de imágenes...')">Cambiar Foto</button>
                     </div>
 
                     <!-- Campos del Formulario -->
@@ -912,7 +1099,7 @@
                 </div>
 
                 <div class="flex justify-end gap-3 border-t border-surface-variant pt-6">
-                    <button type="button" class="px-6 py-2.5 bg-surface border border-outline-variant text-on-surface text-sm font-bold rounded-lg hover:bg-surface-variant transition-colors">Cancelar</button>
+                    <button type="button" class="px-6 py-2.5 bg-surface border border-outline-variant text-on-surface text-sm font-bold rounded-lg hover:bg-surface-variant transition-colors" onclick="showToast('Edición cancelada')">Cancelar</button>
                     <button type="submit" class="px-6 py-2.5 bg-primary text-white text-sm font-bold rounded-lg hover:bg-secondary transition-colors shadow-sm">Guardar Cambios</button>
                 </div>
             </form>
@@ -936,7 +1123,7 @@
                         <h2 class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-2">
                             <span class="material-symbols-outlined text-primary">medical_information</span> Diagnósticos Activos
                         </h2>
-                        <button class="text-xs font-bold text-primary hover:text-secondary flex items-center gap-1 transition-colors">
+                        <button id="btn-add-diagnosis" class="text-xs font-bold text-primary hover:text-secondary flex items-center gap-1 transition-colors">
                             <span class="material-symbols-outlined text-sm">add</span> Añadir
                         </button>
                     </div>
@@ -947,7 +1134,7 @@
                                 <h3 class="font-bold text-on-surface">Trastorno del Espectro Autista (TEA)</h3>
                                 <p class="text-xs text-on-surface-variant mt-1">Diagnosticado en Ene 2023 por Dr. R. Martínez</p>
                             </div>
-                            <button class="w-8 h-8 rounded-full hover:bg-surface-variant text-on-surface-variant flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button class="w-8 h-8 rounded-full hover:bg-surface-variant text-on-surface-variant flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity" onclick="showToast('Función de edición en desarrollo')">
                                 <span class="material-symbols-outlined text-sm">edit</span>
                             </button>
                         </div>
@@ -956,7 +1143,7 @@
                                 <h3 class="font-bold text-on-surface">Selectividad Alimentaria Severa</h3>
                                 <p class="text-xs text-on-surface-variant mt-1">Diagnosticado en Mar 2023 por Nutrición Pediátrica</p>
                             </div>
-                            <button class="w-8 h-8 rounded-full hover:bg-surface-variant text-on-surface-variant flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button class="w-8 h-8 rounded-full hover:bg-surface-variant text-on-surface-variant flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity" onclick="showToast('Función de edición en desarrollo')">
                                 <span class="material-symbols-outlined text-sm">edit</span>
                             </button>
                         </div>
@@ -973,16 +1160,16 @@
                     
                     <div class="flex flex-wrap gap-2">
                         <span class="px-3 py-1.5 bg-error/10 text-error font-bold text-xs rounded-lg flex items-center gap-2 border border-error/20">
-                            Gluten <button class="hover:text-black"><span class="material-symbols-outlined text-[14px]">close</span></button>
+                            Gluten <button class="hover:text-black" onclick="showToast('Restricción eliminada (borrador)')"><span class="material-symbols-outlined text-[14px]">close</span></button>
                         </span>
                         <span class="px-3 py-1.5 bg-error/10 text-error font-bold text-xs rounded-lg flex items-center gap-2 border border-error/20">
-                            Caseína (Lácteos) <button class="hover:text-black"><span class="material-symbols-outlined text-[14px]">close</span></button>
+                            Caseína (Lácteos) <button class="hover:text-black" onclick="showToast('Restricción eliminada (borrador)')"><span class="material-symbols-outlined text-[14px]">close</span></button>
                         </span>
                         <span class="px-3 py-1.5 bg-amber-500/10 text-amber-600 font-bold text-xs rounded-lg flex items-center gap-2 border border-amber-500/20">
-                            Colorante Rojo 40 <button class="hover:text-black"><span class="material-symbols-outlined text-[14px]">close</span></button>
+                            Colorante Rojo 40 <button class="hover:text-black" onclick="showToast('Restricción eliminada (borrador)')"><span class="material-symbols-outlined text-[14px]">close</span></button>
                         </span>
                         
-                        <button class="px-3 py-1.5 bg-surface border border-dashed border-outline-variant text-on-surface-variant font-bold text-xs rounded-lg flex items-center gap-1 hover:border-primary hover:text-primary transition-colors">
+                        <button class="px-3 py-1.5 bg-surface border border-dashed border-outline-variant text-on-surface-variant font-bold text-xs rounded-lg flex items-center gap-1 hover:border-primary hover:text-primary transition-colors" onclick="showToast('Abriendo panel para añadir restricción...')">
                             <span class="material-symbols-outlined text-[14px]">add</span> Nueva alergia
                         </button>
                     </div>
@@ -1000,7 +1187,7 @@
                         <p class="text-xs font-bold text-amber-700">Observación Clínica Crítica:</p>
                         <p class="text-xs text-amber-900 mt-1">Reacción adversa (pico febril alto y regresión neurológica) reportada tras vacuna MMR a los 18 meses. Esquema actual pausado por recomendación médica.</p>
                     </div>
-                    <button class="w-full py-2 bg-surface border border-outline-variant text-on-surface font-bold text-xs rounded-lg hover:bg-surface-variant transition-colors flex items-center justify-center gap-2">
+                    <button class="w-full py-2 bg-surface border border-outline-variant text-on-surface font-bold text-xs rounded-lg hover:bg-surface-variant transition-colors flex items-center justify-center gap-2" onclick="showToast('Descargando historial médico (.pdf)')">
                         <span class="material-symbols-outlined text-sm">upload_file</span> Subir Cartilla (PDF)
                     </button>
                 </div>
@@ -1030,7 +1217,7 @@
                             </div>
                         </li>
                     </ul>
-                    <button class="mt-4 w-full py-2 bg-surface-variant text-on-surface font-bold text-xs rounded-lg hover:bg-outline-variant transition-colors">
+                    <button class="mt-4 w-full py-2 bg-surface-variant text-on-surface font-bold text-xs rounded-lg hover:bg-outline-variant transition-colors" onclick="showToast('Abriendo pasarela de pago segura...')">
                         Editar Antecedentes
                     </button>
                 </div>
@@ -1091,43 +1278,8 @@
                 <h2 class="font-headline-sm text-headline-sm text-on-surface mb-2">Planes de Suscripción</h2>
                 <p class="text-sm text-on-surface-variant mb-4">Elige el nivel de acompañamiento clínico que mejor se adapte a tus necesidades.</p>
                 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                    <!-- Basic -->
-                    <div class="border border-surface-variant rounded-xl p-4 flex flex-col hover:border-primary/50 transition-colors">
-                        <h3 class="font-bold text-on-surface text-lg">Básico</h3>
-                        <p class="text-xs text-on-surface-variant mb-4">Seguimiento</p>
-                        <ul class="text-xs text-on-surface space-y-2 mb-6 flex-1">
-                            <li class="flex gap-2 items-start"><span class="material-symbols-outlined text-[14px] text-primary">check</span> Acceso a plataforma</li>
-                            <li class="flex gap-2 items-start"><span class="material-symbols-outlined text-[14px] text-primary">check</span> Descarga de reportes</li>
-                            <li class="flex gap-2 items-start"><span class="material-symbols-outlined text-[14px] text-primary">check</span> Triaje 24/7</li>
-                        </ul>
-                        <button class="w-full py-2 bg-surface-variant text-on-surface font-bold rounded-lg text-sm hover:bg-outline-variant transition-colors" onclick="showToast('Plan Básico Seleccionado')">Elegir Básico</button>
-                    </div>
-                    <!-- Premium -->
-                    <div class="border-2 border-primary rounded-xl p-4 flex flex-col relative shadow-md">
-                        <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-bold uppercase px-3 py-1 rounded-full">Recomendado</div>
-                        <h3 class="font-bold text-primary text-lg mt-2">Premium</h3>
-                        <p class="text-xs text-on-surface-variant mb-4">Protocolo 90 Días</p>
-                        <ul class="text-xs text-on-surface space-y-2 mb-6 flex-1">
-                            <li class="flex gap-2 items-start"><span class="material-symbols-outlined text-[14px] text-primary">check</span> Todo lo del Básico</li>
-                            <li class="flex gap-2 items-start"><span class="material-symbols-outlined text-[14px] text-primary">check</span> Sincronización de citas</li>
-                            <li class="flex gap-2 items-start"><span class="material-symbols-outlined text-[14px] text-primary">check</span> Masterclasses (Academia)</li>
-                            <li class="flex gap-2 items-start"><span class="material-symbols-outlined text-[14px] text-primary">check</span> Chat directo con médicos</li>
-                        </ul>
-                        <button class="w-full py-2 bg-primary text-white font-bold rounded-lg text-sm hover:bg-secondary transition-colors" onclick="showToast('Plan Premium Seleccionado')">Plan Actual</button>
-                    </div>
-                    <!-- Elite -->
-                    <div class="border border-surface-variant rounded-xl p-4 flex flex-col hover:border-mint transition-colors">
-                        <h3 class="font-bold text-mint text-lg">Elite</h3>
-                        <p class="text-xs text-on-surface-variant mb-4">Acompañamiento Integral</p>
-                        <ul class="text-xs text-on-surface space-y-2 mb-6 flex-1">
-                            <li class="flex gap-2 items-start"><span class="material-symbols-outlined text-[14px] text-mint">check</span> Todo lo del Premium</li>
-                            <li class="flex gap-2 items-start"><span class="material-symbols-outlined text-[14px] text-mint">check</span> Gestión prioritaria de suplementos</li>
-                            <li class="flex gap-2 items-start"><span class="material-symbols-outlined text-[14px] text-mint">check</span> Rediseño semanal de recetas</li>
-                            <li class="flex gap-2 items-start"><span class="material-symbols-outlined text-[14px] text-mint">check</span> Soporte VIP</li>
-                        </ul>
-                        <button class="w-full py-2 bg-surface-variant text-on-surface font-bold rounded-lg text-sm hover:bg-outline-variant transition-colors" onclick="showToast('Plan Elite Seleccionado')">Elegir Elite</button>
-                    </div>
+                <div id="dash-planes-container" class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                    <!-- Generado dinámicamente por cmsService en main.js -->
                 </div>
             </div>
 
@@ -1426,8 +1578,9 @@
         // Animate protocol progress smoothly
         setTimeout(() => {
             const progressBar = document.querySelector('.progress-bar-fill');
-            if (progressBar) {
-                progressBar.style.width = '50%';
+            const progressText = document.querySelector('.font-bold.text-mint');
+            if (progressBar && progressText) {
+                progressBar.style.width = progressText.innerText.trim() || '0%';
             }
         }, 300);
 

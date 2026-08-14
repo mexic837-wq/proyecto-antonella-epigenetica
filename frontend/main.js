@@ -613,4 +613,571 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // ==========================================
+    // ZERO BACKEND INTERACTIVITY (DASHBOARD)
+    // ==========================================
+
+    // 1. Global Toast System (Overrides inline if exists)
+    window.showToast = function(message, type = 'success') {
+        let container = document.getElementById('toast-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'toast-container';
+            container.className = 'fixed bottom-4 right-4 z-[9999] flex flex-col gap-2 pointer-events-none';
+            document.body.appendChild(container);
+        }
+
+        const toast = document.createElement('div');
+        const icon = type === 'success' ? 'check_circle' : 'info';
+        const bgClass = type === 'success' ? 'bg-primary-container text-on-primary-container' : 'bg-surface-variant text-on-surface';
+        
+        toast.className = `${bgClass} px-4 py-3 rounded-xl shadow-lg font-bold text-sm flex items-center gap-3 transform translate-y-full opacity-0 transition-all duration-300 ease-out pointer-events-auto`;
+        toast.innerHTML = `<span class="material-symbols-outlined text-lg">${icon}</span> ${message}`;
+        
+        container.appendChild(toast);
+        
+        // Show
+        requestAnimationFrame(() => {
+            setTimeout(() => {
+                toast.classList.remove('translate-y-full', 'opacity-0');
+                toast.classList.add('translate-y-0', 'opacity-100');
+            }, 10);
+        });
+        
+        // Hide
+        setTimeout(() => {
+            toast.classList.remove('translate-y-0', 'opacity-100');
+            toast.classList.add('translate-y-full', 'opacity-0');
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    };
+
+    // 2. Mi Plan - Roadmap "Marcar de hoy"
+    window.marcarHoy = function() {
+        const btn = document.getElementById('btn-marcar-hoy');
+        if (!btn || btn.disabled) return;
+        
+        // Simular carga
+        const originalText = btn.innerHTML;
+        btn.innerHTML = `<svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Guardando...`;
+        btn.disabled = true;
+        btn.classList.add('opacity-80', 'cursor-wait');
+
+        setTimeout(() => {
+            // Completado
+            btn.innerHTML = '<span class="material-symbols-outlined text-sm">check</span> Completado';
+            btn.classList.remove('bg-primary', 'hover:bg-secondary', 'opacity-80', 'cursor-wait');
+            btn.classList.add('bg-surface-variant', 'text-on-surface-variant', 'cursor-not-allowed');
+            
+            // Update progress bar
+            const progressText = document.querySelector('.font-headline-md.font-bold.text-on-surface');
+            const progressPercentText = document.querySelector('.font-bold.text-mint');
+            const progressBar = document.querySelector('.progress-bar-fill');
+            
+            if (progressPercentText && progressBar) {
+                progressPercentText.innerText = '51%';
+                progressBar.style.width = '51%';
+            }
+            if (progressText && progressText.innerHTML.includes('Día 45')) {
+                progressText.innerHTML = 'Día 46 <span class="text-sm font-normal text-on-surface-variant">/ 90</span>';
+            }
+
+            showToast('¡Progreso guardado correctamente!');
+        }, 1500);
+    };
+
+    // 3. Formularios (Validación en tiempo real y mock de guardado)
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+        // Skip specific forms that have their own logic
+        if(form.id === 'chat-form' || form.closest('#admin-view-section')) return;
+
+        const inputs = form.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('input', (e) => {
+                // Remove previous error
+                const parent = input.parentElement;
+                const existingError = parent.querySelector('.error-msg');
+                if(existingError) existingError.remove();
+                input.classList.remove('border-error', 'text-error');
+
+                if (input.type === 'email' && input.value) {
+                    const emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
+                    if (!emailRegex.test(input.value)) {
+                        input.classList.add('border-error', 'text-error');
+                        const error = document.createElement('span');
+                        error.className = 'error-msg text-xs text-error mt-1 block';
+                        error.innerText = 'Formato de correo inválido';
+                        parent.appendChild(error);
+                    }
+                }
+            });
+        });
+
+        form.addEventListener('submit', (e) => {
+            // Only handle if it's a settings/profile form with a submit button
+            const submitBtn = form.querySelector('button[type="submit"]');
+            if(!submitBtn || form.id === 'checkin-form') return; // We'll handle checkin separately
+            
+            e.preventDefault();
+            
+            const originalText = submitBtn.innerHTML;
+            const originalWidth = submitBtn.offsetWidth;
+            
+            submitBtn.style.width = `${originalWidth}px`; // maintain width
+            submitBtn.innerHTML = `<svg class="animate-spin h-5 w-5 mx-auto text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-80', 'cursor-wait');
+
+            setTimeout(() => {
+                submitBtn.innerHTML = originalText;
+                submitBtn.style.width = '';
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-80', 'cursor-wait');
+                showToast('Cambios guardados exitosamente');
+            }, 1500);
+        });
+    });
+
+    // 4. Evaluaciones: "Tu Energía Hoy" Single Selection & Chart Update
+    const energyButtons = document.querySelectorAll('.energy-btn');
+    let selectedEnergy = null;
+
+    if (energyButtons.length > 0) {
+        energyButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Reset all
+                energyButtons.forEach(b => {
+                    b.classList.remove('bg-primary-container', 'text-on-primary-container', 'border-primary');
+                    b.classList.add('bg-surface', 'text-on-surface-variant', 'border-outline-variant');
+                });
+                // Set active
+                btn.classList.remove('bg-surface', 'text-on-surface-variant', 'border-outline-variant');
+                btn.classList.add('bg-primary-container', 'text-on-primary-container', 'border-primary');
+                selectedEnergy = btn.getAttribute('data-value'); // e.g. 20, 50, 80, 100
+            });
+        });
+
+        const saveEnergyBtn = document.getElementById('btn-guardar-energia');
+        if (saveEnergyBtn) {
+            saveEnergyBtn.addEventListener('click', () => {
+                if (!selectedEnergy) {
+                    showToast('Por favor selecciona tu nivel de energía primero', 'info');
+                    return;
+                }
+
+                const originalText = saveEnergyBtn.innerHTML;
+                saveEnergyBtn.innerHTML = `<svg class="animate-spin h-5 w-5 mx-auto text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
+                saveEnergyBtn.disabled = true;
+
+                setTimeout(() => {
+                    saveEnergyBtn.innerHTML = originalText;
+                    saveEnergyBtn.disabled = false;
+                    showToast('Registro guardado correctamente');
+                    
+                    // Update Chart
+                    const chartCanvas = document.getElementById('historicalChart');
+                    if(chartCanvas) {
+                        const chartInstance = Chart.getChart(chartCanvas);
+                        if (chartInstance) {
+                            chartInstance.data.labels.push('Hoy');
+                            chartInstance.data.datasets[0].data.push(parseInt(selectedEnergy));
+                            chartInstance.update();
+                        }
+                    }
+                }, 1500);
+            });
+        }
+    }
+
+    // 5. Facturación: Radio Group Behavior
+    const paymentMethods = document.querySelectorAll('.payment-method-card');
+    paymentMethods.forEach(card => {
+        card.addEventListener('click', () => {
+            paymentMethods.forEach(c => {
+                c.classList.remove('border-primary', 'bg-primary-50/50', 'ring-1', 'ring-primary');
+                c.classList.add('border-outline-variant');
+                const radio = c.querySelector('input[type="radio"]');
+                if(radio) radio.checked = false;
+            });
+            card.classList.remove('border-outline-variant');
+            card.classList.add('border-primary', 'bg-primary-50/50', 'ring-1', 'ring-primary');
+            const radio = card.querySelector('input[type="radio"]');
+            if(radio) radio.checked = true;
+        });
+    });
+
+    const planCards = document.querySelectorAll('.plan-card');
+    planCards.forEach(card => {
+        card.addEventListener('click', () => {
+            planCards.forEach(c => {
+                c.classList.remove('border-primary', 'ring-2', 'ring-primary');
+                c.classList.add('border-outline-variant');
+                const btn = c.querySelector('button');
+                if(btn) {
+                    btn.classList.remove('bg-primary', 'text-white');
+                    btn.classList.add('bg-primary-container', 'text-on-primary-container');
+                    btn.innerText = 'Seleccionar';
+                }
+            });
+            card.classList.remove('border-outline-variant');
+            card.classList.add('border-primary', 'ring-2', 'ring-primary');
+            const btn = card.querySelector('button');
+            if(btn) {
+                btn.classList.remove('bg-primary-container', 'text-on-primary-container');
+                btn.classList.add('bg-primary', 'text-white');
+                btn.innerText = 'Plan Actual';
+            }
+        });
+    });
+
+    // 6. Mensajes (Paciente) - Override existing logic
+    const chatSendBtn = document.getElementById('chat-send');
+    const chatInput = document.getElementById('chat-input');
+    const chatMessages = document.getElementById('chat-messages');
+
+    if (chatSendBtn && chatInput && chatMessages) {
+        // Remove old event listeners by cloning
+        const newSendBtn = chatSendBtn.cloneNode(true);
+        chatSendBtn.parentNode.replaceChild(newSendBtn, chatSendBtn);
+        
+        const newChatInput = chatInput.cloneNode(true);
+        chatInput.parentNode.replaceChild(newChatInput, chatInput);
+
+        const handleSend = () => {
+            const text = newChatInput.value.trim();
+            if (!text) return;
+
+            // Add user message
+            const userMsg = document.createElement('div');
+            userMsg.className = 'bg-primary text-white p-3 rounded-xl rounded-tr-none self-end max-w-[80%] text-sm shadow-sm opacity-0 transform translate-y-2 transition-all duration-300';
+            userMsg.innerText = text;
+            chatMessages.appendChild(userMsg);
+            
+            requestAnimationFrame(() => {
+                userMsg.classList.remove('opacity-0', 'translate-y-2');
+            });
+
+            newChatInput.value = '';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Show typing indicator
+            const typingMsg = document.createElement('div');
+            typingMsg.className = 'bg-surface-container text-on-surface p-3 rounded-xl rounded-tl-none self-start max-w-[80%] text-sm shadow-sm flex gap-1 items-center';
+            typingMsg.innerHTML = '<div class="w-2 h-2 bg-on-surface-variant rounded-full animate-bounce"></div><div class="w-2 h-2 bg-on-surface-variant rounded-full animate-bounce" style="animation-delay: 0.1s"></div><div class="w-2 h-2 bg-on-surface-variant rounded-full animate-bounce" style="animation-delay: 0.2s"></div>';
+            chatMessages.appendChild(typingMsg);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Simulate bot reply
+            setTimeout(() => {
+                typingMsg.remove();
+                
+                const botMsg = document.createElement('div');
+                botMsg.className = 'bg-surface-container text-on-surface p-3 rounded-xl rounded-tl-none self-start max-w-[80%] text-sm shadow-sm opacity-0 transform translate-y-2 transition-all duration-300 border border-outline-variant';
+                botMsg.innerHTML = `<strong>Dra. Mónica (IA):</strong> ¡Recibido! ¿Hace cuánto tiempo notas estos síntomas? El equipo revisará tu mensaje en breve.`;
+                chatMessages.appendChild(botMsg);
+                
+                requestAnimationFrame(() => {
+                    botMsg.classList.remove('opacity-0', 'translate-y-2');
+                });
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 1500);
+        };
+
+        newSendBtn.addEventListener('click', handleSend);
+        newChatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleSend();
+        });
+    }
+
+    // 7. Modals (Historial Médico & Check-in)
+    const btnAddDiagnosis = document.getElementById('btn-add-diagnosis');
+    if (btnAddDiagnosis) {
+        btnAddDiagnosis.addEventListener('click', () => {
+            document.getElementById('add-diagnosis-modal').classList.remove('hidden');
+        });
+    }
+
+    const addDiagnosisForm = document.getElementById('add-diagnosis-form');
+    if (addDiagnosisForm) {
+        addDiagnosisForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const submitBtn = addDiagnosisForm.querySelector('button[type="submit"]');
+            
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = `<svg class="animate-spin h-5 w-5 mx-auto text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
+            submitBtn.disabled = true;
+
+            setTimeout(() => {
+                const name = document.getElementById('diag-name').value;
+                const date = document.getElementById('diag-date').value;
+                const doctor = document.getElementById('diag-doctor').value;
+
+                // Format date roughly for display
+                const dateObj = new Date(date);
+                const monthNames = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+                const formattedDate = `${monthNames[dateObj.getMonth()]} ${dateObj.getFullYear()}`;
+
+                const listContainer = document.querySelector('#view-historial-medico .space-y-4');
+                if (listContainer) {
+                    const newDiag = document.createElement('div');
+                    newDiag.className = 'p-4 bg-surface-container-low border border-surface-variant rounded-xl flex justify-between items-center group hover:border-primary/30 transition-colors bg-primary-50/20'; // Highlight new entry slightly
+                    newDiag.innerHTML = `
+                        <div>
+                            <h3 class="font-bold text-on-surface">${name}</h3>
+                            <p class="text-xs text-on-surface-variant mt-1">Diagnosticado en ${formattedDate} por ${doctor}</p>
+                        </div>
+                        <button class="w-8 h-8 rounded-full hover:bg-surface-variant text-on-surface-variant flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <span class="material-symbols-outlined text-sm">edit</span>
+                        </button>
+                    `;
+                    listContainer.insertBefore(newDiag, listContainer.firstChild);
+                }
+
+                // Reset
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                addDiagnosisForm.reset();
+                document.getElementById('add-diagnosis-modal').classList.add('hidden');
+                showToast('Diagnóstico añadido a tu historial');
+            }, 1000);
+        });
+    }
+
+    const checkinForm = document.getElementById('checkin-form');
+    if (checkinForm) {
+        checkinForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const submitBtn = checkinForm.querySelector('button[type="submit"]');
+            
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = `<svg class="animate-spin h-5 w-5 mx-auto text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
+            submitBtn.disabled = true;
+
+            setTimeout(() => {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                checkinForm.reset();
+                document.getElementById('checkin-modal').classList.add('hidden');
+                
+                // Remove pending checkin UI logic (optional but makes it look done)
+                const checkinCard = document.querySelector('.bg-secondary/10');
+                if(checkinCard) {
+                    checkinCard.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-primary/20 text-primary flex items-center justify-center">
+                                <span class="material-symbols-outlined">check</span>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-on-surface">Check-in Completado</h3>
+                                <p class="text-xs text-on-surface-variant">Tu doctor revisará los resultados pronto.</p>
+                            </div>
+                        </div>
+                    `;
+                    checkinCard.classList.remove('bg-secondary/10', 'border-secondary/30');
+                    checkinCard.classList.add('bg-primary/10', 'border-primary/30');
+                }
+
+                showToast('¡Gracias! Tu check-in mensual ha sido registrado.');
+            }, 1500);
+        });
+    }
+
+    // ==========================================
+    // CMS / ZERO BACKEND INTEGRATION
+    // ==========================================
+    if (window.cmsService) {
+        window.cmsService.getSiteConfig().then(config => {
+            // 1. Update Welcome Message
+            const welcomeMsg = document.getElementById('dash-welcome-msg');
+            if (welcomeMsg && config.textos.bienvenida) {
+                welcomeMsg.innerText = config.textos.bienvenida;
+            }
+
+            // 2. Update Billing Plans
+            const planesContainer = document.getElementById('dash-planes-container');
+            if (planesContainer && config.planes) {
+                planesContainer.innerHTML = '';
+                config.planes.forEach((plan, index) => {
+                    const isPremium = index === 1;
+                    const borderClass = isPremium ? 'border-2 border-primary shadow-md' : 'border border-surface-variant hover:border-primary/50';
+                    const titleColor = isPremium ? 'text-primary' : (index === 2 ? 'text-mint' : 'text-on-surface');
+                    const checkColor = isPremium ? 'text-primary' : (index === 2 ? 'text-mint' : 'text-primary');
+                    const btnClass = isPremium ? 'bg-primary text-white hover:bg-secondary' : 'bg-surface-variant text-on-surface hover:bg-outline-variant';
+                    const badge = isPremium ? '<div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-bold uppercase px-3 py-1 rounded-full">Recomendado</div>' : '';
+
+                    const beneficiosHtml = plan.beneficios.map(b => `
+                        <li class="flex gap-2 items-start"><span class="material-symbols-outlined text-[14px] ${checkColor}">check</span> ${b}</li>
+                    `).join('');
+
+                    planesContainer.innerHTML += `
+                        <div class="${borderClass} rounded-xl p-4 flex flex-col relative transition-colors">
+                            ${badge}
+                            <h3 class="font-bold ${titleColor} text-lg mt-2">${plan.nombre}</h3>
+                            <p class="text-xs text-on-surface-variant mb-4">$${plan.precio} / mes</p>
+                            <ul class="text-xs text-on-surface space-y-2 mb-6 flex-1">
+                                ${beneficiosHtml}
+                            </ul>
+                            <button class="w-full py-2 font-bold rounded-lg text-sm transition-colors ${btnClass}" onclick="showToast('Plan ${plan.nombre} Seleccionado')">Elegir ${plan.nombre}</button>
+                        </div>
+                    `;
+                });
+            }
+        }).catch(err => console.error("Error loading CMS config in Dashboard:", err));
+    }
+
+    // ==========================================
+    // 9. CHECK-IN MENSUAL (STEPPER)
+    // ==========================================
+    const btnStartCheckin = document.getElementById('btn-start-checkin');
+    const modalCheckin = document.getElementById('checkin-modal');
+    if (btnStartCheckin && modalCheckin) {
+        const btnClose = document.getElementById('btn-close-checkin');
+        const backdrop = document.getElementById('checkin-backdrop');
+        const btnNext = document.getElementById('btn-checkin-next');
+        const btnPrev = document.getElementById('btn-checkin-prev');
+        const errSpan = document.getElementById('checkin-error');
+        const indicators = document.querySelectorAll('.step-indicator');
+        const steps = document.querySelectorAll('.checkin-step');
+        
+        let currentStep = 1;
+        let checkinData = {
+            energy: null,
+            digestion: 3,
+            adherenceAvoided: [],
+            adherence80: null,
+            habits: [],
+            supps: null,
+            notes: ""
+        };
+
+        const openModal = () => {
+            modalCheckin.classList.remove('hidden');
+            currentStep = 1;
+            updateStepperUI();
+        };
+
+        const closeModal = () => {
+            modalCheckin.classList.add('hidden');
+        };
+
+        btnStartCheckin.addEventListener('click', openModal);
+        btnClose.addEventListener('click', closeModal);
+        backdrop.addEventListener('click', closeModal);
+
+        const validateStep = () => {
+            errSpan.classList.add('hidden');
+            if (currentStep === 1) {
+                const energyRadio = document.querySelector('input[name="chk_energy"]:checked');
+                if (!energyRadio) {
+                    errSpan.classList.remove('hidden');
+                    return false;
+                }
+                checkinData.energy = energyRadio.value;
+                checkinData.digestion = document.getElementById('chk_digestion').value;
+            } else if (currentStep === 2) {
+                const rule80Radio = document.querySelector('input[name="chk_80_rule"]:checked');
+                if (!rule80Radio) {
+                    errSpan.classList.remove('hidden');
+                    return false;
+                }
+                checkinData.adherence80 = rule80Radio.value;
+                checkinData.adherenceAvoided = Array.from(document.querySelectorAll('.chk-adherence:checked')).map(cb => cb.value);
+            } else if (currentStep === 3) {
+                checkinData.habits = Array.from(document.querySelectorAll('.chk-habits:checked')).map(cb => cb.value);
+            } else if (currentStep === 4) {
+                const suppsRadio = document.querySelector('input[name="chk_supps"]:checked');
+                if (!suppsRadio) {
+                    errSpan.classList.remove('hidden');
+                    return false;
+                }
+                checkinData.supps = suppsRadio.value;
+                checkinData.notes = document.getElementById('chk_notes').value;
+            }
+            return true;
+        };
+
+        const updateStepperUI = () => {
+            // Update steps visibility
+            steps.forEach((step, idx) => {
+                if (idx + 1 === currentStep) {
+                    step.classList.remove('hidden');
+                    step.classList.add('block');
+                } else {
+                    step.classList.add('hidden');
+                    step.classList.remove('block');
+                }
+            });
+
+            // Update indicators
+            indicators.forEach((ind, idx) => {
+                if (idx + 1 <= currentStep) {
+                    ind.classList.remove('bg-surface-variant');
+                    ind.classList.add('bg-primary');
+                } else {
+                    ind.classList.add('bg-surface-variant');
+                    ind.classList.remove('bg-primary');
+                }
+            });
+
+            // Update buttons
+            if (currentStep === 1) {
+                btnPrev.disabled = true;
+            } else {
+                btnPrev.disabled = false;
+            }
+
+            if (currentStep === 4) {
+                btnNext.innerHTML = 'Enviar Check-in <span class="material-symbols-outlined text-sm">send</span>';
+            } else {
+                btnNext.innerHTML = 'Siguiente <span class="material-symbols-outlined text-sm">arrow_forward</span>';
+            }
+        };
+
+        btnNext.addEventListener('click', async () => {
+            if (!validateStep()) return;
+
+            if (currentStep < 4) {
+                currentStep++;
+                updateStepperUI();
+            } else {
+                // Submit
+                const originalHtml = btnNext.innerHTML;
+                btnNext.innerHTML = '<span class="material-symbols-outlined animate-spin text-sm">sync</span> Enviando...';
+                btnNext.disabled = true;
+                btnPrev.disabled = true;
+
+                try {
+                    if (window.patientServices) {
+                        await window.patientServices.submitMonthlyCheckin(checkinData);
+                        showToast('Check-in completado exitosamente.');
+                        setTimeout(() => {
+                            closeModal();
+                            // Reset state
+                            btnNext.innerHTML = originalHtml;
+                            btnNext.disabled = false;
+                            btnPrev.disabled = false;
+                        }, 500);
+                    } else {
+                        throw new Error("patientServices no cargado");
+                    }
+                } catch (e) {
+                    console.error(e);
+                    errSpan.innerText = "Error al enviar el check-in.";
+                    errSpan.classList.remove('hidden');
+                    btnNext.innerHTML = originalHtml;
+                    btnNext.disabled = false;
+                    btnPrev.disabled = false;
+                }
+            }
+        });
+
+        btnPrev.addEventListener('click', () => {
+            if (currentStep > 1) {
+                currentStep--;
+                updateStepperUI();
+            }
+        });
+    }
+
 });
