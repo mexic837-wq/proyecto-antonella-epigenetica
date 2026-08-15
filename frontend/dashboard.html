@@ -258,7 +258,7 @@
 <span class="material-symbols-outlined shrink-0">admin_panel_settings</span>
 <span class="nav-text whitespace-nowrap overflow-hidden text-ellipsis" data-i18n="nav_admin">Ir a Panel Admin</span>
 </a>
-<a href="#" class="nav-item flex items-center gap-md p-sm text-error hover:bg-error/10 rounded-lg transition-all duration-200 hover:-translate-y-[2px]">
+<a href="login.html" class="nav-item flex items-center gap-md p-sm text-error hover:bg-error/10 rounded-lg transition-all duration-200 hover:-translate-y-[2px]">
 <span class="material-symbols-outlined shrink-0">logout</span>
 <span class="nav-text whitespace-nowrap" data-i18n="nav_logout">Cerrar Sesión</span>
 </a>
@@ -635,8 +635,28 @@
                 <div class="p-6">
                     <form id="add-diagnosis-form" class="space-y-4">
                         <div>
-                            <label class="block text-sm font-bold text-on-surface mb-1">Nombre del Diagnóstico</label>
-                            <input type="text" id="diag-name" class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg p-3 text-sm focus:outline-none focus:border-primary" placeholder="Ej: Deficiencia de Vitamina D" required>
+                            <label class="block text-sm font-bold text-on-surface mb-1">Diagnóstico Médico</label>
+                            <select id="diag-name" class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg pl-3 pr-10 py-3 text-sm focus:outline-none focus:border-primary" required>
+                                <option value="" disabled selected>Selecciona una condición médica...</option>
+                                <optgroup label="Neurodesarrollo y Conducta">
+                                    <option value="Trastorno del Espectro Autista (TEA)">Trastorno del Espectro Autista (TEA)</option>
+                                    <option value="Trastorno por Déficit de Atención e Hiperactividad (TDAH)">Trastorno por Déficit de Atención e Hiperactividad (TDAH)</option>
+                                    <option value="Trastorno del Procesamiento Sensorial (TPS)">Trastorno del Procesamiento Sensorial (TPS)</option>
+                                </optgroup>
+                                <optgroup label="Gastrointestinal y Nutricional">
+                                    <option value="Selectividad Alimentaria">Selectividad Alimentaria</option>
+                                    <option value="Disbiosis Intestinal">Disbiosis Intestinal</option>
+                                    <option value="Permeabilidad Intestinal (Leaky Gut)">Permeabilidad Intestinal (Leaky Gut)</option>
+                                    <option value="Enfermedad Celíaca">Enfermedad Celíaca</option>
+                                    <option value="Deficiencia Nutricional (Vitamina D, B12, etc.)">Deficiencia Nutricional (Vitamina D, B12, etc.)</option>
+                                </optgroup>
+                                <optgroup label="Genética y Epigenética">
+                                    <option value="Mutación MTHFR">Mutación MTHFR</option>
+                                    <option value="Sensibilidad Química Múltiple">Sensibilidad Química Múltiple</option>
+                                    <option value="Otra condición genética">Otra condición genética</option>
+                                </optgroup>
+                                <option value="Otra">Otra (Especificar en notas)</option>
+                            </select>
                         </div>
                         <div>
                             <label class="block text-sm font-bold text-on-surface mb-1">Fecha de Diagnóstico</label>
@@ -648,6 +668,72 @@
                         </div>
                         <button type="submit" class="w-full mt-4 py-3 bg-primary text-white rounded-lg font-bold hover:bg-secondary transition-colors">
                             Guardar Diagnóstico
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Añadir Alergia -->
+    <div id="add-allergy-modal" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="document.getElementById('add-allergy-modal').classList.add('hidden')"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg px-4">
+            <div class="bg-surface rounded-2xl overflow-hidden shadow-2xl flex flex-col">
+                <div class="flex justify-between items-center p-4 border-b border-outline-variant bg-surface-container-lowest">
+                    <h3 class="font-bold text-on-surface flex items-center gap-2">
+                        <span class="material-symbols-outlined text-error">coronavirus</span>
+                        Añadir Alergia / Sensibilidad
+                    </h3>
+                    <button onclick="document.getElementById('add-allergy-modal').classList.add('hidden')" class="text-on-surface-variant hover:text-error transition-colors">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <div class="p-6">
+                    <form id="add-allergy-form" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-bold text-on-surface mb-1">Tipo de Alergia o Sensibilidad</label>
+                            <select id="allergy-name" class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg pl-3 pr-10 py-3 text-sm focus:outline-none focus:border-error" required>
+                                <option value="" disabled selected>Selecciona una opción...</option>
+                                <optgroup label="Alimentos">
+                                    <option value="Gluten">Gluten</option>
+                                    <option value="Caseína (Lácteos)">Caseína (Lácteos)</option>
+                                    <option value="Soja">Soja</option>
+                                    <option value="Frutos secos (Maní, Almendras, etc.)">Frutos secos (Maní, Almendras, etc.)</option>
+                                    <option value="Huevo">Huevo</option>
+                                    <option value="Colorantes Artificiales (Rojo 40, etc.)">Colorantes Artificiales (Rojo 40, etc.)</option>
+                                    <option value="Conservantes / Sulfitos">Conservantes / Sulfitos</option>
+                                    <option value="Azúcar Refinada">Azúcar Refinada</option>
+                                </optgroup>
+                                <optgroup label="Medicamentos">
+                                    <option value="Penicilina">Penicilina</option>
+                                    <option value="Ibuprofeno / AINEs">Ibuprofeno / AINEs</option>
+                                    <option value="Amoxicilina">Amoxicilina</option>
+                                    <option value="Aspirina">Aspirina</option>
+                                </optgroup>
+                                <optgroup label="Ambientales y Otros">
+                                    <option value="Ácaros del polvo">Ácaros del polvo</option>
+                                    <option value="Polen">Polen</option>
+                                    <option value="Moho">Moho</option>
+                                    <option value="Caspa de animales">Caspa de animales</option>
+                                </optgroup>
+                                <option value="Otra">Otra (Especificar en notas)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-on-surface mb-1">Nivel de Severidad</label>
+                            <select id="allergy-severity" class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg pl-3 pr-10 py-3 text-sm focus:outline-none focus:border-error" required>
+                                <option value="Leve">Leve (Sensibilidad)</option>
+                                <option value="Moderada">Moderada (Reacción cutánea/digestiva)</option>
+                                <option value="Severa">Severa (Riesgo de anafilaxia)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-on-surface mb-1">Notas u Observaciones (Opcional)</label>
+                            <input type="text" id="allergy-notes" class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg p-3 text-sm focus:outline-none focus:border-error" placeholder="Ej: Provoca erupciones tras consumo">
+                        </div>
+                        <button type="submit" class="w-full mt-4 py-3 bg-error text-white rounded-lg font-bold hover:bg-red-700 transition-colors">
+                            Guardar Alergia
                         </button>
                     </form>
                 </div>
@@ -810,7 +896,7 @@
                 <h3 class="font-headline-md font-bold text-on-surface flex items-center gap-2">
                     <span class="material-symbols-outlined text-primary">monitoring</span> Evolución de Marcadores Clave
                 </h3>
-                <select class="text-sm bg-surface-container-low border border-surface-variant rounded-md px-2 py-1 outline-none text-on-surface">
+                <select class="text-sm bg-surface-container-low border border-surface-variant rounded-md pl-2 pr-8 py-1 outline-none text-on-surface">
                     <option>Niveles de Energía</option>
                     <option>Inflamación Sistémica</option>
                     <option>Calidad del Sueño</option>
@@ -974,7 +1060,7 @@
                 </div>
                 <h3 class="font-bold text-on-surface text-sm mb-2">Guía de Ayuno Intermitente</h3>
                 <p class="text-xs text-on-surface-variant mb-4 flex-1">Cómo iniciar protocolos de ayuno 16/8 de manera segura y enfocada a mujeres.</p>
-                <button class="w-full py-2 bg-surface border border-outline-variant text-on-surface text-xs font-bold rounded-lg hover:bg-surface-variant transition-colors flex items-center justify-center gap-2">
+                <button class="w-full py-2 bg-surface border border-outline-variant text-on-surface text-xs font-bold rounded-lg hover:bg-surface-variant transition-colors flex items-center justify-center gap-2" onclick="showToast('Descargando Guía de Ayuno Intermitente...')">
                     <span class="material-symbols-outlined text-[16px]">download</span> Descargar PDF
                 </button>
             </div>
@@ -1084,7 +1170,7 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-on-surface mb-1">Género</label>
-                            <select class="w-full p-2.5 bg-surface border border-outline-variant rounded-lg focus:ring-primary focus:border-primary text-sm text-on-surface">
+                            <select class="w-full pl-3 pr-10 py-2.5 bg-surface border border-outline-variant rounded-lg focus:ring-primary focus:border-primary text-sm text-on-surface">
                                 <option>Femenino</option>
                                 <option>Masculino</option>
                                 <option>Otro</option>
@@ -1123,29 +1209,14 @@
                         <h2 class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-2">
                             <span class="material-symbols-outlined text-primary">medical_information</span> Diagnósticos Activos
                         </h2>
-                        <button id="btn-add-diagnosis" class="text-xs font-bold text-primary hover:text-secondary flex items-center gap-1 transition-colors">
+                        <button id="btn-add-diagnosis" class="text-xs font-bold text-primary hover:text-secondary flex items-center gap-1 transition-colors" onclick="document.getElementById('add-diagnosis-modal').classList.remove('hidden')">
                             <span class="material-symbols-outlined text-sm">add</span> Añadir
                         </button>
                     </div>
                     
                     <div class="space-y-4 relative z-10">
-                        <div class="p-4 bg-surface-container-low border border-surface-variant rounded-xl flex justify-between items-center group hover:border-primary/30 transition-colors">
-                            <div>
-                                <h3 class="font-bold text-on-surface">Trastorno del Espectro Autista (TEA)</h3>
-                                <p class="text-xs text-on-surface-variant mt-1">Diagnosticado en Ene 2023 por Dr. R. Martínez</p>
-                            </div>
-                            <button class="w-8 h-8 rounded-full hover:bg-surface-variant text-on-surface-variant flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity" onclick="showToast('Función de edición en desarrollo')">
-                                <span class="material-symbols-outlined text-sm">edit</span>
-                            </button>
-                        </div>
-                        <div class="p-4 bg-surface-container-low border border-surface-variant rounded-xl flex justify-between items-center group hover:border-primary/30 transition-colors">
-                            <div>
-                                <h3 class="font-bold text-on-surface">Selectividad Alimentaria Severa</h3>
-                                <p class="text-xs text-on-surface-variant mt-1">Diagnosticado en Mar 2023 por Nutrición Pediátrica</p>
-                            </div>
-                            <button class="w-8 h-8 rounded-full hover:bg-surface-variant text-on-surface-variant flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity" onclick="showToast('Función de edición en desarrollo')">
-                                <span class="material-symbols-outlined text-sm">edit</span>
-                            </button>
+                        <div class="p-6 bg-surface-container-low border border-dashed border-outline-variant rounded-xl flex justify-center items-center">
+                            <p class="text-on-surface-variant text-sm">No hay diagnósticos registrados.</p>
                         </div>
                     </div>
                 </div>
@@ -1158,18 +1229,9 @@
                         </h2>
                     </div>
                     
-                    <div class="flex flex-wrap gap-2">
-                        <span class="px-3 py-1.5 bg-error/10 text-error font-bold text-xs rounded-lg flex items-center gap-2 border border-error/20">
-                            Gluten <button class="hover:text-black" onclick="showToast('Restricción eliminada (borrador)')"><span class="material-symbols-outlined text-[14px]">close</span></button>
-                        </span>
-                        <span class="px-3 py-1.5 bg-error/10 text-error font-bold text-xs rounded-lg flex items-center gap-2 border border-error/20">
-                            Caseína (Lácteos) <button class="hover:text-black" onclick="showToast('Restricción eliminada (borrador)')"><span class="material-symbols-outlined text-[14px]">close</span></button>
-                        </span>
-                        <span class="px-3 py-1.5 bg-amber-500/10 text-amber-600 font-bold text-xs rounded-lg flex items-center gap-2 border border-amber-500/20">
-                            Colorante Rojo 40 <button class="hover:text-black" onclick="showToast('Restricción eliminada (borrador)')"><span class="material-symbols-outlined text-[14px]">close</span></button>
-                        </span>
-                        
-                        <button class="px-3 py-1.5 bg-surface border border-dashed border-outline-variant text-on-surface-variant font-bold text-xs rounded-lg flex items-center gap-1 hover:border-primary hover:text-primary transition-colors" onclick="showToast('Abriendo panel para añadir restricción...')">
+                    <div class="flex flex-wrap gap-2 items-center">
+                        <p class="text-on-surface-variant text-sm italic mr-2">No hay alergias registradas.</p>
+                        <button class="px-3 py-1.5 bg-surface border border-dashed border-outline-variant text-on-surface-variant font-bold text-xs rounded-lg flex items-center gap-1 hover:border-primary hover:text-primary transition-colors" onclick="document.getElementById('add-allergy-modal').classList.remove('hidden')">
                             <span class="material-symbols-outlined text-[14px]">add</span> Nueva alergia
                         </button>
                     </div>
@@ -1183,9 +1245,8 @@
                     <h2 class="font-headline-sm text-headline-sm text-on-surface mb-4 flex items-center gap-2">
                         <span class="material-symbols-outlined text-mint">vaccines</span> Esquema de Vacunación
                     </h2>
-                    <div class="bg-amber-500/10 border-l-4 border-amber-500 p-4 rounded-r-lg mb-4">
-                        <p class="text-xs font-bold text-amber-700">Observación Clínica Crítica:</p>
-                        <p class="text-xs text-amber-900 mt-1">Reacción adversa (pico febril alto y regresión neurológica) reportada tras vacuna MMR a los 18 meses. Esquema actual pausado por recomendación médica.</p>
+                    <div class="bg-surface-container-low border border-dashed border-outline-variant p-4 rounded-lg mb-4 text-center">
+                        <p class="text-on-surface-variant text-sm">No hay esquema de vacunación cargado.</p>
                     </div>
                     <button class="w-full py-2 bg-surface border border-outline-variant text-on-surface font-bold text-xs rounded-lg hover:bg-surface-variant transition-colors flex items-center justify-center gap-2" onclick="showToast('Descargando historial médico (.pdf)')">
                         <span class="material-symbols-outlined text-sm">upload_file</span> Subir Cartilla (PDF)
@@ -1197,27 +1258,10 @@
                     <h2 class="font-headline-sm text-headline-sm text-on-surface mb-4 flex items-center gap-2">
                         <span class="material-symbols-outlined text-on-surface-variant">family_history</span> Antecedentes Familiares
                     </h2>
-                    <ul class="space-y-3 text-sm text-on-surface">
-                        <li class="flex items-start gap-2">
-                            <span class="material-symbols-outlined text-[16px] text-primary shrink-0 mt-0.5">person</span>
-                            <div>
-                                <span class="font-bold">Madre:</span> Hipotiroidismo de Hashimoto
-                            </div>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span class="material-symbols-outlined text-[16px] text-primary shrink-0 mt-0.5">person</span>
-                            <div>
-                                <span class="font-bold">Padre:</span> Sin antecedentes relevantes
-                            </div>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span class="material-symbols-outlined text-[16px] text-primary shrink-0 mt-0.5">group</span>
-                            <div>
-                                <span class="font-bold">Abuelos:</span> Diabetes Tipo II (Materno)
-                            </div>
-                        </li>
-                    </ul>
-                    <button class="mt-4 w-full py-2 bg-surface-variant text-on-surface font-bold text-xs rounded-lg hover:bg-outline-variant transition-colors" onclick="showToast('Abriendo pasarela de pago segura...')">
+                    <div class="bg-surface-container-low border border-dashed border-outline-variant p-4 rounded-lg mb-4 text-center">
+                        <p class="text-on-surface-variant text-sm">No hay antecedentes familiares registrados.</p>
+                    </div>
+                    <button class="mt-2 w-full py-2 bg-surface-variant text-on-surface font-bold text-xs rounded-lg hover:bg-outline-variant transition-colors" onclick="showToast('Abriendo panel de antecedentes...')">
                         Editar Antecedentes
                     </button>
                 </div>
@@ -1430,7 +1474,7 @@
                                 <p class="font-bold text-on-surface">Idioma de la plataforma</p>
                                 <p class="text-sm text-on-surface-variant">Selecciona tu idioma preferido.</p>
                             </div>
-                            <select id="language-select" class="bg-surface border border-outline-variant text-on-surface text-sm rounded-lg focus:ring-primary focus:border-primary block p-2 transition-colors w-40">
+                            <select id="language-select" class="bg-surface border border-outline-variant text-on-surface text-sm rounded-lg focus:ring-primary focus:border-primary block pl-2 pr-10 py-2 transition-colors w-40">
                                 <option value="es">Español (ES)</option>
                                 <option value="en">English (EN)</option>
                             </select>

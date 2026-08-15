@@ -186,7 +186,7 @@
                         <p class="text-xs text-clinical-muted mt-1">Admin Global</p>
                     </div>
                 </div>
-                <a href="/index.html"
+                <a href="login.html"
                     class="text-clinical-muted hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100">
                     <span class="material-symbols-outlined text-[18px]">logout</span>
                 </a>
@@ -206,7 +206,7 @@
                     <h2 class="text-2xl font-bold tracking-tight text-clinical-text">Resumen de la Clínica</h2>
                     <p class="text-sm text-clinical-muted mt-1">Monitoreo general de pacientes y resultados.</p>
                 </div>
-                <select id="kpi-periodo" class="px-4 py-2 bg-white border border-clinical-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 shadow-sm text-clinical-text cursor-pointer">
+                <select id="kpi-periodo" class="pl-4 pr-10 py-2 bg-white border border-clinical-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 shadow-sm text-clinical-text cursor-pointer">
                     <option value="mensual" selected>Mensual</option>
                     <option value="semanal">Semanal</option>
                     <option value="anual">Anual</option>
@@ -286,7 +286,7 @@
                         class="w-full pl-10 pr-4 py-2.5 bg-clinical-surface border border-clinical-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all shadow-sm">
                 </div>
                 <select
-                    class="px-4 py-2.5 bg-clinical-surface border border-clinical-border rounded-xl text-sm focus:outline-none shadow-sm text-clinical-text">
+                    class="pl-4 pr-10 py-2.5 bg-clinical-surface border border-clinical-border rounded-xl text-sm focus:outline-none shadow-sm text-clinical-text">
                     <option>Todos los roles</option>
                     <option>Pacientes</option>
                     <option>Staff Médico</option>
@@ -306,23 +306,9 @@
                             </tr>
                         </thead>
                         <tbody id="tabla-usuarios" class="divide-y divide-clinical-border">
-                                            <div class="bg-primary-500 h-1.5 rounded-full" style="width: 100%"></div>
-                                        </div>
-                                        <span class="text-xs font-medium text-clinical-text">Completado</span>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <span
-                                        class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200/60">
-                                        Reporte Entregado
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 text-right">
-                                    <button
-                                        class="bg-white border border-clinical-border text-clinical-text hover:bg-slate-50 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors shadow-sm"
-                                        onclick="window.openPatientProfile('Carlos%20J.', false)">
-                                        Ver Perfil
-                                    </button>
+                            <tr>
+                                <td colspan="4" class="px-6 py-8 text-center text-clinical-muted text-sm">
+                                    No hay pacientes ni staff registrados en este momento.
                                 </td>
                             </tr>
                         </tbody>
@@ -356,7 +342,7 @@
 
                 <div class="flex flex-col sm:flex-row gap-3 w-full max-w-md" onclick="event.stopPropagation()">
                     <select id="resultados-paciente-select"
-                        class="flex-1 px-4 py-2.5 bg-white border border-clinical-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 shadow-sm text-clinical-text">
+                        class="flex-1 pl-4 pr-10 py-2.5 bg-white border border-clinical-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 shadow-sm text-clinical-text">
                         <option value="" disabled selected>Asignar a paciente...</option>
                     </select>
                     <button
@@ -502,7 +488,7 @@
                             <label class="text-xs font-bold text-clinical-muted uppercase tracking-wider">Plantillas por
                                 Diagnóstico</label>
                             <select
-                                class="text-sm bg-slate-50 border border-clinical-border rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 text-clinical-text cursor-pointer"
+                                class="text-sm bg-slate-50 border border-clinical-border rounded-lg pl-3 pr-10 py-1.5 focus:outline-none focus:ring-2 focus:ring-primary-500/20 text-clinical-text cursor-pointer"
                                 onchange="const textarea = document.getElementById('crm-textarea'); if(this.value) { textarea.value = this.value; textarea.focus(); }">
                                 <option value="" selected>Seleccionar plantilla...</option>
                                 <option
@@ -575,7 +561,7 @@
                     <div>
                         <label class="block text-sm font-medium text-clinical-text mb-1">Módulo</label>
                         <select
-                            class="w-full p-2.5 bg-white border border-clinical-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 text-clinical-text"
+                            class="w-full pl-3 pr-10 py-2.5 bg-white border border-clinical-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 text-clinical-text"
                             required>
                             <option value="" disabled selected>Selecciona un módulo...</option>
                             <option>Módulo 1: Fundamentos Epigenéticos</option>
@@ -746,7 +732,7 @@
                                 <label class="text-xs font-bold uppercase tracking-wider text-clinical-muted mb-1 block">Rol Asignado</label>
                                 <div class="flex items-center gap-3">
                                     <span id="staff-rol-badge" class="px-3 py-1 bg-blue-50 text-blue-700 text-sm font-semibold rounded-lg border border-blue-200">Staff / Médico</span>
-                                    <select id="staff-rol-select" class="hidden text-sm border border-clinical-border rounded-lg px-2 py-1 focus:ring-2 focus:ring-primary-500/20 outline-none">
+                                    <select id="staff-rol-select" class="hidden text-sm border border-clinical-border rounded-lg pl-2 pr-8 py-1 focus:ring-2 focus:ring-primary-500/20 outline-none">
                                         <option value="Médico Especialista">Médico Especialista</option>
                                         <option value="Nutricionista">Nutricionista</option>
                                         <option value="Administrador">Administrador</option>
@@ -968,7 +954,7 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-clinical-muted mb-1">Duración de Citas</label>
-                                <select id="cfg-duracion" class="w-full px-4 py-2 border border-clinical-border rounded-xl text-sm focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500">
+                                <select id="cfg-duracion" class="w-full pl-4 pr-10 py-2 border border-clinical-border rounded-xl text-sm focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500">
                                     <option value="15">15 Minutos</option>
                                     <option value="30">30 Minutos</option>
                                     <option value="45">45 Minutos</option>
@@ -1030,7 +1016,7 @@
             <form id="form-nuevo-registro" class="flex flex-col gap-4">
                 <div>
                     <label class="block text-sm font-medium text-clinical-text mb-1">Tipo de Usuario</label>
-                    <select id="reg-tipo" class="w-full px-3 py-2 border border-clinical-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500" required>
+                    <select id="reg-tipo" class="w-full pl-3 pr-10 py-2 border border-clinical-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500" required>
                         <option value="paciente">Paciente</option>
                         <option value="staff">Staff / Médico</option>
                     </select>

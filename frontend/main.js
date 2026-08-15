@@ -464,7 +464,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Dashboard Accordion
         const accordionBtn = document.getElementById('perfil-accordion-btn');
         const submenu = document.getElementById('perfil-submenu');
-        const arrow = document.getElementById('perfil-arrow');
+        const arrow = document.getElementById('perfil-accordion-icon');
 
         if (accordionBtn && submenu && arrow) {
             accordionBtn.addEventListener('click', () => {
