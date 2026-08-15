@@ -2,7 +2,31 @@
 document.addEventListener('DOMContentLoaded', () => {
     
     // ==========================================
-    // 0. NAVIGATION LOGIC
+    // 0. DARK MODE INITIALIZATION
+    // ==========================================
+    const adminDarkModeToggle = document.getElementById('admin-dark-mode-toggle');
+    if (adminDarkModeToggle) {
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            adminDarkModeToggle.checked = true;
+        } else {
+            document.documentElement.classList.remove('dark');
+            adminDarkModeToggle.checked = false;
+        }
+
+        adminDarkModeToggle.addEventListener('change', () => {
+            if (adminDarkModeToggle.checked) {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+    }
+
+    // ==========================================
+    // 1. NAVIGATION LOGIC
     // ==========================================
     const navItems = document.querySelectorAll('.admin-nav-item');
     const views = document.querySelectorAll('.admin-view-section');
@@ -949,5 +973,364 @@ window.crearCupon = function(event) {
             let val = parseInt(counterElem.innerText) || 0;
             counterElem.innerText = val + 1;
         }
+    }
+};
+
+// --- Admin Chat Interaction ---
+document.addEventListener('DOMContentLoaded', () => {
+    const adminChatInput = document.getElementById('crm-textarea');
+    const btnSendAdminMsg = document.getElementById('btn-send-admin-msg');
+    const adminChatMessages = document.getElementById('chat-messages-container');
+
+    if (adminChatInput && btnSendAdminMsg && adminChatMessages) {
+        const sendMessage = () => {
+            const text = adminChatInput.value.trim();
+            if (!text) return;
+
+            // Remove placeholder if it exists
+            const placeholder = adminChatMessages.querySelector('.text-center');
+            if(placeholder) placeholder.remove();
+
+            const now = new Date();
+            const timeString = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+
+            const msgHtml = `
+                <div class="flex flex-col items-end w-full animate-fade-in mb-4">
+                    <div class="bg-primary-600 text-white rounded-2xl rounded-tr-sm p-3 max-w-[80%] text-sm shadow-sm text-left">
+                        ${text.replace(/\n/g, '<br>')}
+                    </div>
+                    <span class="text-[10px] text-clinical-muted mt-1">${timeString}</span>
+                </div>
+            `;
+            
+            adminChatMessages.insertAdjacentHTML('beforeend', msgHtml);
+            adminChatInput.value = '';
+            adminChatMessages.scrollTop = adminChatMessages.scrollHeight;
+        };
+
+        btnSendAdminMsg.addEventListener('click', sendMessage);
+        adminChatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+    }
+});
+
+// ==========================================
+// 13. CHAT SYNC (ADMIN SIDE)
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    const adminChatContainer = document.getElementById('chat-messages-container');
+    const adminChatInput = document.getElementById('crm-textarea');
+    const adminBtnSend = document.getElementById('btn-send-admin-msg');
+
+    if (adminChatContainer && adminChatInput && adminBtnSend) {
+        const loadAdminMessages = () => {
+            const saved = localStorage.getItem('antonella_chat_messages');
+            if (saved) {
+                const messages = JSON.parse(saved);
+                adminChatContainer.innerHTML = '';
+                messages.forEach(msg => {
+                    if (msg.role === 'user') {
+                        adminChatContainer.insertAdjacentHTML('beforeend', `
+                            <div class="flex items-start gap-3 w-full">
+                                <div class="w-8 h-8 rounded-full bg-slate-200 shrink-0 border border-clinical-border overflow-hidden flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-[16px] text-clinical-muted">person</span>
+                                </div>
+                                <div class="bg-white border border-clinical-border rounded-2xl rounded-tl-sm px-4 py-3 max-w-[85%] shadow-sm">
+                                    <p class="text-sm text-clinical-text">${msg.text}</p>
+                                    <span class="text-[10px] text-clinical-muted block mt-1">${msg.time}</span>
+                                </div>
+                            </div>
+                        `);
+                    } else {
+                        adminChatContainer.insertAdjacentHTML('beforeend', `
+                            <div class="flex items-start justify-end gap-3 w-full">
+                                <div class="bg-primary-50 border border-primary-200 rounded-2xl rounded-tr-sm px-4 py-3 max-w-[85%] shadow-sm">
+                                    <p class="text-sm text-primary-900">${msg.text}</p>
+                                    <span class="text-[10px] text-primary-600/70 block text-right mt-1">${msg.time}</span>
+                                </div>
+                                <div class="w-8 h-8 rounded-full bg-primary-100 shrink-0 border border-primary-200 overflow-hidden flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-[16px] text-primary-600">${msg.isDoctor ? 'medical_services' : 'auto_awesome'}</span>
+                                </div>
+                            </div>
+                        `);
+                    }
+                });
+                adminChatContainer.scrollTop = adminChatContainer.scrollHeight;
+            }
+        };
+
+        loadAdminMessages();
+        setInterval(loadAdminMessages, 3000);
+
+        adminBtnSend.addEventListener('click', () => {
+            const text = adminChatInput.value.trim();
+            if (!text) return;
+
+            const saved = localStorage.getItem('antonella_chat_messages');
+            const messages = saved ? JSON.parse(saved) : [];
+            const time = new Date().toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'});
+            messages.push({ role: 'ai', text, time, isDoctor: true });
+            localStorage.setItem('antonella_chat_messages', JSON.stringify(messages));
+            
+            loadAdminMessages();
+            adminChatInput.value = '';
+        });
+        
+        adminChatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                adminBtnSend.click();
+            }
+        });
+    }
+});
+
+// --- Gestor de Educación Interaction ---
+document.addEventListener('DOMContentLoaded', () => {
+    const formAddClass = document.getElementById('form-add-class');
+    if (formAddClass && window.cmsService) {
+        formAddClass.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const title = document.getElementById('class-title').value;
+            const desc = document.getElementById('class-desc').value;
+            const module = document.getElementById('class-module').value;
+            const url = document.getElementById('class-url').value || '#';
+
+            // Extract duration if possible, otherwise default
+            const newClass = {
+                titulo: title,
+                descripcion: desc,
+                modulo: module,
+                duracion: "10:00", // Default duration for mock
+                url: url
+            };
+
+            await window.cmsService.addMasterclass(newClass);
+            if(typeof showAdminToast === 'function') showAdminToast('Clase publicada y sincronizada.');
+            
+            formAddClass.reset();
+            // TODO: Reload the admin classes list if we decide to render it dynamically in admin too
+            loadAdminDynamicContent();
+        });
+    }
+
+    // --- Dynamic Content Rendering (CMS Sync) ---
+    const loadAdminDynamicContent = async () => {
+        if (!window.cmsService) return;
+        
+        try {
+            const config = await window.cmsService.getSiteConfig();
+            
+            // 1. Render Admin Masterclasses
+            const adminMcGrid = document.getElementById('admin-masterclasses-grid');
+            if (adminMcGrid && config.educacion && config.educacion.masterclasses) {
+                adminMcGrid.innerHTML = ''; // Clear fallback
+                
+                if (config.educacion.masterclasses.length === 0) {
+                    adminMcGrid.innerHTML = '<p class="text-sm text-clinical-muted col-span-full">No hay clases publicadas aún.</p>';
+                } else {
+                    config.educacion.masterclasses.forEach(mc => {
+                        const cardHtml = `
+                        <div class="bg-clinical-surface border border-clinical-border rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow group">
+                            <div class="h-32 bg-slate-100 relative overflow-hidden">
+                                <div class="w-full h-full bg-gradient-to-br from-slate-200 to-primary-100 flex flex-col items-center justify-center text-primary-400">
+                                    <span class="material-symbols-outlined text-3xl mb-1">movie</span>
+                                    <span class="text-[9px] font-bold uppercase tracking-wider">Próximamente</span>
+                                </div>
+                                <div class="absolute top-3 left-3">
+                                    <span class="px-2.5 py-1 bg-emerald-500 text-white text-[10px] font-bold uppercase rounded-md shadow-sm">Publicado</span>
+                                </div>
+                            </div>
+                            <div class="p-5">
+                                <div class="flex justify-between items-start mb-2">
+                                    <span class="text-[10px] font-bold text-primary-600 uppercase tracking-wider">Video (${mc.duracion || '00:00'})</span>
+                                    <button class="text-clinical-muted hover:text-primary-600" onclick="showAdminToast('Opciones de contenido')"><span class="material-symbols-outlined text-[18px]">more_vert</span></button>
+                                </div>
+                                <h3 class="font-bold text-clinical-text text-sm mb-1 leading-tight">${mc.titulo}</h3>
+                                <p class="text-xs text-clinical-muted line-clamp-2">${mc.descripcion}</p>
+                            </div>
+                        </div>`;
+                        adminMcGrid.insertAdjacentHTML('beforeend', cardHtml);
+                    });
+                }
+            }
+
+            // 2. Render Admin Promociones
+            const tablaPromo = document.getElementById('tabla-promociones');
+            if (tablaPromo && config.promociones) {
+                tablaPromo.innerHTML = '';
+                if (config.promociones.length === 0) {
+                    tablaPromo.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-sm text-clinical-muted">No hay cupones activos</td></tr>';
+                } else {
+                    config.promociones.forEach(promo => {
+                        const trHtml = `
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-emerald-500 text-[18px]">sell</span>
+                                    <span class="font-bold text-sm text-clinical-text">${promo.codigo}</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="text-xs text-clinical-muted">Admin Global</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="px-2.5 py-1 bg-primary-50 text-primary-700 text-xs font-bold rounded-md">${promo.descuento}% OFF</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="text-sm font-medium text-clinical-text">0</span>
+                                <span class="text-xs text-clinical-muted"> / ilimitado</span>
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <button class="text-clinical-muted hover:text-red-500 transition-colors" onclick="showAdminToast('Desactivar cupón')">
+                                    <span class="material-symbols-outlined text-[20px]">delete</span>
+                                </button>
+                            </td>
+                        </tr>`;
+                        tablaPromo.insertAdjacentHTML('beforeend', trHtml);
+                    });
+                }
+            }
+
+            // 3. Load Site Config (CMS) into inputs
+            if (config.textos) {
+                const cfgBienvenida = document.getElementById('cfg-bienvenida');
+                const cfgAviso = document.getElementById('cfg-avisoLegal');
+                const cfgTriaje = document.getElementById('cfg-triaje');
+                
+                if (cfgBienvenida) cfgBienvenida.value = config.textos.bienvenida || '';
+                if (cfgAviso) cfgAviso.value = config.textos.avisoLegal || '';
+                if (cfgTriaje) cfgTriaje.value = config.textos.triaje || '';
+            }
+
+        } catch (error) {
+            console.error("Error loading dynamic content:", error);
+        }
+    };
+
+    // CMS Save Settings
+    const btnSaveConfig = document.getElementById('btn-save-config');
+    if (btnSaveConfig) {
+        btnSaveConfig.addEventListener('click', async () => {
+            const originalText = btnSaveConfig.innerHTML;
+            btnSaveConfig.innerHTML = '<span class="material-symbols-outlined text-[18px] animate-spin">sync</span> Guardando...';
+            btnSaveConfig.disabled = true;
+
+            try {
+                if (window.cmsService) {
+                    const config = await window.cmsService.getSiteConfig();
+                    
+                    if (!config.textos) config.textos = {};
+                    
+                    config.textos.bienvenida = document.getElementById('cfg-bienvenida').value;
+                    config.textos.avisoLegal = document.getElementById('cfg-avisoLegal').value;
+                    config.textos.triaje = document.getElementById('cfg-triaje').value;
+
+                    await window.cmsService.updateSiteConfig(config);
+                    showAdminToast('Configuración del sitio actualizada');
+                }
+            } catch (error) {
+                showAdminToast('Error al guardar configuración');
+                console.error(error);
+            } finally {
+                btnSaveConfig.innerHTML = originalText;
+                btnSaveConfig.disabled = false;
+            }
+        });
+    }
+
+    // ==========================================
+    // 12. CHARTS LOGIC
+    // ==========================================
+    const initAdminCharts = () => {
+        const revCtx = document.getElementById('revenueChart');
+        if (revCtx) {
+            new Chart(revCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Ingresos MRR ($)',
+                        data: [],
+                        borderColor: '#006194',
+                        backgroundColor: 'rgba(0, 97, 148, 0.1)',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#4ADE80',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        const plansCtx = document.getElementById('plansChart');
+        if (plansCtx) {
+            new Chart(plansCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [],
+                        backgroundColor: ['#006194', '#E6A822', '#64748B'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '75%',
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        }
+    };
+
+    // Load on init
+    loadAdminDynamicContent();
+    initAdminCharts();
+});
+
+// Window global handlers
+window.crearCupon = async (e) => {
+    e.preventDefault();
+    if (!window.cmsService) return;
+
+    const btn = e.submitter;
+    const originalText = btn.innerText;
+    btn.innerText = 'Guardando...';
+
+    const cupon = {
+        codigo: document.getElementById('promo-codigo').value.toUpperCase(),
+        descuento: parseInt(document.getElementById('promo-descuento').value),
+        expiracion: document.getElementById('promo-expiracion').value
+    };
+
+    try {
+        await window.cmsService.addPromocion(cupon);
+        showAdminToast('Cupón guardado correctamente');
+        document.getElementById('form-crear-cupon').reset();
+        
+        // Triggers a reload of dynamic content (if available in this scope)
+        // Since loadAdminDynamicContent is scoped to DOMContentLoaded, we'll just reload the page for simplicity or dispatch an event
+        window.location.reload(); 
+    } catch (error) {
+        showAdminToast('Error al guardar cupón');
+        btn.innerText = originalText;
     }
 };

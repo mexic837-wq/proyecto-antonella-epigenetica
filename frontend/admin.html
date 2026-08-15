@@ -8,13 +8,46 @@
 
     <!-- Google Fonts & Material Symbols -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
     <!-- Tailwind CSS (CDN) -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <style>
+        :root {
+            --clinical-bg: #ffffff;
+            --clinical-surface: #F5F5DC;
+            --clinical-border: #E8D8C8;
+            --clinical-text: #8C5E35;
+            --clinical-muted: #CD7F32;
+        }
+        .dark {
+            --clinical-bg: #0f172a;
+            --clinical-surface: #1e293b;
+            --clinical-border: #334155;
+            --clinical-text: #f8fafc;
+            --clinical-muted: #94a3b8;
+        }
+        /* Overrides for some hardcoded slate classes in admin */
+        .dark .bg-slate-50 { background-color: #1e293b; }
+        .dark .hover\:bg-slate-50:hover { background-color: #334155; }
+        .dark .bg-slate-100 { background-color: #334155; }
+        .dark .hover\:bg-slate-100:hover { background-color: #475569; }
+        .dark .text-slate-500 { color: #cbd5e1; }
+        .dark .text-slate-600 { color: #e2e8f0; }
+        .dark .bg-white { background-color: var(--clinical-bg); }
+        .dark .border-slate-200 { border-color: var(--clinical-border); }
+    </style>
     <script>
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+        
         tailwind.config = {
+            darkMode: "class",
             theme: {
                 extend: {
                     fontFamily: {
@@ -30,11 +63,11 @@
                             900: '#4A3219',
                         },
                         clinical: {
-                            bg: '#ffffff', // Blanco para el fondo
-                            surface: '#F5F5DC', // Beige para la barra lateral y tarjetas
-                            border: '#E8D8C8', // Beige Cálido
-                            text: '#8C5E35', // Bronce Profundo
-                            muted: '#CD7F32' // Bronce Clásico
+                            bg: 'var(--clinical-bg)',
+                            surface: 'var(--clinical-surface)',
+                            border: 'var(--clinical-border)',
+                            text: 'var(--clinical-text)',
+                            muted: 'var(--clinical-muted)'
                         }
                     }
                 }
@@ -80,6 +113,19 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
         }
+
+        /* Dark Mode overrides for Admin Panel */
+        .dark body { background-color: #000000 !important; }
+        .dark aside, .dark nav { background-color: #121212 !important; border-color: #2D2D2D !important; }
+        .dark .bg-white { background-color: #121212 !important; }
+        .dark .bg-clinical-surface { background-color: #121212 !important; border-color: #2D2D2D !important; }
+        .dark .text-clinical-text { color: #FFFFFF !important; }
+        .dark .text-clinical-muted { color: #B3B3B3 !important; }
+        .dark .border-clinical-border { border-color: #2D2D2D !important; }
+        .dark .bg-slate-50 { background-color: #000000 !important; border-color: #2D2D2D !important; }
+        .dark .bg-slate-100 { background-color: #1A1A1A !important; border-color: #2D2D2D !important; }
+        .dark input, .dark select, .dark textarea { background-color: #1A1A1A !important; color: #FFFFFF !important; border-color: #2D2D2D !important; }
+        .dark .hover\:bg-slate-50:hover { background-color: #1A1A1A !important; }
     </style>
 </head>
 
@@ -105,6 +151,13 @@
                 <span class="material-symbols-outlined text-[20px]"
                     style="font-variation-settings: 'FILL' 1;">dashboard</span>
                 <span class="text-sm">Dashboard General</span>
+            </a>
+
+            <a href="#"
+                class="admin-nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-clinical-muted hover:bg-slate-50 hover:text-clinical-text font-medium transition-all duration-200"
+                data-target="admin-analiticas">
+                <span class="material-symbols-outlined text-[20px]">analytics</span>
+                <span class="text-sm">Métricas Financieras</span>
             </a>
 
             <a href="#"
@@ -167,6 +220,13 @@
 
         <!-- Back to Dashboard -->
         <div class="px-4 pb-4">
+            <div class="flex items-center justify-between mb-4 px-3">
+                <span class="text-sm font-bold text-clinical-text">Modo Oscuro</span>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="admin-dark-mode-toggle" class="sr-only peer">
+                    <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-600"></div>
+                </label>
+            </div>
             <a href="/dashboard.html"
                 class="flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-primary-50 text-primary-700 hover:bg-primary-100 rounded-xl font-medium transition-colors text-sm border border-primary-100">
                 <span class="material-symbols-outlined text-[18px]">arrow_back</span>
@@ -256,6 +316,75 @@
                     <div>
                         <p class="text-sm font-semibold text-clinical-muted">Reportes Pendientes</p>
                         <p id="kpi-reportes" class="text-2xl font-bold text-clinical-text">0</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- VIEW: ANALÍTICAS -->
+        <div id="admin-analiticas" class="admin-view-section hidden animate-fade-in">
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <h2 class="text-3xl font-bold text-clinical-text">Métricas y Finanzas</h2>
+                    <p class="text-clinical-muted mt-1">Análisis de ingresos y comportamiento de planes.</p>
+                </div>
+                <button class="px-4 py-2 bg-white border border-clinical-border text-clinical-text font-bold rounded-xl hover:bg-slate-50 transition-colors flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sm">download</span> Exportar Datos
+                </button>
+            </div>
+
+            <!-- Stats Row -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-white rounded-2xl border border-clinical-border p-6 shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center text-green-600">
+                            <span class="material-symbols-outlined">payments</span>
+                        </div>
+                        <span id="stat-revenue-growth" class="text-sm font-bold text-green-600 bg-green-50 px-2 py-1 rounded-lg skeleton-loader w-16 h-6 inline-block"></span>
+                    </div>
+                    <p class="text-sm text-clinical-muted font-medium mb-1">Ingresos MRR</p>
+                    <h3 id="stat-revenue-total" class="text-3xl font-bold text-clinical-text skeleton-loader w-24 h-8"></h3>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-clinical-border p-6 shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600">
+                            <span class="material-symbols-outlined">trending_up</span>
+                        </div>
+                        <span id="stat-patients-growth" class="text-sm font-bold text-green-600 bg-green-50 px-2 py-1 rounded-lg skeleton-loader w-16 h-6 inline-block"></span>
+                    </div>
+                    <p class="text-sm text-clinical-muted font-medium mb-1">Crecimiento de Pacientes</p>
+                    <h3 id="stat-patients-total" class="text-3xl font-bold text-clinical-text skeleton-loader w-24 h-8"></h3>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-clinical-border p-6 shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center text-purple-600">
+                            <span class="material-symbols-outlined">star</span>
+                        </div>
+                        <span id="stat-retention-growth" class="text-sm font-bold text-green-600 bg-green-50 px-2 py-1 rounded-lg skeleton-loader w-16 h-6 inline-block"></span>
+                    </div>
+                    <p class="text-sm text-clinical-muted font-medium mb-1">Tasa de Retención</p>
+                    <h3 id="stat-retention-total" class="text-3xl font-bold text-clinical-text skeleton-loader w-24 h-8"></h3>
+                </div>
+            </div>
+
+            <!-- Charts Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Ingresos Chart -->
+                <div class="bg-white rounded-2xl border border-clinical-border p-6 shadow-sm">
+                    <h3 class="text-lg font-bold text-clinical-text mb-6">Ingresos Mensuales</h3>
+                    <div class="h-64 relative">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Distribucion Chart -->
+                <div class="bg-white rounded-2xl border border-clinical-border p-6 shadow-sm">
+                    <h3 class="text-lg font-bold text-clinical-text mb-6">Distribución de Planes</h3>
+                    <div class="h-64 relative flex items-center justify-center">
+                        <canvas id="plansChart"></canvas>
                     </div>
                 </div>
             </div>
@@ -431,12 +560,15 @@
                 <!-- Left Sidebar: Chat List -->
                 <div class="w-1/3 min-w-[280px] border-r border-clinical-border bg-slate-50/50 flex flex-col">
                     <div class="p-4 border-b border-clinical-border">
-                        <div class="relative">
+                        <div class="relative mb-3">
                             <span
                                 class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-clinical-muted text-[18px]">search</span>
                             <input type="text" placeholder="Buscar conversación..."
                                 class="w-full pl-9 pr-3 py-2 bg-white border border-clinical-border rounded-lg text-sm focus:outline-none focus:border-primary-500 shadow-sm">
                         </div>
+                        <button class="w-full py-2 bg-primary-50 text-primary-600 font-bold text-sm rounded-lg border border-primary-200 hover:bg-primary-100 transition-colors flex items-center justify-center gap-2" onclick="if(typeof showAdminToast === 'function') showAdminToast('Abriendo directorio de pacientes...')">
+                            <span class="material-symbols-outlined text-[18px]">add_comment</span> Nuevo Chat
+                        </button>
                     </div>
 
                     <div class="flex-1 overflow-y-auto" id="chat-list-container">
@@ -505,7 +637,7 @@
 
                         <div
                             class="flex items-end gap-2 bg-slate-50 border border-clinical-border rounded-2xl p-2 focus-within:ring-2 focus-within:ring-primary-500/20 focus-within:border-primary-500 transition-all">
-                            <input type="file" id="chat-file-upload" class="hidden" accept="image/*,.pdf" onchange="if(this.files[0]) showAdminToast('Archivo adjuntado: ' + this.files[0].name)">
+                            <input type="file" id="chat-file-upload" class="hidden" accept="image/*,.pdf" onchange="if(this.files[0] && typeof showAdminToast === 'function') showAdminToast('Archivo adjuntado: ' + this.files[0].name)">
                             <button
                                 class="p-2 text-clinical-muted hover:text-primary-600 transition-colors rounded-xl shrink-0"
                                 onclick="document.getElementById('chat-file-upload').click()">
@@ -513,9 +645,8 @@
                             </button>
                             <textarea id="crm-textarea" placeholder="Escribe tu respuesta médica..." rows="1"
                                 class="flex-1 bg-transparent border-none resize-none focus:ring-0 text-sm py-2 max-h-32 min-h-[40px]"></textarea>
-                            <button
-                                class="bg-primary-600 hover:bg-primary-700 text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-sm shrink-0 transition-colors"
-                                onclick="const textarea = document.getElementById('crm-textarea'); if(textarea.value) { alert('Mensaje enviado (Simulado)'); textarea.value = ''; }">
+                            <button id="btn-send-admin-msg"
+                                class="bg-primary-600 hover:bg-primary-700 text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-sm shrink-0 transition-colors">
                                 <span class="material-symbols-outlined text-[20px] ml-1">send</span>
                             </button>
                         </div>
@@ -538,29 +669,47 @@
             <!-- Formulario Añadir Clase -->
             <div class="bg-clinical-surface border border-clinical-border rounded-2xl p-6 shadow-sm mb-8">
                 <h3 class="font-semibold text-clinical-text mb-4 text-lg">Añadir Nueva Clase</h3>
-                <form class="grid grid-cols-1 md:grid-cols-2 gap-4"
-                    onsubmit="event.preventDefault(); alert('Clase añadida exitosamente.');">
+                <form id="form-add-class" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="md:col-span-2">
                         <label class="block text-sm font-medium text-clinical-text mb-1">Título de la Clase</label>
-                        <input type="text" placeholder="Ej: Importancia del Sueño"
+                        <input type="text" id="class-title" placeholder="Ej: Importancia del Sueño"
                             class="w-full p-2.5 bg-white border border-clinical-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 text-clinical-text"
                             required>
                     </div>
                     <div class="md:col-span-2">
                         <label class="block text-sm font-medium text-clinical-text mb-1">Descripción</label>
-                        <textarea rows="2" placeholder="Breve descripción del contenido..."
+                        <textarea id="class-desc" rows="2" placeholder="Breve descripción del contenido..."
                             class="w-full p-2.5 bg-white border border-clinical-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 text-clinical-text"
                             required></textarea>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-clinical-text mb-1">URL del Video</label>
-                        <input type="url" placeholder="https://vimeo.com/..."
-                            class="w-full p-2.5 bg-white border border-clinical-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 text-clinical-text"
-                            required>
+                    <div class="col-span-1 md:col-span-2">
+                        <label class="block text-sm font-medium text-clinical-text mb-2">Archivo de Video</label>
+                        <label for="video-upload" class="w-full flex justify-center px-6 pt-5 pb-6 border-2 border-clinical-border border-dashed rounded-xl hover:border-primary-500 hover:bg-primary-50/50 transition-colors cursor-pointer group mb-4">
+                            <div class="space-y-1 text-center">
+                                <span class="material-symbols-outlined text-4xl text-clinical-text-muted group-hover:text-primary-500 mb-2">cloud_upload</span>
+                                <div class="flex flex-col items-center text-sm text-clinical-text">
+                                    <span class="font-medium text-primary-600 hover:text-primary-500">Sube un archivo</span>
+                                    <p>o arrástralo y suéltalo aquí</p>
+                                </div>
+                                <p class="text-xs text-clinical-text-muted mt-1">
+                                    MP4, WebM, MOV hasta 500MB
+                                </p>
+                            </div>
+                            <input id="video-upload" name="video-upload" type="file" class="sr-only" accept="video/*">
+                        </label>
+                        <div class="flex items-center gap-2 mb-3">
+                            <hr class="flex-grow border-clinical-border">
+                            <span class="text-xs text-clinical-text-muted font-bold uppercase tracking-wider">O mediante URL</span>
+                            <hr class="flex-grow border-clinical-border">
+                        </div>
+                        <div class="relative">
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-clinical-text-muted text-[18px]">link</span>
+                            <input type="url" id="class-url" placeholder="Ej: https://vimeo.com/..." class="w-full pl-10 p-2.5 bg-white border border-clinical-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 text-clinical-text">
+                        </div>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-clinical-text mb-1">Módulo</label>
-                        <select
+                        <select id="class-module"
                             class="w-full pl-3 pr-10 py-2.5 bg-white border border-clinical-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 text-clinical-text"
                             required>
                             <option value="" disabled selected>Selecciona un módulo...</option>
@@ -578,54 +727,8 @@
                 </form>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Content Card 1 -->
-                <div
-                    class="bg-clinical-surface border border-clinical-border rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow group">
-                    <div class="h-32 bg-slate-100 relative overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=600&auto=format&fit=crop"
-                            class="w-full h-full object-cover">
-                        <div class="absolute top-3 left-3">
-                            <span
-                                class="px-2.5 py-1 bg-emerald-500 text-white text-[10px] font-bold uppercase rounded-md shadow-sm">Publicado</span>
-                        </div>
-                    </div>
-                    <div class="p-5">
-                        <div class="flex justify-between items-start mb-2">
-                            <span class="text-[10px] font-bold text-primary-600 uppercase tracking-wider">Video
-                                (12:45)</span>
-                            <button class="text-clinical-muted hover:text-primary-600" onclick="showAdminToast('Opciones de contenido')"><span
-                                    class="material-symbols-outlined text-[18px]">more_vert</span></button>
-                        </div>
-                        <h3 class="font-bold text-clinical-text text-sm mb-1 leading-tight">Módulo 1: Precursores NAD+
-                        </h3>
-                        <p class="text-xs text-clinical-muted line-clamp-2">Entiende la ciencia detrás del
-                            envejecimiento celular.</p>
-                    </div>
-                </div>
-
-                <!-- Content Card 2 -->
-                <div
-                    class="bg-clinical-surface border border-clinical-border rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow group border-dashed">
-                    <div class="h-32 bg-slate-50 flex items-center justify-center relative">
-                        <span class="material-symbols-outlined text-4xl text-slate-300">picture_as_pdf</span>
-                        <div class="absolute top-3 left-3">
-                            <span
-                                class="px-2.5 py-1 bg-slate-200 text-slate-600 text-[10px] font-bold uppercase rounded-md">Borrador</span>
-                        </div>
-                    </div>
-                    <div class="p-5">
-                        <div class="flex justify-between items-start mb-2">
-                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Documento
-                                PDF</span>
-                            <button class="text-clinical-muted hover:text-primary-600" onclick="showAdminToast('Opciones de contenido')"><span
-                                    class="material-symbols-outlined text-[18px]">more_vert</span></button>
-                        </div>
-                        <h3 class="font-bold text-clinical-text text-sm mb-1 leading-tight">Recetario Antiinflamatorio
-                        </h3>
-                        <p class="text-xs text-clinical-muted">Pendiente de revisión médica final.</p>
-                    </div>
-                </div>
+            <div id="admin-masterclasses-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dynamic classes will be loaded here -->
             </div>
         </div>
 
@@ -739,6 +842,33 @@
                                     </select>
                                 </div>
                             </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="text-xs font-bold uppercase tracking-wider text-clinical-muted mb-1 block">Especialidad</label>
+                                    <input type="text" value="Medicina Funcional" class="w-full px-3 py-2 bg-white border border-clinical-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 text-clinical-text">
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold uppercase tracking-wider text-clinical-muted mb-1 block">No. Colegiado</label>
+                                    <input type="text" value="CM-12345" class="w-full px-3 py-2 bg-white border border-clinical-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 text-clinical-text">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="text-xs font-bold uppercase tracking-wider text-clinical-muted mb-1 block">Biografía Corta (Pública)</label>
+                                <textarea rows="2" class="w-full px-3 py-2 bg-white border border-clinical-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20 text-clinical-text">Especialista en Epigenética y reversión del envejecimiento celular.</textarea>
+                            </div>
+
+                            <div>
+                                <label class="text-xs font-bold uppercase tracking-wider text-clinical-muted mb-1 block">Días de Atención</label>
+                                <div class="flex flex-wrap gap-4 mt-2">
+                                    <label class="flex items-center gap-2 text-sm text-clinical-text"><input type="checkbox" checked class="rounded text-primary-600 focus:ring-primary-500 w-4 h-4"> Lun</label>
+                                    <label class="flex items-center gap-2 text-sm text-clinical-text"><input type="checkbox" checked class="rounded text-primary-600 focus:ring-primary-500 w-4 h-4"> Mar</label>
+                                    <label class="flex items-center gap-2 text-sm text-clinical-text"><input type="checkbox" checked class="rounded text-primary-600 focus:ring-primary-500 w-4 h-4"> Mié</label>
+                                    <label class="flex items-center gap-2 text-sm text-clinical-text"><input type="checkbox" checked class="rounded text-primary-600 focus:ring-primary-500 w-4 h-4"> Jue</label>
+                                    <label class="flex items-center gap-2 text-sm text-clinical-text"><input type="checkbox" class="rounded text-primary-600 focus:ring-primary-500 w-4 h-4"> Vie</label>
+                                </div>
+                            </div>
                             <div id="staff-owner-controls" class="hidden pt-4 border-t border-clinical-border">
                                 <p class="text-xs text-clinical-muted mb-2 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">admin_panel_settings</span> Controles de Owner</p>
                                 <button id="btn-change-role" class="text-sm font-medium text-primary-600 hover:text-primary-700">Cambiar Rol</button>
@@ -805,13 +935,13 @@
                 <div class="lg:col-span-1">
                     <div class="bg-clinical-surface border border-clinical-border rounded-2xl p-6 shadow-sm">
                         <h3 class="font-bold text-clinical-text mb-4">Generar Cupón</h3>
-                        <form onsubmit="crearCupon(event)">
+                        <form id="form-crear-cupon" onsubmit="crearCupon(event)">
                             <div class="space-y-4">
                                 <div>
                                     <label
                                         class="block text-xs font-bold text-clinical-muted uppercase tracking-wider mb-1">Nombre
                                         / Código</label>
-                                    <input type="text" placeholder="Ej. VERANO26"
+                                    <input type="text" id="promo-codigo" placeholder="Ej. VERANO26"
                                         class="w-full bg-slate-50 border border-clinical-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary-500"
                                         required>
                                 </div>
@@ -819,14 +949,14 @@
                                     <label
                                         class="block text-xs font-bold text-clinical-muted uppercase tracking-wider mb-1">%
                                         de Descuento</label>
-                                    <input type="number" placeholder="Ej. 15"
+                                    <input type="number" id="promo-descuento" placeholder="Ej. 15"
                                         class="w-full bg-slate-50 border border-clinical-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary-500"
                                         required>
                                 </div>
                                 <div>
                                     <label
                                         class="block text-xs font-bold text-clinical-muted uppercase tracking-wider mb-1">Expiración</label>
-                                    <input type="date"
+                                    <input type="date" id="promo-expiracion"
                                         class="w-full bg-slate-50 border border-clinical-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary-500"
                                         required>
                                 </div>
@@ -1101,9 +1231,9 @@
     </div>
 
     <!-- Navigation Script -->
-    <script src="/cmsService.js?v=4"></script>
-    <script src="/webhook_service.js?v=4"></script>
-    <script src="/admin.js?v=4"></script>
+    <script src="/cmsService.js?v=6"></script>
+    <script src="/webhook_service.js?v=9"></script>
+    <script src="/admin.js?v=9"></script>
 </body>
 
 </html>
