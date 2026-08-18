@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Antonella Epigenética - Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-container": "#ac6200",
+                        "primary-container": "#007bb9",
+                        "primary-fixed-dim": "#93ccff",
+                        "surface-container": "#e5eeff",
+                        "background": "#f8f9ff",
+                        "on-secondary-fixed-variant": "#004c6e",
+                        "tertiary-fixed-dim": "#ffb875",
+                        "on-primary-fixed": "#001d31",
+                        "error": "#ba1a1a",
+                        "on-background": "#0b1c30",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary": "#894d00",
+                        "on-tertiary-fixed": "#2d1600",
+                        "on-primary-fixed-variant": "#004b73",
+                        "on-tertiary-fixed-variant": "#6b3b00",
+                        "on-tertiary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "inverse-surface": "#213145",
+                        "on-error": "#ffffff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-surface": "#0b1c30",
+                        "surface-container-high": "#dce9ff",
+                        "on-tertiary-container": "#fffbff",
+                        "on-secondary-container": "#004666",
+                        "surface-container-highest": "#d3e4fe",
+                        "surface-variant": "#d3e4fe",
+                        "outline-variant": "#bfc7d2",
+                        "surface-container-low": "#eff4ff",
+                        "on-primary-container": "#fdfcff",
+                        "secondary-fixed-dim": "#89ceff",
+                        "inverse-primary": "#93ccff",
+                        "secondary": "#006591",
+                        "outline": "#707881",
+                        "surface": "#f8f9ff",
+                        "surface-bright": "#f8f9ff",
+                        "primary-fixed": "#cce5ff",
+                        "primary": "#006194",
+                        "tertiary-fixed": "#ffdcc0",
+                        "on-surface-variant": "#3f4850",
+                        "surface-tint": "#006398",
+                        "secondary-container": "#39b8fd",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed": "#001e2f",
+                        "surface-dim": "#cbdbf5",
+                        "secondary-fixed": "#c9e6ff",
+                        "on-error-container": "#93000a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "lg": "24px",
+                        "margin-mobile": "20px",
+                        "gutter-mobile": "12px",
+                        "unit": "4px",
+                        "xl": "32px",
+                        "sm": "8px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "display-lg-mobile": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "display-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "display-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .skeleton-loading {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .form-content {
+            display: none;
+        }
+        .form-content.loaded {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface h-screen w-screen overflow-hidden flex flex-col font-body-md antialiased">
+<!-- Top Third: Image with Gradient -->
+<div class="relative h-1/3 w-full flex-shrink-0">
+<img alt="Abstract DNA strand visualization in soft blue and green hues." class="absolute inset-0 w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6gKQ7Z_uOQI2S4Fv91BwjLSsgcgsWcHDWvFnACfOWm0qP3RlZ6LU1BR58eAztDkV0rFO1A65CfRC_Nh2f0M7O3w60niv4dc61dH14oegoEBOJV-ON9yaQpCrabCOdUxpzq0rmISGUH3EH76jEJWLa1AGcmwz4wkh-5J1-ZgfL-uRTwpLd348lv9add9UlyS4ep7bPxhI8gsYcLeCddCBTxa3A2-kThINVAAfKNTMg01czZ2MVcpHD"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface to-transparent"></div>
+</div>
+<!-- Bottom Two-Thirds: Login Form -->
+<div class="flex-grow flex flex-col justify-center px-margin-mobile bg-surface relative z-10 -mt-8 rounded-t-xl">
+<div class="max-w-md w-full mx-auto space-y-8">
+<div class="text-center">
+<h1 class="font-display-lg-mobile text-display-lg-mobile text-primary mb-2">Portal de Pacientes VIP</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Antonella Epigenética</p>
+</div>
+<!-- Skeleton Loader -->
+<div class="space-y-6" id="skeleton-container">
+<div class="h-14 bg-surface-container-high rounded-lg skeleton-loading w-full"></div>
+<div class="h-14 bg-surface-container-high rounded-lg skeleton-loading w-full"></div>
+<div class="h-14 bg-surface-container-high rounded-full skeleton-loading w-full mt-8"></div>
+</div>
+<!-- Actual Form -->
+<form class="form-content space-y-6" id="login-form" onsubmit="event.preventDefault();">
+<div class="relative">
+<label class="sr-only" for="email">Email</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline">mail</span>
+</div>
+<input class="block w-full pl-12 pr-4 py-4 h-14 bg-surface border border-outline-variant rounded-lg text-on-surface focus:ring-2 focus:ring-primary focus:border-primary transition-colors font-body-lg text-body-lg placeholder-outline" id="email" name="email" placeholder="Email Address" type="email"/>
+</div>
+</div>
+<div class="relative">
+<label class="sr-only" for="password">Password</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline">lock</span>
+</div>
+<input class="block w-full pl-12 pr-4 py-4 h-14 bg-surface border border-outline-variant rounded-lg text-on-surface focus:ring-2 focus:ring-primary focus:border-primary transition-colors font-body-lg text-body-lg placeholder-outline" id="password" name="password" placeholder="Password" type="password"/>
+</div>
+</div>
+<div class="flex items-center justify-between mt-2">
+<div class="flex items-center">
+<input class="h-4 w-4 text-primary focus:ring-primary border-outline-variant rounded" id="remember-me" name="remember-me" type="checkbox"/>
+<label class="ml-2 block font-body-md text-body-md text-on-surface-variant" for="remember-me">
+                            Remember me
+                        </label>
+</div>
+<div class="text-sm">
+<a class="font-body-md text-body-md font-medium text-primary hover:text-primary-container" href="#">
+                            Forgot password?
+                        </a>
+</div>
+</div>
+<div>
+<button class="w-full flex justify-center py-4 px-4 border border-transparent rounded-full shadow-sm font-headline-md text-headline-md text-on-primary bg-primary hover:bg-primary-container focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary active:scale-95 transition-transform duration-200" type="submit">
+                        Sign In
+                    </button>
+</div>
+</form>
+<div class="text-center mt-6 form-content">
+<p class="font-body-md text-body-md text-on-surface-variant">
+                    Don't have an account? <a class="font-medium text-primary hover:text-primary-container" href="#">Contact support</a>
+</p>
+</div>
+</div>
+</div>
+<script>
+        // Simulate loading state
+        document.addEventListener("DOMContentLoaded", () => {
+            setTimeout(() => {
+                document.getElementById('skeleton-container').style.display = 'none';
+                const formElements = document.querySelectorAll('.form-content');
+                formElements.forEach(el => el.classList.add('loaded'));
+            }, 1200); // 1.2s simulated delay
+        });
+    </script>
+</body></html>

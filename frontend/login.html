@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Antonella Epigenética - Login</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#D4AF37",
+                        "secondary": "#CD7F32",
+                        "background": "#F5F5DC",
+                        "on-background": "#8C5E35"
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/math/ImprovedNoise.js"></script>
+    <link rel="stylesheet" href="/style.css">
+    <script type="module" src="/main.js"></script>
+</head>
+
+<body class="page-transition antialiased h-screen w-screen overflow-hidden font-body-md flex">
+    
+    <!-- Botón de Regresar -->
+    <a href="/index.html" class="absolute top-6 left-6 md:top-8 md:left-8 z-50 flex items-center justify-center w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white transition-all duration-300 hover:scale-105 hover:-translate-x-1 group">
+        <span class="material-symbols-outlined text-2xl group-hover:text-white">arrow_back</span>
+    </a>
+
+    <!-- Split Screen Layout -->
+    <div class="flex w-full h-full">
+
+        <!-- Left Side: Three.js DNA (Background on Mobile) -->
+        <div class="absolute inset-0 md:relative md:flex md:w-1/2 bg-[#010103] items-center justify-center overflow-hidden z-0">
+
+            <!-- Three.js Container -->
+            <div id="canvas-container"
+                class="absolute inset-0 z-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,#0c0822_0%,#010103_100%)]">
+                <div class="vignette"></div>
+            </div>
+
+            <!-- Brand Overlay -->
+            <div class="hidden md:block absolute bottom-10 left-10 z-20 glass p-8 rounded-xl max-w-md">
+                <h1 class="text-3xl font-bold text-white mb-2">Antonella Epigenética</h1>
+                <p class="text-lg text-white/80">Descubriendo el potencial de tu ADN para una vida más saludable.</p>
+            </div>
+
+            <!-- Ambient Glow -->
+            <div
+                class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-primary/20 rounded-full blur-[100px] z-0">
+            </div>
+        </div>
+
+        <!-- Right Side: Login Form -->
+        <div class="relative z-10 w-full md:w-1/2 flex flex-col justify-center items-center p-5 sm:p-8 md:p-12 h-full overflow-y-auto bg-transparent md:bg-white">
+            <div class="w-full max-w-md space-y-8 bg-white/10 backdrop-blur-xl backdrop-brightness-150 border border-white/40 md:bg-none md:border-none md:bg-transparent md:backdrop-blur-none md:backdrop-brightness-100 p-8 md:p-0 rounded-3xl md:rounded-none shadow-[0_8px_32px_rgba(255,255,255,0.1)] md:shadow-none">
+
+                <!-- Skeletons (Visible Initially) -->
+                <div id="skeleton-view" class="w-full space-y-6">
+                    <div class="skeleton-loader h-10 w-3/4 mb-8"></div>
+                    <div class="skeleton-loader h-4 w-full"></div>
+                    <div class="skeleton-loader h-12 w-full rounded-md"></div>
+                    <div class="skeleton-loader h-4 w-1/2"></div>
+                    <div class="skeleton-loader h-12 w-full rounded-md"></div>
+                    <div class="skeleton-loader h-14 w-full rounded-full mt-6"></div>
+                </div>
+
+                <!-- Real Content (Hidden Initially) -->
+                <div id="real-content" class="w-full fade-in-content hidden">
+                    <!-- Header -->
+                    <div class="text-center space-y-2 mb-8 flex flex-col items-center">
+                        <img alt="Antonella Logo" class="h-20 md:h-28 w-auto object-contain mb-6 brightness-0 invert md:brightness-100 md:invert-0"
+                            src="/Antonella_Logo_SF.png" />
+                        <h2 class="text-3xl text-white md:text-gray-900 font-bold mb-1">Portal de Pacientes</h2>
+                        <p class="text-sm text-white/80 md:text-gray-600">Ingresa a tu cuenta para acceder a tus resultados epigenéticos.
+                        </p>
+                    </div>
+
+                    <!-- Form -->
+                    <form action="#" class="space-y-6 w-full" method="POST">
+                        <!-- Email Field -->
+                        <div class="space-y-2 group">
+                            <label
+                                class="block text-sm font-medium text-white md:text-gray-700 group-focus-within:text-primary md:group-focus-within:text-primary transition-colors"
+                                for="email">Correo Electrónico</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span
+                                        class="material-symbols-outlined text-gray-400 group-focus-within:text-primary transition-colors">mail</span>
+                                </span>
+                                <input
+                                    class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all text-gray-900 outline-none"
+                                    id="email" name="email" placeholder="admin@prueba" required="" type="email"
+                                    value="admin@prueba" />
+                            </div>
+                        </div>
+
+                        <!-- Password Field -->
+                        <div class="space-y-2 group">
+                            <div class="flex justify-between items-center">
+                                <label
+                                    class="block text-sm font-medium text-white md:text-gray-700 group-focus-within:text-primary md:group-focus-within:text-primary transition-colors"
+                                    for="password">Contraseña</label>
+                                <a class="text-xs text-primary hover:underline font-medium" href="#">¿Olvidaste tu
+                                    contraseña?</a>
+                            </div>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span
+                                        class="material-symbols-outlined text-gray-400 group-focus-within:text-primary transition-colors">lock</span>
+                                </span>
+                                <input
+                                    class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all text-gray-900 outline-none"
+                                    id="password" name="password" placeholder="••••••••" required="" type="password"
+                                    value="123" />
+                            </div>
+                        </div>
+
+                        <!-- Remember Me -->
+                        <div class="flex items-center mt-2">
+                            <input
+                                class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded cursor-pointer"
+                                id="remember-me" name="remember-me" type="checkbox" />
+                            <label class="ml-2 block text-sm text-white md:text-gray-600 cursor-pointer" for="remember-me">
+                                Recordarme en este dispositivo
+                            </label>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button
+                            class="w-full py-4 mt-6 bg-primary text-white rounded-lg font-bold shadow-sm hover:bg-secondary transition-all duration-300 active:scale-[0.98]"
+                            type="submit">
+                            Ingresar
+                        </button>
+                    </form>
+
+                    <!-- Footer / Sign Up Link -->
+                    <div class="mt-8 text-center">
+                        <p class="text-sm text-white md:text-gray-600">
+                            ¿No tienes una cuenta?
+                            <a class="text-sm font-bold text-primary hover:underline ml-1" href="#">Solicitar acceso</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
