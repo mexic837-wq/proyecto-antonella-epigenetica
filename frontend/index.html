@@ -33,7 +33,7 @@
 
 <body class="page-transition bg-background text-on-background min-h-screen flex flex-col">
     <!-- TopNavBar (Sticky with transition) -->
-    <nav id="main-nav" class="fixed top-0 left-0 w-full z-50 transition-all duration-500 bg-transparent py-4">
+    <nav id="main-nav" class="fixed top-0 left-0 w-full z-50 transition-all duration-500 bg-transparent border-b border-transparent py-4">
         <div class="flex justify-between items-center px-5 md:px-10 max-w-[1400px] mx-auto w-full relative">
 
             <!-- Logo (Izquierda) -->
@@ -69,7 +69,7 @@
     <!-- Main Content -->
     <main class="flex-grow flex flex-col">
         <!-- Hero Section Full Bleed -->
-        <section class="w-full relative min-h-[600px] md:min-h-[85vh] flex items-center overflow-hidden pt-20">
+        <section data-section="hero" class="w-full relative min-h-[600px] md:min-h-[85vh] flex items-center overflow-hidden pt-20">
 
             <!-- Contenedor Base con la animación de respiración lenta -->
             <div class="absolute inset-0 animate-pan z-0">
@@ -113,8 +113,7 @@
                             class="texto-fade text-primary block mt-2 md:inline md:mt-0 drop-shadow-sm">tu destino</span>
                     </h1>
                     <p class="text-base sm:text-lg md:text-xl text-on-background/90 max-w-lg leading-relaxed font-semibold">
-                        Descubre el poder de la epigenética para optimizar tu salud. Nuestro protocolo científico te
-                        proporciona un mapa personalizado hacia la vitalidad y la longevidad.
+                        Suplementar desequilibrios nutricionales no puede ser algo al azar, conocer qué afecta a tu sistema desde la raíz es nuestra especialidad, con solo 5 cabellos con folículo capilar podríamos revelar la respuesta que tienes tanto tiempo buscando.
                     </p>
                     <div class="pt-2 md:pt-4 w-full sm:w-auto">
                         <button
@@ -126,8 +125,101 @@
             </div>
         </section>
 
+        <!-- Video VSL Section -->
+        <section data-section="video_proceso" class="w-full py-20 relative bg-gradient-to-b from-transparent via-white/40 to-transparent">
+            <div class="max-w-[1140px] mx-auto px-5 md:px-6 relative z-10 flex flex-col items-center">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl text-gray-900 font-bold mb-4">Conoce Nuestro Proceso</h2>
+                    <p class="text-gray-600 max-w-2xl mx-auto">Descubre desde la A a la Z cómo nuestro análisis epigenético revela lo que tu sistema necesita desde la raíz.</p>
+                </div>
+                <div class="w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl aspect-video bg-gray-900 flex items-center justify-center relative group cursor-pointer border border-gray-800">
+                    <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all duration-300"></div>
+                    <span class="material-symbols-outlined text-white text-7xl md:text-8xl drop-shadow-lg z-10 transform group-hover:scale-110 transition-transform duration-300">play_circle</span>
+                    <p class="absolute bottom-6 left-6 text-white font-medium z-10 opacity-80">Video VSL de Antonella (Próximamente)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bienestar/Discount Section -->
+        <section data-section="programa_bienestar" class="w-full py-20 relative overflow-hidden bg-[#2A1B10] text-[#F5F5DC]">
+            <!-- Degradados de transición sutiles -->
+            <div class="absolute top-0 left-0 w-full h-6 bg-gradient-to-b from-[#F5F5DC] to-transparent z-0 pointer-events-none opacity-80"></div>
+            <div class="absolute bottom-0 left-0 w-full h-6 bg-gradient-to-t from-[#F5F5DC] to-transparent z-0 pointer-events-none opacity-80"></div>
+            
+            <div class="max-w-[800px] mx-auto px-5 md:px-6 relative z-10 text-center">
+                <div class="inline-flex items-center justify-center p-3 bg-primary/20 rounded-full mb-4">
+                    <span class="material-symbols-outlined text-primary text-3xl">volunteer_activism</span>
+                </div>
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Programa de Bienestar</h2>
+                <p class="text-lg text-[#F5F5DC]/80 mb-8 leading-relaxed">
+                    Únete a nuestra comunidad y recibe un beneficio especial para tu primer análisis o suscripción. Tu camino hacia la salud óptima comienza aquí.
+                </p>
+                
+                <!-- Form State -->
+                <div id="discount-form-container" class="max-w-md mx-auto transition-all duration-500">
+                    <form id="discount-form" class="flex flex-col sm:flex-row gap-3">
+                        <input type="email" id="discount-email" placeholder="Tu correo electrónico" required
+                            class="flex-grow px-4 py-3 rounded-full text-gray-900 bg-[#F5F5DC] focus:outline-none focus:ring-2 focus:ring-primary border border-transparent">
+                        <button type="submit"
+                            class="bg-primary hover:bg-secondary text-white font-semibold px-6 py-3 rounded-full shadow-lg hover:shadow-xl transition-all whitespace-nowrap">
+                            Obtener Beneficio
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Success State -->
+                <div id="discount-success-container" class="max-w-md mx-auto hidden opacity-0 transition-all duration-500">
+                    <div class="bg-[#3E2723] rounded-2xl p-6 border border-primary/30">
+                        <p class="text-[#F5F5DC]/90 mb-2">¡Felicidades! Aquí tienes tu código:</p>
+                        <div class="text-2xl font-bold text-primary mb-6 tracking-widest">BIENVENIDA-15</div>
+                        <a href="/login.html?coupon=BIENVENIDA-15" class="inline-block bg-primary hover:bg-secondary text-white font-semibold px-8 py-3 rounded-full shadow-lg hover:shadow-xl transition-all w-full text-center">
+                            Crear Cuenta y Aplicar
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Especialidades / Subnichos -->
+        <section data-section="especialidades" class="w-full py-20 relative bg-gradient-to-b from-transparent via-primary/5 to-transparent">
+            <div class="max-w-[1140px] mx-auto px-5 md:px-6 relative z-10">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl text-gray-900 font-bold mb-4">Especialistas en Desarrollo Infantil</h2>
+                    <p class="text-gray-600 max-w-3xl mx-auto text-lg">Enfocados en brindar respuestas claras y planes de acción nutricional efectivos para niños con desafíos en su desarrollo.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Autismo -->
+                    <div class="glass hover-card rounded-2xl p-6 text-center border-t-4 border-primary shadow-lg flex flex-col items-center">
+                        <span class="material-symbols-outlined text-4xl text-primary mb-4">psychology_alt</span>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Autismo & TEA</h3>
+                        <p class="text-sm text-gray-600">Abordaje funcional para mejorar conexiones neuronales y calidad de vida.</p>
+                    </div>
+                    <!-- Neurodivergencia & TDAH -->
+                    <div class="glass hover-card rounded-2xl p-6 text-center border-t-4 border-secondary shadow-lg flex flex-col items-center">
+                        <span class="material-symbols-outlined text-4xl text-secondary mb-4">extension</span>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Neurodivergencia & TDAH</h3>
+                        <p class="text-sm text-gray-600">Protocolos para la regulación, hiperactividad y déficit de atención.</p>
+                    </div>
+                    <!-- Retraso en el Habla -->
+                    <div class="glass hover-card rounded-2xl p-6 text-center border-t-4 border-primary shadow-lg flex flex-col items-center">
+                        <span class="material-symbols-outlined text-4xl text-primary mb-4">record_voice_over</span>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Retraso en el Habla</h3>
+                        <p class="text-sm text-gray-600">Identificamos carencias que retrasan el desarrollo del lenguaje verbal.</p>
+                    </div>
+                    <!-- Selectividad Alimentaria -->
+                    <div class="glass hover-card rounded-2xl p-6 text-center border-t-4 border-secondary shadow-lg flex flex-col items-center">
+                        <span class="material-symbols-outlined text-4xl text-secondary mb-4">restaurant</span>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Selectividad Alimentaria</h3>
+                        <p class="text-sm text-gray-600">Comprendemos qué intolerancias o texturas afectan la nutrición infantil.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
         <!-- Cómo Funciona Section -->
-        <section class="w-full py-24 relative" id="saber-mas">
+        <section data-section="como_funciona" class="w-full py-24 relative" id="saber-mas">
             <div class="max-w-[1140px] mx-auto px-5 md:px-6 relative z-10">
                 <div class="text-center mb-16">
                     <h2 class="text-3xl text-gray-900 font-bold mb-4">El Camino a tu Bienestar</h2>
@@ -180,8 +272,71 @@
             </div>
         </section>
 
+        <!-- Asistente de Triaje -->
+        <section data-section="asistente_triaje" class="w-full py-24 relative overflow-hidden bg-gradient-to-b from-transparent via-white/60 to-transparent backdrop-blur-sm">
+            <div class="max-w-[1000px] mx-auto px-5 md:px-6 relative z-10 flex flex-col md:flex-row items-center gap-12">
+                <!-- Chat Graphic -->
+                <div class="w-full md:w-1/2">
+                    <div class="glass rounded-3xl p-6 shadow-xl relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent pointer-events-none"></div>
+                        <div class="flex items-center gap-3 mb-6 border-b border-gray-200 pb-4">
+                            <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold text-xl">A</div>
+                            <div>
+                                <h4 class="font-bold text-gray-800">AntonellaBot</h4>
+                                <span class="text-xs text-green-500 flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-green-500"></span> Asistente Clínico 24/7</span>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <!-- Msg 1 -->
+                            <div class="flex gap-3">
+                                <div class="w-8 h-8 rounded-full bg-gray-200 flex-shrink-0 flex items-center justify-center text-xs text-gray-500 font-bold">A</div>
+                                <div class="bg-gray-100 rounded-2xl rounded-tl-sm p-3 text-sm text-gray-700 shadow-sm w-fit border border-white">
+                                    ¡Hola! Antes de derivarte con nuestro especialista, cuéntame: ¿Qué edad tiene tu hijo/a?
+                                </div>
+                            </div>
+                            <!-- Msg 2 -->
+                            <div class="flex gap-3 flex-row-reverse">
+                                <div class="w-8 h-8 rounded-full bg-primary/20 flex-shrink-0 flex items-center justify-center text-xs text-primary font-bold">Tú</div>
+                                <div class="bg-primary text-white rounded-2xl rounded-tr-sm p-3 text-sm shadow-sm w-fit">
+                                    Tiene 4 años.
+                                </div>
+                            </div>
+                            <!-- Msg 3 -->
+                            <div class="flex gap-3">
+                                <div class="w-8 h-8 rounded-full bg-gray-200 flex-shrink-0 flex items-center justify-center text-xs text-gray-500 font-bold">A</div>
+                                <div class="bg-gray-100 rounded-2xl rounded-tl-sm p-3 text-sm text-gray-700 shadow-sm w-fit border border-white">
+                                    Entendido. ¿Tiene algún diagnóstico como autismo, déficit de atención o hiperactividad?
+                                </div>
+                            </div>
+                             <!-- Msg 4 (typing) -->
+                             <div class="flex gap-3">
+                                <div class="w-8 h-8 rounded-full bg-gray-200 flex-shrink-0 flex items-center justify-center text-xs text-gray-500 font-bold">A</div>
+                                <div class="bg-gray-100 rounded-2xl rounded-tl-sm p-3 flex gap-1 items-center shadow-sm w-fit border border-white">
+                                    <span class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></span>
+                                    <span class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></span>
+                                    <span class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Text Content -->
+                <div class="w-full md:w-1/2 text-center md:text-left">
+                    <h2 class="text-3xl md:text-4xl text-gray-900 font-bold mb-6">Evaluación Inicial Inteligente</h2>
+                    <p class="text-lg text-gray-600 mb-8 leading-relaxed">
+                        Nuestro asistente virtual está diseñado para comprender las necesidades específicas de tu pequeño antes de la primera consulta. Nos enfocamos en preguntas clave sobre diagnósticos, cambios recientes y antecedentes médicos (como posibles efectos post-vacunas) para ofrecerte un servicio clínico ágil y personalizado desde el minuto cero.
+                    </p>
+                    <button class="bg-secondary hover:bg-primary text-white font-semibold px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 w-full sm:w-auto text-lg inline-flex items-center justify-center gap-2">
+                        <span>Iniciar Triaje Gratuito</span>
+                        <span class="material-symbols-outlined">arrow_forward</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
         <!-- Contacto Section -->
-        <section id="contacto" class="w-full py-24 relative overflow-hidden text-gray-900 bg-[#E8D8C8]">
+        <section data-section="contacto" id="contacto" class="w-full py-24 relative overflow-hidden text-gray-900 bg-[#E8D8C8]">
             <!-- Fade desde la sección anterior (Seamless transition) -->
             <div
                 class="absolute top-0 left-0 w-full h-48 bg-gradient-to-b from-background to-[#E8D8C8] pointer-events-none z-0">
@@ -257,7 +412,7 @@
                     </a>
                 </div>
             </div>
-        </section>
+
     </main>
     <footer class="glass w-full py-8 px-5 md:px-6 flex flex-col md:flex-row justify-between items-center gap-6">
         <div class="flex flex-col items-center md:items-start gap-2">
@@ -265,11 +420,22 @@
             <p class="text-sm text-gray-500">© 2025 Antonella Epigenética. Todos los derechos reservados.</p>
         </div>
         <div class="flex gap-6">
-            <a class="text-gray-500 hover:text-primary transition-all text-sm" href="#">Privacidad</a>
-            <a class="text-gray-500 hover:text-primary transition-all text-sm" href="#">Términos</a>
-            <a class="text-gray-500 hover:text-primary transition-all text-sm" href="#">Contacto</a>
+            <a class="text-gray-500 hover:text-primary transition-all text-sm" href="/privacidad.html">Privacidad</a>
+            <a class="text-gray-500 hover:text-primary transition-all text-sm" href="/terminos.html">Términos</a>
+            <a class="text-gray-500 hover:text-primary transition-all text-sm" href="/contacto.html">Contacto</a>
         </div>
     </footer>
+
+    <!-- Cookie Banner -->
+    <div id="cookie-banner" class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 shadow-2xl z-[100] transform translate-y-full transition-transform duration-500 flex flex-col md:flex-row items-center justify-between p-4 px-5 md:px-10 gap-4">
+        <div class="text-sm text-gray-700 max-w-4xl text-center md:text-left">
+            Utilizamos cookies propias y de terceros para analizar nuestros servicios, personalizar el contenido y ofrecerte la mejor experiencia en nuestro sitio. Al hacer clic en "Aceptar", aceptas su uso. Puedes leer más en nuestra <a href="/privacidad.html" class="text-primary hover:underline">Política de Privacidad</a>.
+        </div>
+        <div class="flex gap-3 w-full md:w-auto shrink-0 justify-center">
+            <button id="cookie-reject" class="px-6 py-2 border border-gray-300 text-gray-700 font-medium rounded-full hover:bg-gray-50 transition-colors w-full md:w-auto text-sm">Rechazar</button>
+            <button id="cookie-accept" class="px-6 py-2 bg-primary text-white font-medium rounded-full hover:bg-secondary transition-colors shadow hover:shadow-md w-full md:w-auto text-sm">Aceptar</button>
+        </div>
+    </div>
 </body>
 
 </html>

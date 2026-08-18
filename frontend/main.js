@@ -1,48 +1,47 @@
 // Antonella Epigenética - Frontend Interactivity
 
 document.addEventListener('DOMContentLoaded', () => {
-    try {
-        // 0. Page Entry Blur Effect
-        document.body.classList.add('page-blur-transition');
-        document.body.classList.add('page-blur-active');
-        
-        // Remove blur slightly after load for a smooth entry
-        requestAnimationFrame(() => {
+    // 0. Page Entry Blur Effect
+    document.body.classList.add('page-blur-transition');
+    document.body.classList.add('page-blur-active');
+    
+    // Remove blur slightly after load for a smooth entry
+    requestAnimationFrame(() => {
+        setTimeout(() => {
+            document.body.classList.remove('page-blur-active');
+            
+            // CRITICAL FIX: After animations end, remove the classes.
+            // CSS filters and animations on the body create a "containing block" 
+            // that breaks position: fixed for the navbar.
             setTimeout(() => {
-                document.body.classList.remove('page-blur-active');
-                
-                // CRITICAL FIX: After animations end, remove the classes.
-                // CSS filters and animations on the body create a "containing block" 
-                // that breaks position: fixed for the navbar.
-                setTimeout(() => {
-                    document.body.classList.remove('page-blur-transition');
-                    document.body.classList.remove('page-transition');
-                }, 800);
-            }, 50);
+                document.body.classList.remove('page-blur-transition');
+                document.body.classList.remove('page-transition');
+            }, 800);
+        }, 50);
+    });
+
+    // 0.5 Skeleton Screen Logic
+    const skeletonView = document.getElementById('skeleton-view');
+    const realContent = document.getElementById('real-content');
+    
+    if (skeletonView && realContent) {
+        setTimeout(() => {
+            skeletonView.style.display = 'none';
+            realContent.classList.remove('hidden');
+        }, 1500); // Simulate 1.5s network load
+    }
+
+    // Sidebar Toggle Logic
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('main-content');
+
+    if (sidebarToggle && sidebar && mainContent) {
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded-main');
         });
-
-        // 0.5 Skeleton Screen Logic
-        const skeletonView = document.getElementById('skeleton-view');
-        const realContent = document.getElementById('real-content');
-        
-        if (skeletonView && realContent) {
-            setTimeout(() => {
-                skeletonView.style.display = 'none';
-                realContent.classList.remove('hidden');
-            }, 100); // Reduce simulate network load for faster perceived performance
-        }
-
-        // Sidebar Toggle Logic
-        const sidebarToggle = document.getElementById('sidebar-toggle');
-        const sidebar = document.getElementById('sidebar');
-        const mainContent = document.getElementById('main-content');
-
-        if (sidebarToggle && sidebar && mainContent) {
-            sidebarToggle.addEventListener('click', () => {
-                sidebar.classList.toggle('collapsed');
-                mainContent.classList.toggle('expanded-main');
-            });
-        }
+    }
 
     // 0.6 Three.js DNA Animation
     const container = document.getElementById('canvas-container');
@@ -403,12 +402,12 @@ document.addEventListener('DOMContentLoaded', () => {
         window.addEventListener('scroll', () => {
             if (window.scrollY > 50) {
                 // Scrolled state
-                mainNav.classList.remove('bg-transparent', 'py-4');
-                mainNav.classList.add('glass', 'py-2', 'shadow-md');
+                mainNav.classList.remove('bg-transparent', 'border-transparent', 'py-4');
+                mainNav.classList.add('bg-white/80', 'backdrop-blur-lg', 'border-gray-200/50', 'py-2', 'shadow-md');
             } else {
                 // Top state
-                mainNav.classList.add('bg-transparent', 'py-4');
-                mainNav.classList.remove('glass', 'py-2', 'shadow-md');
+                mainNav.classList.add('bg-transparent', 'border-transparent', 'py-4');
+                mainNav.classList.remove('bg-white/80', 'backdrop-blur-lg', 'border-gray-200/50', 'py-2', 'shadow-md');
             }
         });
     }
@@ -614,1258 +613,99 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ==========================================
-    // ZERO BACKEND INTERACTIVITY (DASHBOARD)
-    // ==========================================
+    // 11. Cookie Banner Logic
+    const cookieBanner = document.getElementById('cookie-banner');
+    const cookieAcceptBtn = document.getElementById('cookie-accept');
+    const cookieRejectBtn = document.getElementById('cookie-reject');
 
-    // --- Onboarding / Triaje Logic ---
-    const triajeModal = document.getElementById('triaje-modal');
-    if (triajeModal) {
-        if (!localStorage.getItem('triaje_completado')) {
-            // Show modal and prevent scrolling
-            triajeModal.classList.remove('hidden');
-        }
-    }
-
-    // --- Chat Simulator Logic ---
-    const chatInput = document.getElementById('patient-chat-input');
-    const btnSendChat = document.getElementById('btn-send-patient-msg');
-    const chatContainer = document.getElementById('patient-chat-messages');
-
-    if (chatInput && btnSendChat && chatContainer) {
-        // Load existing messages
-        const loadMessages = () => {
-            const saved = localStorage.getItem('antonella_chat_messages');
-            if (saved) {
-                const messages = JSON.parse(saved);
-                const emptyPlaceholder = document.getElementById('patient-chat-empty');
-                if (emptyPlaceholder && messages.length > 0) emptyPlaceholder.remove();
-                
-                chatContainer.innerHTML = '';
-                messages.forEach(msg => {
-                    if (msg.role === 'user') {
-                        chatContainer.insertAdjacentHTML('beforeend', `
-                            <div class="flex items-end justify-end gap-3 mb-4 animate-fade-in">
-                                <div class="bg-primary text-white rounded-2xl rounded-br-sm px-4 py-3 max-w-[80%] shadow-sm">
-                                    <p class="text-sm">${msg.text}</p>
-                                    <span class="text-[10px] text-white/70 block text-right mt-1">${msg.time}</span>
-                                </div>
-                            </div>
-                        `);
-                    } else {
-                        chatContainer.insertAdjacentHTML('beforeend', `
-                            <div class="flex items-end gap-3 mb-4 animate-fade-in">
-                                <div class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center shrink-0 border border-outline-variant shadow-sm overflow-hidden">
-                                    <span class="material-symbols-outlined text-[16px] text-primary">${msg.isDoctor ? 'medical_services' : 'auto_awesome'}</span>
-                                </div>
-                                <div class="bg-white border border-outline-variant text-on-surface rounded-2xl rounded-bl-sm px-4 py-3 max-w-[80%] shadow-sm">
-                                    <p class="text-sm">${msg.text}</p>
-                                    <span class="text-[10px] text-on-surface-variant block mt-1">${msg.time}</span>
-                                </div>
-                            </div>
-                        `);
-                    }
-                });
-                chatContainer.scrollTop = chatContainer.scrollHeight;
-            }
-        };
-
-        const saveMessage = (role, text, isDoctor = false) => {
-            const saved = localStorage.getItem('antonella_chat_messages');
-            const messages = saved ? JSON.parse(saved) : [];
-            const time = new Date().toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'});
-            messages.push({ role, text, time, isDoctor });
-            localStorage.setItem('antonella_chat_messages', JSON.stringify(messages));
-            return time;
-        };
-
-        loadMessages();
-        // Polling to sync messages from admin
-        setInterval(loadMessages, 3000);
-
-        const sendChatMessage = () => {
-            const text = chatInput.value.trim();
-            if (!text) return;
-
-            const time = saveMessage('user', text);
-            loadMessages();
-            
-            chatInput.value = '';
-
-            // Append Typing Indicator
-            const typingId = 'typing-' + Date.now();
-            const typingHtml = `
-            <div id="${typingId}" class="flex items-end gap-3 mb-4 animate-fade-in">
-                <div class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center shrink-0 border border-outline-variant shadow-sm overflow-hidden">
-                    <span class="material-symbols-outlined text-[16px] text-primary">auto_awesome</span>
-                </div>
-                <div class="bg-white border border-outline-variant text-on-surface rounded-2xl rounded-bl-sm px-4 py-3 max-w-[80%] shadow-sm flex items-center gap-1">
-                    <div class="w-1.5 h-1.5 bg-primary/60 rounded-full animate-bounce"></div>
-                    <div class="w-1.5 h-1.5 bg-primary/60 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
-                    <div class="w-1.5 h-1.5 bg-primary/60 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
-                </div>
-            </div>`;
-            chatContainer.insertAdjacentHTML('beforeend', typingHtml);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-            // AI or Admin logic is handled in admin panel or a simulated delay for AI
-            setTimeout(() => {
-                const svd = JSON.parse(localStorage.getItem('antonella_chat_messages') || '[]');
-                if(svd.length > 0 && svd[svd.length - 1].role === 'user' && !svd[svd.length - 1].text.includes('Dra.')) {
-                    document.getElementById(typingId)?.remove();
-                    
-                    const aiResponses = [
-                        "He registrado tu mensaje. Si requieres atención de la doctora, puedes dejar tu consulta y te responderá por aquí mismo pronto.",
-                        "Recibido. ¿Hay algo más en lo que pueda ayudarte mientras esperamos la revisión del equipo médico?",
-                        "Perfecto, lo añadiré a tus notas para la Dra. Mónica."
-                    ];
-                    const reply = aiResponses[Math.floor(Math.random() * aiResponses.length)];
-                    saveMessage('ai', reply, false);
-                    loadMessages();
-                } else {
-                     document.getElementById(typingId)?.remove();
-                }
-            }, 1500);
-        };
-
-        btnSendChat.addEventListener('click', sendChatMessage);
-        chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendChatMessage();
-            }
-        });
-    }
-
-    // 1. Global Toast System (Overrides inline if exists)
-    window.showToast = function(message, type = 'success') {
-        let container = document.getElementById('toast-container');
-        if (!container) {
-            container = document.createElement('div');
-            container.id = 'toast-container';
-            container.className = 'fixed bottom-4 right-4 z-[9999] flex flex-col gap-2 pointer-events-none';
-            document.body.appendChild(container);
-        }
-
-        const toast = document.createElement('div');
-        const icon = type === 'success' ? 'check_circle' : 'info';
-        const bgClass = type === 'success' ? 'bg-primary-container text-on-primary-container' : 'bg-surface-variant text-on-surface';
-        
-        toast.className = `${bgClass} px-4 py-3 rounded-xl shadow-lg font-bold text-sm flex items-center gap-3 transform translate-y-full opacity-0 transition-all duration-300 ease-out pointer-events-auto`;
-        toast.innerHTML = `<span class="material-symbols-outlined text-lg">${icon}</span> ${message}`;
-        
-        container.appendChild(toast);
-        
-        // Show
-        requestAnimationFrame(() => {
-            setTimeout(() => {
-                toast.classList.remove('translate-y-full', 'opacity-0');
-                toast.classList.add('translate-y-0', 'opacity-100');
-            }, 10);
-        });
-        
-        // Hide
+    if (cookieBanner) {
+        // Wait a bit before showing the banner
         setTimeout(() => {
-            toast.classList.remove('translate-y-0', 'opacity-100');
-            toast.classList.add('translate-y-full', 'opacity-0');
-            setTimeout(() => toast.remove(), 300);
-        }, 3000);
-    };
-
-    // 2. Mi Plan - Roadmap "Marcar de hoy"
-    window.marcarHoy = function() {
-        const btn = document.getElementById('btn-marcar-hoy');
-        if (!btn || btn.disabled) return;
-        
-        // Simular carga
-        const originalText = btn.innerHTML;
-        btn.innerHTML = `<svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Guardando...`;
-        btn.disabled = true;
-        btn.classList.add('opacity-80', 'cursor-wait');
-
-        setTimeout(() => {
-            // Completado
-            btn.innerHTML = '<span class="material-symbols-outlined text-sm">check</span> Completado';
-            btn.classList.remove('bg-primary', 'hover:bg-secondary', 'opacity-80', 'cursor-wait');
-            btn.classList.add('bg-surface-variant', 'text-on-surface-variant', 'cursor-not-allowed');
-            
-            // Update progress bar
-            const progressText = document.querySelector('.font-headline-md.font-bold.text-on-surface');
-            const progressPercentText = document.querySelector('.font-bold.text-mint');
-            const progressBar = document.querySelector('.progress-bar-fill');
-            
-            if (progressPercentText && progressBar) {
-                progressPercentText.innerText = '51%';
-                progressBar.style.width = '51%';
+            if (!localStorage.getItem('cookie_consent')) {
+                cookieBanner.classList.remove('translate-y-full');
             }
-            if (progressText && progressText.innerHTML.includes('Día 45')) {
-                progressText.innerHTML = 'Día 46 <span class="text-sm font-normal text-on-surface-variant">/ 90</span>';
-            }
+        }, 2000);
 
-            showToast('¡Progreso guardado correctamente!');
-        }, 1500);
-    };
+        const hideBanner = () => {
+            cookieBanner.classList.add('translate-y-full');
+        };
 
-    // 3. Formularios (Validación en tiempo real y mock de guardado)
-    const forms = document.querySelectorAll('form');
-    forms.forEach(form => {
-        // Skip specific forms that have their own logic
-        if(form.id === 'chat-form' || form.closest('#admin-view-section')) return;
-
-        const inputs = form.querySelectorAll('input');
-        inputs.forEach(input => {
-            input.addEventListener('input', (e) => {
-                // Remove previous error
-                const parent = input.parentElement;
-                const existingError = parent.querySelector('.error-msg');
-                if(existingError) existingError.remove();
-                input.classList.remove('border-error', 'text-error');
-
-                if (input.type === 'email' && input.value) {
-                    const emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
-                    if (!emailRegex.test(input.value)) {
-                        input.classList.add('border-error', 'text-error');
-                        const error = document.createElement('span');
-                        error.className = 'error-msg text-xs text-error mt-1 block';
-                        error.innerText = 'Formato de correo inválido';
-                        parent.appendChild(error);
-                    }
-                }
+        if (cookieAcceptBtn) {
+            cookieAcceptBtn.addEventListener('click', () => {
+                localStorage.setItem('cookie_consent', 'accepted');
+                hideBanner();
             });
-        });
+        }
 
-        form.addEventListener('submit', (e) => {
-            // Only handle if it's a settings/profile form with a submit button
-            const submitBtn = form.querySelector('button[type="submit"]');
-            if(!submitBtn || form.id === 'checkin-form') return; // We'll handle checkin separately
-            
+        if (cookieRejectBtn) {
+            cookieRejectBtn.addEventListener('click', () => {
+                localStorage.setItem('cookie_consent', 'rejected');
+                hideBanner();
+            });
+        }
+    }
+
+    // 12. Discount Hook Form Logic
+    const discountForm = document.getElementById('discount-form');
+    const discountFormContainer = document.getElementById('discount-form-container');
+    const discountSuccessContainer = document.getElementById('discount-success-container');
+
+    if (discountForm && discountFormContainer && discountSuccessContainer) {
+        discountForm.addEventListener('submit', (e) => {
             e.preventDefault();
             
-            const originalText = submitBtn.innerHTML;
-            const originalWidth = submitBtn.offsetWidth;
-            
-            submitBtn.style.width = `${originalWidth}px`; // maintain width
-            submitBtn.innerHTML = `<svg class="animate-spin h-5 w-5 mx-auto text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
-            submitBtn.disabled = true;
-            submitBtn.classList.add('opacity-80', 'cursor-wait');
-
+            // Hide form, show success with smooth transition
+            discountFormContainer.classList.add('opacity-0');
             setTimeout(() => {
-                submitBtn.innerHTML = originalText;
-                submitBtn.style.width = '';
-                submitBtn.disabled = false;
-                submitBtn.classList.remove('opacity-80', 'cursor-wait');
-                showToast('Cambios guardados exitosamente');
-            }, 1500);
-        });
-    });
-
-    // 4. Evaluaciones: "Tu Energía Hoy" Single Selection & Chart Update
-    const energyButtons = document.querySelectorAll('.energy-btn');
-    let selectedEnergy = null;
-
-    if (energyButtons.length > 0) {
-        energyButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                // Reset all
-                energyButtons.forEach(b => {
-                    b.classList.remove('bg-primary-container', 'text-on-primary-container', 'border-primary');
-                    b.classList.add('bg-surface', 'text-on-surface-variant', 'border-outline-variant');
-                });
-                // Set active
-                btn.classList.remove('bg-surface', 'text-on-surface-variant', 'border-outline-variant');
-                btn.classList.add('bg-primary-container', 'text-on-primary-container', 'border-primary');
-                selectedEnergy = btn.getAttribute('data-value'); // e.g. 20, 50, 80, 100
-            });
-        });
-
-        const saveEnergyBtn = document.getElementById('btn-guardar-energia');
-        if (saveEnergyBtn) {
-            saveEnergyBtn.addEventListener('click', () => {
-                if (!selectedEnergy) {
-                    showToast('Por favor selecciona tu nivel de energía primero', 'info');
-                    return;
-                }
-
-                const originalText = saveEnergyBtn.innerHTML;
-                saveEnergyBtn.innerHTML = `<svg class="animate-spin h-5 w-5 mx-auto text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
-                saveEnergyBtn.disabled = true;
-
-                setTimeout(() => {
-                    saveEnergyBtn.innerHTML = originalText;
-                    saveEnergyBtn.disabled = false;
-                    showToast('Registro guardado correctamente');
-                    
-                    // Update Chart
-                    const chartCanvas = document.getElementById('historicalChart');
-                    if(chartCanvas) {
-                        const chartInstance = Chart.getChart(chartCanvas);
-                        if (chartInstance) {
-                            chartInstance.data.labels.push('Hoy');
-                            chartInstance.data.datasets[0].data.push(parseInt(selectedEnergy));
-                            chartInstance.update();
-                        }
-                    }
-                }, 1500);
-            });
-        }
-    }
-
-    // 5. Facturación: Radio Group Behavior
-    const paymentMethods = document.querySelectorAll('.payment-method-card');
-    paymentMethods.forEach(card => {
-        card.addEventListener('click', () => {
-            paymentMethods.forEach(c => {
-                c.classList.remove('border-primary', 'bg-primary-50/50', 'ring-1', 'ring-primary');
-                c.classList.add('border-outline-variant');
-                const radio = c.querySelector('input[type="radio"]');
-                if(radio) radio.checked = false;
-            });
-            card.classList.remove('border-outline-variant');
-            card.classList.add('border-primary', 'bg-primary-50/50', 'ring-1', 'ring-primary');
-            const radio = card.querySelector('input[type="radio"]');
-            if(radio) radio.checked = true;
-        });
-    });
-
-    const planCards = document.querySelectorAll('.plan-card');
-    planCards.forEach(card => {
-        card.addEventListener('click', () => {
-            planCards.forEach(c => {
-                c.classList.remove('border-primary', 'ring-2', 'ring-primary');
-                c.classList.add('border-outline-variant');
-                const btn = c.querySelector('button');
-                if(btn) {
-                    btn.classList.remove('bg-primary', 'text-white');
-                    btn.classList.add('bg-primary-container', 'text-on-primary-container');
-                    btn.innerText = 'Seleccionar';
-                }
-            });
-            card.classList.remove('border-outline-variant');
-            card.classList.add('border-primary', 'ring-2', 'ring-primary');
-            const btn = card.querySelector('button');
-            if(btn) {
-                btn.classList.remove('bg-primary-container', 'text-on-primary-container');
-                btn.classList.add('bg-primary', 'text-white');
-                btn.innerText = 'Plan Actual';
-            }
-        });
-    });
-
-    // 6. Mensajes (Paciente) - Override existing logic
-    const chatSendBtn = document.getElementById('chat-send');
-    const chatInputEl = document.getElementById('chat-input');
-    const chatMessagesEl = document.getElementById('chat-messages');
-
-    if (chatSendBtn && chatInputEl && chatMessagesEl) {
-        // Remove old event listeners by cloning
-        const newSendBtn = chatSendBtn.cloneNode(true);
-        chatSendBtn.parentNode.replaceChild(newSendBtn, chatSendBtn);
-        
-        const newChatInput = chatInputEl.cloneNode(true);
-        chatInputEl.parentNode.replaceChild(newChatInput, chatInputEl);
-
-        const handleSend = () => {
-            const text = newChatInput.value.trim();
-            if (!text) return;
-
-            // Add user message
-            const userMsg = document.createElement('div');
-            userMsg.className = 'bg-primary text-white p-3 rounded-xl rounded-tr-none self-end max-w-[80%] text-sm shadow-sm opacity-0 transform translate-y-2 transition-all duration-300';
-            userMsg.innerText = text;
-            chatMessagesEl.appendChild(userMsg);
-            
-            requestAnimationFrame(() => {
-                userMsg.classList.remove('opacity-0', 'translate-y-2');
-            });
-
-            newChatInput.value = '';
-            chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
-
-            // Show typing indicator
-            const typingMsg = document.createElement('div');
-            typingMsg.className = 'bg-surface-container text-on-surface p-3 rounded-xl rounded-tl-none self-start max-w-[80%] text-sm shadow-sm flex gap-1 items-center';
-            typingMsg.innerHTML = '<div class="w-2 h-2 bg-on-surface-variant rounded-full animate-bounce"></div><div class="w-2 h-2 bg-on-surface-variant rounded-full animate-bounce" style="animation-delay: 0.1s"></div><div class="w-2 h-2 bg-on-surface-variant rounded-full animate-bounce" style="animation-delay: 0.2s"></div>';
-            chatMessagesEl.appendChild(typingMsg);
-            chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
-
-            // Simulate bot reply
-            setTimeout(() => {
-                typingMsg.remove();
-                
-                const botMsg = document.createElement('div');
-                botMsg.className = 'bg-surface-container text-on-surface p-3 rounded-xl rounded-tl-none self-start max-w-[80%] text-sm shadow-sm opacity-0 transform translate-y-2 transition-all duration-300 border border-outline-variant';
-                botMsg.innerHTML = `<strong>Dra. Mónica (IA):</strong> ¡Recibido! ¿Hace cuánto tiempo notas estos síntomas? El equipo revisará tu mensaje en breve.`;
-                chatMessagesEl.appendChild(botMsg);
-                
-                requestAnimationFrame(() => {
-                    botMsg.classList.remove('opacity-0', 'translate-y-2');
-                });
-                chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
-            }, 1500);
-        };
-
-        newSendBtn.addEventListener('click', handleSend);
-        newChatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') handleSend();
+                discountFormContainer.classList.add('hidden');
+                discountSuccessContainer.classList.remove('hidden');
+                // Trigger reflow for transition
+                void discountSuccessContainer.offsetWidth;
+                discountSuccessContainer.classList.remove('opacity-0');
+            }, 500); // 500ms matches the duration-500 class
         });
     }
 
-    // 7. Modals (Historial Médico & Check-in)
-    const btnAddDiagnosis = document.getElementById('btn-add-diagnosis');
-    if (btnAddDiagnosis) {
-        btnAddDiagnosis.addEventListener('click', () => {
-            document.getElementById('add-diagnosis-modal').classList.remove('hidden');
-        });
-    }
-
-    const addDiagnosisForm = document.getElementById('add-diagnosis-form');
-    if (addDiagnosisForm) {
-        addDiagnosisForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const submitBtn = addDiagnosisForm.querySelector('button[type="submit"]');
-            
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = `<svg class="animate-spin h-5 w-5 mx-auto text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
-            submitBtn.disabled = true;
-
-            setTimeout(() => {
-                const name = document.getElementById('diag-name').value;
-                const date = document.getElementById('diag-date').value;
-                const doctor = document.getElementById('diag-doctor').value;
-
-                // Format date roughly for display
-                const dateObj = new Date(date);
-                const monthNames = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
-                const formattedDate = `${monthNames[dateObj.getMonth()]} ${dateObj.getFullYear()}`;
-
-                const listContainer = document.querySelector('#view-historial-medico .space-y-4');
-                if (listContainer) {
-                    const newDiag = document.createElement('div');
-                    newDiag.className = 'p-4 bg-surface-container-low border border-surface-variant rounded-xl flex justify-between items-center group hover:border-primary/30 transition-colors bg-primary-50/20'; // Highlight new entry slightly
-                    newDiag.innerHTML = `
-                        <div>
-                            <h3 class="font-bold text-on-surface">${name}</h3>
-                            <p class="text-xs text-on-surface-variant mt-1">Diagnosticado en ${formattedDate} por ${doctor}</p>
-                        </div>
-                        <button class="w-8 h-8 rounded-full hover:bg-surface-variant text-on-surface-variant flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                            <span class="material-symbols-outlined text-sm">edit</span>
-                        </button>
-                    `;
-                    listContainer.insertBefore(newDiag, listContainer.firstChild);
-                }
-
-                // Reset
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-                addDiagnosisForm.reset();
-                document.getElementById('add-diagnosis-modal').classList.add('hidden');
-                showToast('Diagnóstico añadido a tu historial');
-            }, 1000);
-        });
-    }
-
-    const checkinForm = document.getElementById('checkin-form');
-    if (checkinForm) {
-        checkinForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const submitBtn = checkinForm.querySelector('button[type="submit"]');
-            
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = `<svg class="animate-spin h-5 w-5 mx-auto text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
-            submitBtn.disabled = true;
-
-            setTimeout(() => {
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-                checkinForm.reset();
-                document.getElementById('checkin-modal').classList.add('hidden');
-                
-                // Remove pending checkin UI logic (optional but makes it look done)
-                const checkinCard = document.querySelector('.bg-secondary/10');
-                if(checkinCard) {
-                    checkinCard.innerHTML = `
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-primary/20 text-primary flex items-center justify-center">
-                                <span class="material-symbols-outlined">check</span>
-                            </div>
-                            <div>
-                                <h3 class="font-bold text-on-surface">Check-in Completado</h3>
-                                <p class="text-xs text-on-surface-variant">Tu doctor revisará los resultados pronto.</p>
-                            </div>
-                        </div>
-                    `;
-                    checkinCard.classList.remove('bg-secondary/10', 'border-secondary/30');
-                    checkinCard.classList.add('bg-primary/10', 'border-primary/30');
-                }
-
-                showToast('¡Gracias! Tu check-in mensual ha sido registrado.');
-            }, 1500);
-        });
-    }
-
-    // ==========================================
-    // CMS / ZERO BACKEND INTEGRATION
-    // ==========================================
-    if (window.cmsService) {
-        window.cmsService.getSiteConfig().then(config => {
-            // 1. Update Welcome Message
-            const welcomeMsg = document.getElementById('dash-welcome-msg');
-            if (welcomeMsg && config.textos.bienvenida) {
-                welcomeMsg.innerText = config.textos.bienvenida;
-            }
-
-            // 2. Update Billing Plans
-            const planesContainer = document.getElementById('dash-planes-container');
-            if (planesContainer && config.planes) {
-                planesContainer.innerHTML = '';
-                config.planes.forEach((plan, index) => {
-                    const isPremium = index === 1;
-                    const borderClass = isPremium ? 'border-2 border-primary shadow-md' : 'border border-surface-variant hover:border-primary/50';
-                    const titleColor = isPremium ? 'text-primary' : (index === 2 ? 'text-mint' : 'text-on-surface');
-                    const checkColor = isPremium ? 'text-primary' : (index === 2 ? 'text-mint' : 'text-primary');
-                    const btnClass = isPremium ? 'bg-primary text-white hover:bg-secondary' : 'bg-surface-variant text-on-surface hover:bg-outline-variant';
-                    const badge = isPremium ? '<div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-bold uppercase px-3 py-1 rounded-full">Recomendado</div>' : '';
-
-                    const beneficiosHtml = plan.beneficios.map(b => `
-                        <li class="flex gap-2 items-start"><span class="material-symbols-outlined text-[14px] ${checkColor}">check</span> ${b}</li>
-                    `).join('');
-
-                    planesContainer.innerHTML += `
-                        <div class="${borderClass} rounded-xl p-4 flex flex-col relative transition-colors">
-                            ${badge}
-                            <h3 class="font-bold ${titleColor} text-lg mt-2">${plan.nombre}</h3>
-                            <p class="text-xs text-on-surface-variant mb-4">$${plan.precio} / mes</p>
-                            <ul class="text-xs text-on-surface space-y-2 mb-6 flex-1">
-                                ${beneficiosHtml}
-                            </ul>
-                            <button class="w-full py-2 font-bold rounded-lg text-sm transition-colors ${btnClass}" onclick="showToast('Plan ${plan.nombre} Seleccionado')">Elegir ${plan.nombre}</button>
-                        </div>
-                    `;
-                });
-            }
-        }).catch(err => console.error("Error loading CMS config in Dashboard:", err));
-    }
-
-    // ==========================================
-    // 9. CHECK-IN MENSUAL (STEPPER)
-    // ==========================================
-    const btnStartCheckin = document.getElementById('btn-start-checkin');
-    const modalCheckin = document.getElementById('checkin-modal');
-    if (btnStartCheckin && modalCheckin) {
-        const btnClose = document.getElementById('btn-close-checkin');
-        const backdrop = document.getElementById('checkin-backdrop');
-        const btnNext = document.getElementById('btn-checkin-next');
-        const btnPrev = document.getElementById('btn-checkin-prev');
-        const errSpan = document.getElementById('checkin-error');
-        const indicators = document.querySelectorAll('.step-indicator');
-        const steps = document.querySelectorAll('.checkin-step');
-        
-        let currentStep = 1;
-        let checkinData = {
-            energy: null,
-            digestion: 3,
-            adherenceAvoided: [],
-            adherence80: null,
-            habits: [],
-            supps: null,
-            notes: ""
-        };
-
-        const openModal = () => {
-            modalCheckin.classList.remove('hidden');
-            currentStep = 1;
-            updateStepperUI();
-        };
-
-        const closeModal = () => {
-            modalCheckin.classList.add('hidden');
-        };
-
-        btnStartCheckin.addEventListener('click', openModal);
-        btnClose.addEventListener('click', closeModal);
-        backdrop.addEventListener('click', closeModal);
-
-        const validateStep = () => {
-            errSpan.classList.add('hidden');
-            if (currentStep === 1) {
-                const energyRadio = document.querySelector('input[name="chk_energy"]:checked');
-                if (!energyRadio) {
-                    errSpan.classList.remove('hidden');
-                    return false;
-                }
-                checkinData.energy = energyRadio.value;
-                checkinData.digestion = document.getElementById('chk_digestion').value;
-            } else if (currentStep === 2) {
-                const rule80Radio = document.querySelector('input[name="chk_80_rule"]:checked');
-                if (!rule80Radio) {
-                    errSpan.classList.remove('hidden');
-                    return false;
-                }
-                checkinData.adherence80 = rule80Radio.value;
-                checkinData.adherenceAvoided = Array.from(document.querySelectorAll('.chk-adherence:checked')).map(cb => cb.value);
-            } else if (currentStep === 3) {
-                checkinData.habits = Array.from(document.querySelectorAll('.chk-habits:checked')).map(cb => cb.value);
-            } else if (currentStep === 4) {
-                const suppsRadio = document.querySelector('input[name="chk_supps"]:checked');
-                if (!suppsRadio) {
-                    errSpan.classList.remove('hidden');
-                    return false;
-                }
-                checkinData.supps = suppsRadio.value;
-                checkinData.notes = document.getElementById('chk_notes').value;
-            }
-            return true;
-        };
-
-        const updateStepperUI = () => {
-            // Update steps visibility
-            steps.forEach((step, idx) => {
-                if (idx + 1 === currentStep) {
-                    step.classList.remove('hidden');
-                    step.classList.add('block');
-                } else {
-                    step.classList.add('hidden');
-                    step.classList.remove('block');
-                }
-            });
-
-            // Update indicators
-            indicators.forEach((ind, idx) => {
-                if (idx + 1 <= currentStep) {
-                    ind.classList.remove('bg-surface-variant');
-                    ind.classList.add('bg-primary');
-                } else {
-                    ind.classList.add('bg-surface-variant');
-                    ind.classList.remove('bg-primary');
-                }
-            });
-
-            // Update buttons
-            if (currentStep === 1) {
-                btnPrev.disabled = true;
-            } else {
-                btnPrev.disabled = false;
-            }
-
-            if (currentStep === 4) {
-                btnNext.innerHTML = 'Enviar Check-in <span class="material-symbols-outlined text-sm">send</span>';
-            } else {
-                btnNext.innerHTML = 'Siguiente <span class="material-symbols-outlined text-sm">arrow_forward</span>';
-            }
-        };
-
-        btnNext.addEventListener('click', async () => {
-            if (!validateStep()) return;
-
-            if (currentStep < 4) {
-                currentStep++;
-                updateStepperUI();
-            } else {
-                // Submit
-                const originalHtml = btnNext.innerHTML;
-                btnNext.innerHTML = '<span class="material-symbols-outlined animate-spin text-sm">sync</span> Enviando...';
-                btnNext.disabled = true;
-                btnPrev.disabled = true;
-
-                try {
-                    if (window.patientServices) {
-                        await window.patientServices.submitMonthlyCheckin(checkinData);
-                        showToast('Check-in completado exitosamente.');
-                        setTimeout(() => {
-                            closeModal();
-                            // Reset state
-                            btnNext.innerHTML = originalHtml;
-                            btnNext.disabled = false;
-                            btnPrev.disabled = false;
-                        }, 500);
-                    } else {
-                        throw new Error("patientServices no cargado");
-                    }
-                } catch (e) {
-                    console.error(e);
-                    errSpan.innerText = "Error al enviar el check-in.";
-                    errSpan.classList.remove('hidden');
-                    btnNext.innerHTML = originalHtml;
-                    btnNext.disabled = false;
-                    btnPrev.disabled = false;
-                }
-            }
-        });
-
-        btnPrev.addEventListener('click', () => {
-            if (currentStep > 1) {
-                currentStep--;
-                updateStepperUI();
-            }
-        });
-    }
-
-
-    // --- Educación: Recetario Slide-over ---
-    const btnReadRecipe = document.getElementById('btn-read-recipe');
-    const recipeSlideover = document.getElementById('recipe-slideover');
-    const recipeSlideoverPanel = document.getElementById('recipe-slideover-panel');
-    const recipeSlideoverBackdrop = document.getElementById('recipe-slideover-backdrop');
-    const btnCloseRecipe = document.getElementById('btn-close-recipe');
-
-    if (btnReadRecipe && recipeSlideover) {
-        const closeSlideover = () => {
-            recipeSlideoverPanel.classList.add('translate-x-full');
-            recipeSlideoverBackdrop.classList.remove('opacity-100');
-            recipeSlideoverBackdrop.classList.add('opacity-0');
-            setTimeout(() => {
-                recipeSlideover.classList.add('hidden');
-            }, 300);
-        };
-
-        btnReadRecipe.addEventListener('click', () => {
-            const btnTextSpan = btnReadRecipe.querySelector('.btn-text');
-            const originalContent = btnTextSpan.innerHTML;
-            btnTextSpan.innerHTML = '<span class="material-symbols-outlined animate-spin text-sm">progress_activity</span> Cargando...';
-            btnReadRecipe.disabled = true;
-
-            setTimeout(() => {
-                btnReadRecipe.disabled = false;
-                btnTextSpan.innerHTML = originalContent;
-                recipeSlideover.classList.remove('hidden');
-                // Allow reflow
-                setTimeout(() => {
-                    recipeSlideoverBackdrop.classList.remove('opacity-0');
-                    recipeSlideoverBackdrop.classList.add('opacity-100');
-                    recipeSlideoverPanel.classList.remove('translate-x-full');
-                }, 10);
-            }, 500);
-        });
-
-        if (btnCloseRecipe) btnCloseRecipe.addEventListener('click', closeSlideover);
-        if (recipeSlideoverBackdrop) recipeSlideoverBackdrop.addEventListener('click', closeSlideover);
-    }
-
-    // --- Educación: Descargar Guía Ayuno ---
-    const btnDownloadPdf = document.getElementById('btn-download-pdf');
-    if (btnDownloadPdf) {
-        btnDownloadPdf.addEventListener('click', () => {
-            if (btnDownloadPdf.disabled) return;
-            const originalHtml = btnDownloadPdf.innerHTML;
-            
-            btnDownloadPdf.disabled = true;
-            btnDownloadPdf.classList.add('opacity-80', 'cursor-not-allowed');
-            btnDownloadPdf.innerHTML = '<span class="material-symbols-outlined animate-spin text-[16px]">progress_activity</span> <span class="btn-text">Preparando descarga...</span>';
-            
-            setTimeout(() => {
-                btnDownloadPdf.classList.remove('opacity-80', 'cursor-not-allowed', 'bg-surface', 'border-outline-variant', 'text-on-surface');
-                btnDownloadPdf.classList.add('bg-emerald-600', 'text-white', 'border-emerald-600', 'hover:bg-emerald-700');
-                btnDownloadPdf.innerHTML = '<span class="material-symbols-outlined text-[16px]">check_circle</span> <span class="btn-text">¡Descarga Completa!</span>';
-                
-                if (typeof showToast === 'function') {
-                    showToast('Descarga completada. Revisa tu dispositivo.');
-                }
-                
-                // Reset after 3 seconds
-                setTimeout(() => {
-                    btnDownloadPdf.classList.remove('bg-emerald-600', 'text-white', 'border-emerald-600', 'hover:bg-emerald-700');
-                    btnDownloadPdf.classList.add('bg-surface', 'border-outline-variant', 'text-on-surface');
-                    btnDownloadPdf.innerHTML = originalHtml;
-                    btnDownloadPdf.disabled = false;
-                }, 3000);
-            }, 2000);
-        });
-    }
-
-    // --- Patient Chat Interaction ---
-    const patientChatInput = document.getElementById('patient-chat-input');
-    const btnSendPatientMsg = document.getElementById('btn-send-patient-msg');
-    const patientChatMessages = document.getElementById('patient-chat-messages');
-    const patientChatEmpty = document.getElementById('patient-chat-empty');
-
-    if (patientChatInput && btnSendPatientMsg && patientChatMessages) {
-        const sendMessage = () => {
-            const text = patientChatInput.value.trim();
-            if (!text) return;
-
-            if (patientChatEmpty) {
-                patientChatEmpty.style.display = 'none';
-            }
-
-            const now = new Date();
-            const timeString = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
-
-            const msgHtml = `
-                <div class="flex flex-col items-end w-full animate-fade-in">
-                    <div class="bg-primary text-white rounded-2xl rounded-tr-sm p-3 max-w-[80%] text-sm shadow-sm text-left">
-                        ${text.replace(/\n/g, '<br>')}
-                    </div>
-                    <span class="text-[10px] text-on-surface-variant mt-1">${timeString}</span>
-                </div>
-            `;
-            
-            patientChatMessages.insertAdjacentHTML('beforeend', msgHtml);
-            patientChatInput.value = '';
-            patientChatMessages.scrollTop = patientChatMessages.scrollHeight;
-        };
-
-        btnSendPatientMsg.addEventListener('click', sendMessage);
-        patientChatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
-    }
-
-    // Export Chat Functionality
-    window.exportChat = () => {
-        const chatContainer = document.getElementById('patient-chat-messages');
-        if (!chatContainer) return;
-
-        let chatLog = "Historial de Chat - Equipo Médico Antonella\n";
-        chatLog += "Fecha: " + new Date().toLocaleDateString() + "\n\n";
-
-        const messages = chatContainer.querySelectorAll('.animate-fade-in');
-        
-        if (messages.length === 0) {
-            if(typeof showToast === 'function') showToast('El chat está vacío, no hay nada que exportar.');
-            return;
-        }
-
-        messages.forEach(msg => {
-            const bubble = msg.querySelector('.bg-primary');
-            const time = msg.querySelector('span.text-on-surface-variant');
-            if (bubble && time) {
-                chatLog += `[${time.innerText}] Tú:\n${bubble.innerText.trim()}\n\n`;
-            }
-        });
-
-        const blob = new Blob([chatLog], { type: 'text/plain' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'chat_antonella_historial.txt';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        
-        if(typeof showToast === 'function') showToast('Historial descargado correctamente.');
-    };
-
-    // --- Dynamic Content Rendering (CMS Sync) ---
-    window.loadDynamicContent = async () => {
-        if (!window.cmsService) return;
-        
-        try {
-            const config = await window.cmsService.getSiteConfig();
-            
-            // 0. Render Site Texts
-            if (config.textos && config.textos.bienvenida) {
-                const welcomeMsg = document.getElementById('dash-welcome-msg');
-                if (welcomeMsg) {
-                    welcomeMsg.innerHTML = `¡Hola, Antonella! <span class="block text-xl font-normal text-on-surface-variant mt-1">${config.textos.bienvenida}</span>`;
-                }
-            }
-
-            // 1. Render Masterclasses
-            const mcGrid = document.getElementById('masterclasses-grid');
-            if (mcGrid && config.educacion && config.educacion.masterclasses) {
-                mcGrid.innerHTML = ''; // Clear fallback
-                
-                if (config.educacion.masterclasses.length === 0) {
-                    mcGrid.innerHTML = '<p class="text-sm text-on-surface-variant col-span-full">No hay clases publicadas aún.</p>';
-                } else {
-                    config.educacion.masterclasses.forEach(mc => {
-                        const cardHtml = `
-                        <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant overflow-hidden group hover:-translate-y-1 hover:shadow-lg transition-all duration-300 cursor-pointer" onclick="if(typeof showToast === 'function') showToast('Abriendo reproductor...')">
-                            <div class="h-48 bg-surface-variant relative overflow-hidden">
-                                <div class="w-full h-full bg-gradient-to-br from-surface-variant to-primary/10 flex flex-col items-center justify-center text-on-surface-variant/50 group-hover:scale-105 transition-transform duration-500">
-                                    <span class="material-symbols-outlined text-4xl mb-1">movie</span>
-                                    <span class="text-[10px] font-bold uppercase tracking-wider">Próximamente</span>
-                                </div>
-                                <div class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                    <span class="material-symbols-outlined text-white text-5xl drop-shadow-md">play_arrow</span>
-                                </div>
-                                <span class="absolute bottom-3 right-3 bg-black/70 text-white text-[11px] px-2 py-0.5 rounded font-medium backdrop-blur-sm">${mc.duracion || '00:00'}</span>
-                            </div>
-                            <div class="p-4">
-                                <span class="text-[10px] font-bold text-primary uppercase tracking-wider mb-1 block">${mc.modulo || 'Módulo'}</span>
-                                <h3 class="font-bold text-on-surface leading-tight mb-2 group-hover:text-primary transition-colors">${mc.titulo}</h3>
-                                <p class="text-xs text-on-surface-variant line-clamp-2">${mc.descripcion}</p>
-                            </div>
-                        </div>`;
-                        mcGrid.insertAdjacentHTML('beforeend', cardHtml);
-                    });
-                }
-            }
-            // 2. Render Subscription Plans
-            const plansGrid = document.getElementById('dash-planes-container');
-            if (plansGrid && config.planes) {
-                plansGrid.innerHTML = '';
-                
-                // Determine current plan
-                const historialStr = localStorage.getItem('antonella_historial_pagos');
-                const historial = historialStr ? JSON.parse(historialStr) : [];
-                let currentPlan = null;
-                if (historial.length > 0) {
-                    // Sort descending by date
-                    const sorted = [...historial].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
-                    // Consider latest completed or processing as current plan
-                    currentPlan = sorted[0].plan;
-                }
-
-                config.planes.forEach((plan, index) => {
-                    const isPremium = plan.id === 'premium' || index === 1;
-                    const highlightClass = isPremium ? 'ring-2 ring-primary bg-primary/5' : 'border-surface-variant hover:border-primary/50';
-                    const badgeHtml = isPremium ? '<span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow-sm">Recomendado</span>' : '';
-                    
-                    let btnClass = isPremium ? 'bg-primary text-white hover:bg-secondary shadow-sm' : 'bg-surface-variant text-on-surface hover:bg-outline-variant/30';
-                    let btnText = 'Elegir Plan';
-                    let onclickAction = `onclick="openCheckout('${plan.nombre}', ${plan.precio})"`;
-
-                    if (currentPlan === plan.nombre) {
-                        btnText = 'Tu Plan Actual';
-                        btnClass = 'bg-surface-variant text-on-surface-variant cursor-not-allowed opacity-60';
-                        onclickAction = 'disabled';
-                    } else if (currentPlan) {
-                        btnText = 'Actualizar Plan';
-                    }
-                    
-                    const benefitsHtml = plan.beneficios.map(b => `
-                        <li class="flex items-start gap-2">
-                            <span class="material-symbols-outlined text-[16px] text-primary shrink-0 mt-0.5">check_circle</span>
-                            <span class="text-xs text-on-surface-variant leading-tight">${b}</span>
-                        </li>
-                    `).join('');
-
-                    const cardHtml = `
-                    <div class="relative bg-surface-container-lowest border rounded-2xl p-5 flex flex-col transition-all cursor-pointer ${highlightClass}">
-                        ${badgeHtml}
-                        <h3 class="font-bold text-on-surface mb-1">${plan.nombre}</h3>
-                        <div class="flex items-baseline gap-1 mb-4">
-                            <span class="font-black text-2xl text-primary">$${plan.precio}</span>
-                            <span class="text-xs text-on-surface-variant">/mes</span>
-                        </div>
-                        <ul class="space-y-3 mb-6 flex-1">
-                            ${benefitsHtml}
-                        </ul>
-                        <button class="w-full py-2.5 rounded-xl font-bold text-sm transition-colors mt-auto ${btnClass}" ${onclickAction}>
-                            ${btnText}
-                        </button>
-                    </div>`;
-                    plansGrid.insertAdjacentHTML('beforeend', cardHtml);
-                });
-            }
-
-        } catch (error) {
-            console.error("Error loading dynamic content:", error);
-        }
-    };
-
-    const renderHistorialPagos = () => {
-        const tbody = document.getElementById('historial-pagos-tbody');
-        if (!tbody) return;
-        
-        const historialStr = localStorage.getItem('antonella_historial_pagos');
-        const historial = historialStr ? JSON.parse(historialStr) : [];
-        
-        tbody.innerHTML = '';
-        if (historial.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="4" class="px-4 py-6 text-center text-sm text-on-surface-variant">Aún no tienes pagos registrados.</td></tr>`;
-            return;
-        }
-        
-        // Sort by date descending
-        historial.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
-        
-        historial.forEach(pago => {
-            const fechaObj = new Date(pago.fecha);
-            const fechaStr = fechaObj.toLocaleDateString('es-ES', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' });
-            
-            const estado = pago.estado || 'Completado';
-            let badgeHtml = '';
-            
-            if (estado === 'Procesando') {
-                badgeHtml = `<span class="px-2 py-1 bg-amber-500/10 text-amber-600 text-[10px] font-bold uppercase tracking-wider rounded-md flex items-center gap-1 w-max"><span class="material-symbols-outlined text-[12px] animate-spin">sync</span> Procesando</span>`;
-            } else {
-                badgeHtml = `<span class="px-2 py-1 bg-emerald-500/10 text-emerald-600 text-[10px] font-bold uppercase tracking-wider rounded-md flex items-center gap-1 w-max"><span class="material-symbols-outlined text-[12px]">check_circle</span> Completado</span>`;
-            }
-            
-            const tr = `
-            <tr class="hover:bg-surface-variant/20 transition-colors">
-                <td class="px-4 py-3 text-sm text-on-surface whitespace-nowrap">${fechaStr}</td>
-                <td class="px-4 py-3 text-sm font-bold text-primary">${pago.plan}</td>
-                <td class="px-4 py-3 text-sm text-on-surface">$${pago.monto.toFixed(2)}</td>
-                <td class="px-4 py-3 text-sm">
-                    ${badgeHtml}
-                </td>
-            </tr>`;
-            tbody.insertAdjacentHTML('beforeend', tr);
-        });
-    };
-
-    // Load dynamic content when the app starts
-    window.loadDynamicContent();
-    renderHistorialPagos();
+    // 13. Section Tracker (IntersectionObserver)
+    const trackedSections = document.querySelectorAll('section[data-section]');
     
-    // --- PDF Generator Logic ---
-    const btnDownloadFullReport = document.getElementById('btn-download-full-report');
-    if (btnDownloadFullReport) {
-        btnDownloadFullReport.addEventListener('click', () => {
-            window.showToast('Generando reporte PDF, por favor espera...');
-            
-            // Seleccionamos la sección completa de Evaluaciones (sin el botón de descarga)
-            const element = document.getElementById('view-evaluaciones');
-            
-            // Temporalmente ocultamos el botón de descarga para que no salga en el PDF
-            const btnOriginalDisplay = btnDownloadFullReport.style.display;
-            btnDownloadFullReport.style.display = 'none';
+    // Mapa para gestionar los temporizadores de las secciones en vista
+    const viewTimeouts = new Map();
 
-            const opt = {
-                margin:       0.5,
-                filename:     'Reporte_Antonella_Epigenetica.pdf',
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true },
-                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-            };
+    if (trackedSections.length > 0) {
+        const observerOptions = {
+            root: null, // viewport
+            rootMargin: '0px',
+            threshold: 0.5 // La sección debe estar 50% visible
+        };
 
-            html2pdf().set(opt).from(element).save().then(() => {
-                window.showToast('¡Reporte PDF descargado con éxito!');
-                btnDownloadFullReport.style.display = btnOriginalDisplay; // Restaurar botón
-            }).catch(err => {
-                console.error("Error generando PDF:", err);
-                window.showToast('Hubo un error al generar el PDF.');
-                btnDownloadFullReport.style.display = btnOriginalDisplay;
+        const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                const sectionName = entry.target.getAttribute('data-section');
+                
+                if (entry.isIntersecting) {
+                    // Si entra en vista (al menos 50%), iniciamos el temporizador de 3 seg
+                    if (!viewTimeouts.has(sectionName)) {
+                        const timeoutId = setTimeout(() => {
+                            // Tras 3 segundos, lo guardamos en localStorage
+                            localStorage.setItem('last_seen_section', sectionName);
+                            console.log(`[Tracker] Guardado en LocalStorage: ${sectionName}`);
+                        }, 3000);
+                        viewTimeouts.set(sectionName, timeoutId);
+                    }
+                } else {
+                    // Si sale de vista antes de los 3 seg, cancelamos el temporizador
+                    if (viewTimeouts.has(sectionName)) {
+                        clearTimeout(viewTimeouts.get(sectionName));
+                        viewTimeouts.delete(sectionName);
+                    }
+                }
             });
+        }, observerOptions);
+
+        trackedSections.forEach(section => {
+            sectionObserver.observe(section);
         });
     }
 
-    // Expose render function for checkout logic to refresh
-    window.refreshHistorialPagos = renderHistorialPagos;
-    } catch (e) {
-        console.error("Critical error during initialization:", e);
-        
-        // Hide skeleton even if initialization failed to prevent infinite loader
-        const skeletonView = document.getElementById('skeleton-view');
-        const realContent = document.getElementById('real-content');
-        if (skeletonView && realContent) {
-            skeletonView.style.display = 'none';
-            realContent.classList.remove('hidden');
-        }
-    }
 });
-
-// --- Checkout Modal Logic ---
-let currentCheckoutPrice = 0;
-let currentDiscount = 0;
-
-window.openCheckout = (planName, price) => {
-    currentCheckoutPrice = price;
-    currentDiscount = 0;
-    
-    document.getElementById('checkout-plan-name').innerText = planName;
-    document.getElementById('checkout-plan-price').innerText = `$${price}`;
-    document.getElementById('checkout-subtotal').innerText = `$${price.toFixed(2)}`;
-    document.getElementById('checkout-total').innerText = `$${price.toFixed(2)}`;
-    
-    // Reset coupon UI
-    document.getElementById('checkout-coupon-code').value = '';
-    document.getElementById('checkout-discount-row').classList.add('hidden');
-    const msgEl = document.getElementById('checkout-coupon-message');
-    msgEl.classList.add('hidden');
-    msgEl.className = 'text-xs mt-2 hidden font-medium';
-    
-    const modal = document.getElementById('checkout-modal');
-    modal.classList.remove('hidden');
-    // slight delay to allow display block to apply before transition
-    setTimeout(() => {
-        modal.classList.remove('opacity-0');
-        document.getElementById('checkout-content').classList.remove('scale-95');
-    }, 10);
-};
-
-window.closeCheckout = () => {
-    const modal = document.getElementById('checkout-modal');
-    modal.classList.add('opacity-0');
-    document.getElementById('checkout-content').classList.add('scale-95');
-    
-    setTimeout(() => {
-        modal.classList.add('hidden');
-    }, 300);
-};
-
-window.applyCoupon = async () => {
-    const codeInput = document.getElementById('checkout-coupon-code').value.toUpperCase().trim();
-    const msgEl = document.getElementById('checkout-coupon-message');
-    
-    if (!codeInput) {
-        msgEl.innerText = "Por favor ingresa un código.";
-        msgEl.className = 'text-xs mt-2 font-medium text-red-500 block';
-        return;
-    }
-    
-    if (!window.cmsService) {
-        msgEl.innerText = "Servicio de cupones no disponible.";
-        msgEl.className = 'text-xs mt-2 font-medium text-red-500 block';
-        return;
-    }
-    
-    const config = await window.cmsService.getSiteConfig();
-    const promos = config.promociones || [];
-    
-    const coupon = promos.find(p => p.codigo === codeInput);
-    
-    if (coupon) {
-        // Assume percentage discount for now
-        currentDiscount = (currentCheckoutPrice * coupon.descuento) / 100;
-        const total = currentCheckoutPrice - currentDiscount;
-        
-        document.getElementById('checkout-discount-row').classList.remove('hidden');
-        document.getElementById('checkout-discount-label').innerText = `Descuento (${coupon.descuento}% OFF)`;
-        document.getElementById('checkout-discount-amount').innerText = `-$${currentDiscount.toFixed(2)}`;
-        document.getElementById('checkout-total').innerText = `$${total.toFixed(2)}`;
-        
-        msgEl.innerText = "¡Cupón aplicado correctamente!";
-        msgEl.className = 'text-xs mt-2 font-medium text-emerald-600 block';
-    } else {
-        // Reset to original
-        currentDiscount = 0;
-        document.getElementById('checkout-discount-row').classList.add('hidden');
-        document.getElementById('checkout-total').innerText = `$${currentCheckoutPrice.toFixed(2)}`;
-        
-        msgEl.innerText = "Cupón inválido o expirado.";
-        msgEl.className = 'text-xs mt-2 font-medium text-red-500 block';
-    }
-};
-
-window.procesarPago = () => {
-    const btn = document.getElementById('btn-procesar-pago');
-    const originalContent = btn.innerHTML;
-    
-    btn.innerHTML = '<span class="material-symbols-outlined text-[18px] animate-spin">sync</span> Procesando...';
-    btn.disabled = true;
-    
-    setTimeout(() => {
-        // Save initial processing state
-        const planName = document.getElementById('checkout-plan-name').innerText;
-        const totalStr = document.getElementById('checkout-total').innerText.replace('$', '');
-        const total = parseFloat(totalStr);
-        const pagoId = 'txn_' + Date.now();
-        
-        const historialStr = localStorage.getItem('antonella_historial_pagos');
-        const historial = historialStr ? JSON.parse(historialStr) : [];
-        
-        historial.push({
-            id: pagoId,
-            plan: planName,
-            monto: total,
-            fecha: new Date().toISOString(),
-            estado: 'Procesando'
-        });
-        
-        localStorage.setItem('antonella_historial_pagos', JSON.stringify(historial));
-        
-        if (typeof showToast === 'function') {
-            showToast('Pago en proceso, validando con pasarela...');
-        }
-        
-        // Refresh table immediately
-        if (typeof window.refreshHistorialPagos === 'function') {
-            window.refreshHistorialPagos();
-        }
-        if (typeof window.loadDynamicContent === 'function') {
-            window.loadDynamicContent(); // Refresh plan buttons to show "Tu Plan Actual"
-        }
-        
-        // Close modal and reset button
-        closeCheckout();
-        setTimeout(() => {
-            btn.innerHTML = originalContent;
-            btn.disabled = false;
-        }, 300);
-        
-        // Simulate gateway delay (e.g. 5 seconds)
-        setTimeout(() => {
-            const hStr = localStorage.getItem('antonella_historial_pagos');
-            if (hStr) {
-                let hList = JSON.parse(hStr);
-                const txn = hList.find(t => t.id === pagoId);
-                if (txn) {
-                    txn.estado = 'Completado';
-                    localStorage.setItem('antonella_historial_pagos', JSON.stringify(hList));
-                    if (typeof window.refreshHistorialPagos === 'function') {
-                        window.refreshHistorialPagos();
-                    }
-                    if (typeof window.loadDynamicContent === 'function') {
-                        window.loadDynamicContent(); // Refresh plan buttons
-                    }
-                    if (typeof showToast === 'function') {
-                        showToast(`¡Pago de ${planName} completado con éxito!`);
-                    }
-                }
-            }
-        }, 5000);
-        
-    }, 1000); // Small initial delay to show the spinner in button
-};
-
-// ==========================================
-// 14. GAMIFICATION ENGINE
-// ==========================================
-const GAMIFICATION_ACHIEVEMENTS = [
-    { id: 'perfil', title: 'Perfil Listo', icon: 'account_circle', color: 'emerald', reqLevel: 0, description: 'Perfil Completado' },
-    { id: 'racha7', title: 'Racha 7D', icon: 'local_fire_department', color: 'primary', reqLevel: 0, description: '7 días de Check-in' },
-    { id: 'pionero', title: 'Pionero', icon: 'biotech', color: 'purple', reqLevel: 1, description: 'Pionero Epigenético' },
-    { id: 'nutricion', title: 'Nutrición', icon: 'restaurant', color: 'yellow', reqLevel: 1, description: 'Nutrición Base' },
-    { id: 'detox', title: 'Detox Gen', icon: 'science', color: 'slate', reqLevel: 2, description: 'Completa la Fase 2' },
-    { id: 'agua', title: 'Hidratado', icon: 'water_drop', color: 'slate', reqLevel: 2, description: 'Registra agua por 7 días' },
-    { id: 'racha30', title: 'Racha 30D', icon: 'workspace_premium', color: 'slate', reqLevel: 3, description: 'Check-in por 30 días seguidos' },
-    { id: 'estudiante', title: 'Estudiante', icon: 'school', color: 'slate', reqLevel: 3, description: 'Mira 5 videos de educación' },
-    { id: 'metabolismo', title: 'Metabolismo', icon: 'monitor_heart', color: 'slate', reqLevel: 4, description: 'Optimiza tu TSH' },
-    { id: 'zen', title: 'Zen', icon: 'self_improvement', color: 'slate', reqLevel: 4, description: 'Completa el reto de meditación' },
-    { id: 'fase3', title: 'Fase 3', icon: 'verified', color: 'slate', reqLevel: 5, description: 'Completa la Fase 3 del plan' },
-    { id: 'elite', title: 'Élite', icon: 'diamond', color: 'slate', reqLevel: 6, description: 'Alcanza el 100% en todas las métricas' }
-];
-
-const renderGamification = () => {
-    const container = document.getElementById('achievements-grid');
-    if (!container) return;
-    
-    // Simulate current user level (can be updated via localStorage in a real app)
-    let currentLevel = parseInt(localStorage.getItem('antonella_user_level') || '1');
-    
-    let html = '';
-    GAMIFICATION_ACHIEVEMENTS.forEach(ach => {
-        const isUnlocked = currentLevel >= ach.reqLevel;
-        
-        if (isUnlocked) {
-            html += `
-            <div class="flex flex-col items-center gap-1 text-center group cursor-pointer" onclick="showToast('Logro: ${ach.description}')">
-                <div class="w-10 h-10 rounded-full bg-${ach.color}-100 text-${ach.color}-600 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
-                    <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">${ach.icon}</span>
-                </div>
-                <span class="text-[9px] font-bold text-on-surface leading-tight">${ach.title}</span>
-            </div>`;
-        } else {
-            html += `
-            <div class="flex flex-col items-center gap-1 text-center group cursor-pointer grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all" onclick="showToast('Bloqueado: ${ach.description}')">
-                <div class="w-10 h-10 rounded-full bg-surface-variant text-on-surface-variant border border-outline-variant flex items-center justify-center">
-                    <span class="material-symbols-outlined text-xl">${ach.icon}</span>
-                </div>
-                <span class="text-[9px] font-medium text-on-surface-variant leading-tight">${ach.title}</span>
-            </div>`;
-        }
-    });
-    container.innerHTML = html;
-};
-
-// Auto-init Gamification when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-    // Other inits...
-    setTimeout(renderGamification, 500); // Wait for DOM
-});
-
-// For testing: Expose a way to level up
-window.levelUp = () => {
-    let currentLevel = parseInt(localStorage.getItem('antonella_user_level') || '1');
-    currentLevel++;
-    localStorage.setItem('antonella_user_level', currentLevel.toString());
-    showToast(`¡Felicidades! Has subido al Nivel ${currentLevel}`);
-    renderGamification();
-};
