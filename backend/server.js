@@ -60,10 +60,16 @@ app.post('/api/chat', async (req, res) => {
 
         // 4. Configurar el Prompt Estricto del Sistema (System Prompt)
         const systemPrompt = `
-Eres el "Asistente Epigenético", un chatbot médico virtual para la clínica Antonella Epigenética.
-Tu objetivo es responder las dudas del paciente basándote EXCLUSIVAMENTE en el siguiente contexto extraído de sus exámenes médicos.
-Si la respuesta no está en el contexto, di amablemente que no tienes esa información y que consulte directamente con su médico.
-No inventes datos. Sé muy conciso, empático y profesional.
+Eres el "Asistente de Triaje" de la clínica Antonella Epigenética.
+Tu objetivo principal es recopilar información del usuario ANTES de derivarlo con un especialista o darle recomendaciones médicas.
+Para pacientes nuevos, debes hacer las siguientes preguntas de forma empática y conversacional (puedes hacerlas una por una o un par a la vez):
+1. ¿Qué edad tiene el niño?
+2. ¿Tiene algún diagnóstico como autismo, déficit de atención o hiperactividad?
+3. ¿Hace cuánto tiempo lo notas así?
+4. ¿Esos cambios que describes vinieron luego de alguna vacuna?
+
+Una vez recopilada esta información, indícales que un especialista revisará su caso.
+Si el usuario hace preguntas sobre sus resultados existentes, básate EXCLUSIVAMENTE en el siguiente contexto extraído de sus exámenes médicos. No inventes datos.
 
 CONTEXTO MÉDICO DEL PACIENTE:
 ${contextText}
@@ -90,8 +96,80 @@ ${contextText}
     }
 });
 
+/**
+ * RUTA 2: Recibir Leads del Programa de Bienestar
+ */
+app.post('/api/leads', async (req, res) => {
+    try {
+        const { email, source } = req.body;
+        if (!email) return res.status(400).json({ error: "Email requerido" });
+
+        const { data, error } = await supabase
+            .from('leads')
+            .insert([{ email, source: source || 'landing_bienestar' }]);
+
+        if (error) {
+            // Si es error de duplicidad, igual respondemos success para no alertar al usuario
+            if (error.code === '23505') {
+                return res.json({ success: true, message: "Lead ya existía." });
+            }
+            throw error;
+        }
+
+        // Aquí podrías agregar un fetch() a tu webhook de n8n o Zapier si lo deseas
+        // await fetch('TU_WEBHOOK_URL', { method: 'POST', body: JSON.stringify({email}) });
+
+        res.json({ success: true, message: "Lead guardado correctamente." });
+    } catch (error) {
+        console.error("Error en /api/leads:", error);
+        res.status(500).json({ error: "Error interno guardando lead." });
+    }
+});
+
+/**
+ * RUTA 3: Recibir Check-in Mensual del Dashboard
+ */
+app.post('/api/checkins', async (req, res) => {
+    try {
+        // En un entorno real, extraeríamos patient_id del token JWT en los headers (auth).
+        // Por ahora, asumimos que viene en el body por propósitos de demostración.
+        const { 
+            patient_id, 
+            energy_level, 
+            digestion_score, 
+            adherence_items, 
+            eighty_percent_rule, 
+            habits, 
+            supplements_consistency, 
+            additional_notes 
+        } = req.body;
+
+        if (!energy_level) return res.status(400).json({ error: "Faltan datos requeridos." });
+
+        const { data, error } = await supabase
+            .from('monthly_checkins')
+            .insert([{
+                patient_id: patient_id || null, // Requiere que el usuario esté logueado o pasarlo
+                energy_level,
+                digestion_score,
+                adherence_items,
+                eighty_percent_rule,
+                habits,
+                supplements_consistency,
+                additional_notes
+            }]);
+
+        if (error) throw error;
+
+        res.json({ success: true, message: "Check-in guardado correctamente." });
+    } catch (error) {
+        console.error("Error en /api/checkins:", error);
+        res.status(500).json({ error: "Error interno guardando check-in." });
+    }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`✅ Cerebro RAG activado en el puerto ${PORT}`);
-    console.log(`🔧 Recuerda configurar tu archivo .env con las claves reales`);
+    console.log(`✅ Servidor Backend activado en el puerto ${PORT}`);
+    console.log(`🔧 Recuerda configurar tu archivo .env con las claves reales de Supabase`);
 });

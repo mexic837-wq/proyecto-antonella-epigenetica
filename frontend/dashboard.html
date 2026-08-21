@@ -929,7 +929,7 @@ window.onunhandledrejection = function(event) {
         
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-lg mb-xl">
             <!-- Informe Capilar Card -->
-            <div class="bg-surface-container-lowest rounded-xl p-lg shadow-sm border border-surface-variant hover:shadow-md transition-shadow relative overflow-hidden">
+            <div id="card-capilar" class="bg-surface-container-lowest rounded-xl p-lg shadow-sm border border-surface-variant hover:shadow-md transition-shadow relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-full -z-0"></div>
                 <div class="flex justify-between items-start relative z-10 mb-4">
                     <div class="flex items-center gap-3">
@@ -938,22 +938,22 @@ window.onunhandledrejection = function(event) {
                         </div>
                         <div>
                             <h3 class="font-bold text-on-surface text-lg">Informe Capilar</h3>
-                            <p class="text-xs text-on-surface-variant">Actualizado: 12 Oct 2024</p>
+                            <p id="date-capilar" class="text-xs text-on-surface-variant">Revisando sistema...</p>
                         </div>
                     </div>
-                    <span class="px-2 py-1 bg-mint/20 text-mint text-[10px] font-bold rounded-full">Completado</span>
+                    <span id="badge-capilar" class="px-2 py-1 bg-surface-variant text-on-surface-variant text-[10px] font-bold rounded-full">Buscando</span>
                 </div>
                 <div class="bg-surface-container-low p-4 rounded-lg mb-4 text-sm text-on-surface-variant border border-surface-variant">
-                    <p class="font-bold text-primary mb-1">Resumen Simplificado:</p>
-                    Tu sistema muestra niveles óptimos de vitaminas B, pero hay indicadores de estrés oxidativo alto. Sugerimos incrementar antioxidantes (Glutatión).
+                    <p class="font-bold text-primary mb-1">Resumen:</p>
+                    <span id="desc-capilar">Buscando tu reporte en el sistema. Si ya te realizaste la prueba, aparecerá aquí pronto.</span>
                 </div>
-                <button id="btn-download-full-report" class="w-full py-2 border-2 border-primary text-primary rounded-lg font-bold hover:bg-primary hover:text-white transition-colors flex items-center justify-center gap-2">
-                    <span class="material-symbols-outlined text-sm">download</span> Descargar PDF Completo
+                <button id="btn-capilar" class="w-full py-2 bg-surface-variant text-on-surface-variant rounded-lg font-bold cursor-not-allowed opacity-50 flex items-center justify-center gap-2" disabled>
+                    <span class="material-symbols-outlined text-sm">hourglass_empty</span> Pendiente
                 </button>
             </div>
             
             <!-- Bioresonancia Card -->
-            <div class="bg-surface-container-lowest rounded-xl p-lg shadow-sm border border-surface-variant hover:shadow-md transition-shadow relative overflow-hidden">
+            <div id="card-bioresonancia" class="bg-surface-container-lowest rounded-xl p-lg shadow-sm border border-surface-variant hover:shadow-md transition-shadow relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-24 h-24 bg-tertiary/5 rounded-bl-full -z-0"></div>
                 <div class="flex justify-between items-start relative z-10 mb-4">
                     <div class="flex items-center gap-3">
@@ -962,23 +962,19 @@ window.onunhandledrejection = function(event) {
                         </div>
                         <div>
                             <h3 class="font-bold text-on-surface text-lg">Bioresonancia Magnética</h3>
-                            <p class="text-xs text-on-surface-variant">Fecha: 05 Nov 2024</p>
+                            <p id="date-bioresonancia" class="text-xs text-on-surface-variant">Revisando sistema...</p>
                         </div>
                     </div>
                     <div class="group relative">
-                        <span class="px-2 py-1 bg-surface-variant text-on-surface-variant text-[10px] font-bold rounded-full flex items-center gap-1 cursor-help">
-                            En Proceso <span class="material-symbols-outlined text-[12px]">info</span>
+                        <span id="badge-bioresonancia" class="px-2 py-1 bg-surface-variant text-on-surface-variant text-[10px] font-bold rounded-full flex items-center gap-1 cursor-help">
+                            Buscando <span class="material-symbols-outlined text-[12px]">info</span>
                         </span>
-                        <!-- Tooltip -->
-                        <div class="hidden group-hover:block absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-on-surface text-white text-[10px] rounded shadow-lg z-50 text-center font-normal">
-                            Tu muestra está siendo analizada. Los resultados suelen tardar entre 5 a 7 días hábiles.
-                        </div>
                     </div>
                 </div>
                 <div class="bg-surface-container-low p-4 rounded-lg mb-4 text-sm text-on-surface-variant flex items-center justify-center h-[92px] border border-surface-variant">
-                    <p class="text-center italic">El laboratorio está analizando tus datos frecuenciales. Te notificaremos cuando esté listo.</p>
+                    <p id="desc-bioresonancia" class="text-center italic">El laboratorio está analizando tus datos frecuenciales. Te notificaremos cuando esté listo.</p>
                 </div>
-                <button class="w-full py-2 bg-surface-variant text-on-surface-variant rounded-lg font-bold cursor-not-allowed opacity-50 flex items-center justify-center gap-2" disabled>
+                <button id="btn-bioresonancia" class="w-full py-2 bg-surface-variant text-on-surface-variant rounded-lg font-bold cursor-not-allowed opacity-50 flex items-center justify-center gap-2" disabled>
                     <span class="material-symbols-outlined text-sm">hourglass_empty</span> Pendiente
                 </button>
             </div>
@@ -987,47 +983,108 @@ window.onunhandledrejection = function(event) {
         <!-- Gráfico de Progreso Adaptativo (Tracker Cualitativo) -->
         <section class="bg-surface-container-lowest rounded-xl p-lg shadow-sm border border-surface-variant mb-xl">
             <h3 class="font-headline-md font-bold text-on-surface flex items-center gap-2 mb-2">
-                <span class="material-symbols-outlined text-primary">battery_charging_full</span> Tu Energía Hoy
+                <span class="material-symbols-outlined text-primary">health_metrics</span> Tus Métricas Diarias
             </h3>
             <p class="text-sm text-on-surface-variant mb-6">Ayuda a tu médico a correlacionar tus biomarcadores con cómo te sientes día a día.</p>
             
-            <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
-                <!-- Nivel 1 -->
-                <label class="flex-1 w-full relative cursor-pointer group">
-                    <input type="radio" name="energia" class="peer sr-only">
-                    <div class="p-4 border-2 border-surface-variant rounded-xl text-center peer-checked:border-error peer-checked:bg-error/10 hover:border-error/50 transition-all">
-                        <span class="material-symbols-outlined text-3xl text-error mb-2">battery_0_bar</span>
-                        <p class="font-bold text-on-surface text-sm">Agotado</p>
+            <div class="flex flex-col gap-8">
+                <!-- Energía -->
+                <div>
+                    <h4 class="text-sm font-bold text-on-surface mb-3 flex items-center gap-2"><span class="material-symbols-outlined text-primary text-[18px]">battery_charging_full</span> Nivel de Energía</h4>
+                    <div class="flex flex-col md:flex-row gap-3 items-center justify-between">
+                        <label class="flex-1 w-full relative cursor-pointer group">
+                            <input type="radio" name="energia" value="agotado" class="peer sr-only">
+                            <div class="p-3 border-2 border-surface-variant rounded-xl text-center peer-checked:border-error peer-checked:bg-error/10 hover:border-error/50 transition-all">
+                                <p class="font-bold text-on-surface text-sm">Agotado</p>
+                            </div>
+                        </label>
+                        <label class="flex-1 w-full relative cursor-pointer group">
+                            <input type="radio" name="energia" value="cansado" class="peer sr-only">
+                            <div class="p-3 border-2 border-surface-variant rounded-xl text-center peer-checked:border-amber-500 peer-checked:bg-amber-500/10 hover:border-amber-500/50 transition-all">
+                                <p class="font-bold text-on-surface text-sm">Cansado</p>
+                            </div>
+                        </label>
+                        <label class="flex-1 w-full relative cursor-pointer group">
+                            <input type="radio" name="energia" value="normal" class="peer sr-only" checked>
+                            <div class="p-3 border-2 border-surface-variant rounded-xl text-center peer-checked:border-primary peer-checked:bg-primary/10 hover:border-primary/50 transition-all">
+                                <p class="font-bold text-on-surface text-sm">Normal</p>
+                            </div>
+                        </label>
+                        <label class="flex-1 w-full relative cursor-pointer group">
+                            <input type="radio" name="energia" value="con_energia" class="peer sr-only">
+                            <div class="p-3 border-2 border-surface-variant rounded-xl text-center peer-checked:border-mint peer-checked:bg-mint/10 hover:border-mint/50 transition-all">
+                                <p class="font-bold text-on-surface text-sm">Con Energía</p>
+                            </div>
+                        </label>
                     </div>
-                </label>
-                <!-- Nivel 2 -->
-                <label class="flex-1 w-full relative cursor-pointer group">
-                    <input type="radio" name="energia" class="peer sr-only">
-                    <div class="p-4 border-2 border-surface-variant rounded-xl text-center peer-checked:border-amber-500 peer-checked:bg-amber-500/10 hover:border-amber-500/50 transition-all">
-                        <span class="material-symbols-outlined text-3xl text-amber-500 mb-2">battery_3_bar</span>
-                        <p class="font-bold text-on-surface text-sm">Cansado</p>
+                </div>
+
+                <!-- Sueño -->
+                <div>
+                    <h4 class="text-sm font-bold text-on-surface mb-3 flex items-center gap-2"><span class="material-symbols-outlined text-indigo-500 text-[18px]">bedtime</span> Calidad del Sueño</h4>
+                    <div class="flex flex-col md:flex-row gap-3 items-center justify-between">
+                        <label class="flex-1 w-full relative cursor-pointer group">
+                            <input type="radio" name="sueno" value="pobre" class="peer sr-only">
+                            <div class="p-3 border-2 border-surface-variant rounded-xl text-center peer-checked:border-indigo-500 peer-checked:bg-indigo-500/10 hover:border-indigo-500/50 transition-all">
+                                <p class="font-bold text-on-surface text-sm">Pobre</p>
+                            </div>
+                        </label>
+                        <label class="flex-1 w-full relative cursor-pointer group">
+                            <input type="radio" name="sueno" value="regular" class="peer sr-only">
+                            <div class="p-3 border-2 border-surface-variant rounded-xl text-center peer-checked:border-indigo-500 peer-checked:bg-indigo-500/10 hover:border-indigo-500/50 transition-all">
+                                <p class="font-bold text-on-surface text-sm">Regular</p>
+                            </div>
+                        </label>
+                        <label class="flex-1 w-full relative cursor-pointer group">
+                            <input type="radio" name="sueno" value="bueno" class="peer sr-only" checked>
+                            <div class="p-3 border-2 border-surface-variant rounded-xl text-center peer-checked:border-indigo-500 peer-checked:bg-indigo-500/10 hover:border-indigo-500/50 transition-all">
+                                <p class="font-bold text-on-surface text-sm">Bueno</p>
+                            </div>
+                        </label>
+                        <label class="flex-1 w-full relative cursor-pointer group">
+                            <input type="radio" name="sueno" value="excelente" class="peer sr-only">
+                            <div class="p-3 border-2 border-surface-variant rounded-xl text-center peer-checked:border-indigo-500 peer-checked:bg-indigo-500/10 hover:border-indigo-500/50 transition-all">
+                                <p class="font-bold text-on-surface text-sm">Excelente</p>
+                            </div>
+                        </label>
                     </div>
-                </label>
-                <!-- Nivel 3 -->
-                <label class="flex-1 w-full relative cursor-pointer group">
-                    <input type="radio" name="energia" class="peer sr-only" checked>
-                    <div class="p-4 border-2 border-surface-variant rounded-xl text-center peer-checked:border-primary peer-checked:bg-primary/10 hover:border-primary/50 transition-all">
-                        <span class="material-symbols-outlined text-3xl text-primary mb-2">battery_5_bar</span>
-                        <p class="font-bold text-on-surface text-sm">Normal</p>
+                </div>
+
+                <!-- Inflamación -->
+                <div>
+                    <h4 class="text-sm font-bold text-on-surface mb-3 flex items-center gap-2"><span class="material-symbols-outlined text-red-500 text-[18px]">local_fire_department</span> Inflamación y Dolor</h4>
+                    <div class="flex flex-col md:flex-row gap-3 items-center justify-between">
+                        <label class="flex-1 w-full relative cursor-pointer group">
+                            <input type="radio" name="inflamacion" value="nula" class="peer sr-only" checked>
+                            <div class="p-3 border-2 border-surface-variant rounded-xl text-center peer-checked:border-red-500 peer-checked:bg-red-500/10 hover:border-red-500/50 transition-all">
+                                <p class="font-bold text-on-surface text-sm">Nula</p>
+                            </div>
+                        </label>
+                        <label class="flex-1 w-full relative cursor-pointer group">
+                            <input type="radio" name="inflamacion" value="leve" class="peer sr-only">
+                            <div class="p-3 border-2 border-surface-variant rounded-xl text-center peer-checked:border-red-500 peer-checked:bg-red-500/10 hover:border-red-500/50 transition-all">
+                                <p class="font-bold text-on-surface text-sm">Leve</p>
+                            </div>
+                        </label>
+                        <label class="flex-1 w-full relative cursor-pointer group">
+                            <input type="radio" name="inflamacion" value="moderada" class="peer sr-only">
+                            <div class="p-3 border-2 border-surface-variant rounded-xl text-center peer-checked:border-red-500 peer-checked:bg-red-500/10 hover:border-red-500/50 transition-all">
+                                <p class="font-bold text-on-surface text-sm">Moderada</p>
+                            </div>
+                        </label>
+                        <label class="flex-1 w-full relative cursor-pointer group">
+                            <input type="radio" name="inflamacion" value="alta" class="peer sr-only">
+                            <div class="p-3 border-2 border-surface-variant rounded-xl text-center peer-checked:border-red-500 peer-checked:bg-red-500/10 hover:border-red-500/50 transition-all">
+                                <p class="font-bold text-on-surface text-sm">Alta</p>
+                            </div>
+                        </label>
                     </div>
-                </label>
-                <!-- Nivel 4 -->
-                <label class="flex-1 w-full relative cursor-pointer group">
-                    <input type="radio" name="energia" class="peer sr-only">
-                    <div class="p-4 border-2 border-surface-variant rounded-xl text-center peer-checked:border-mint peer-checked:bg-mint/10 hover:border-mint/50 transition-all">
-                        <span class="material-symbols-outlined text-3xl text-mint mb-2">battery_full</span>
-                        <p class="font-bold text-on-surface text-sm">Con Energía</p>
-                    </div>
-                </label>
+                </div>
             </div>
-            <div class="mt-4 flex justify-end">
-                <button class="px-6 py-2 bg-primary text-white text-sm font-bold rounded-lg hover:bg-secondary transition-colors" onclick="showToast('Progreso guardado. ¡Sigue así!')">
-                    Guardar Registro
+
+            <div class="mt-8 flex justify-end">
+                <button id="btn-save-energy" class="px-6 py-2 bg-primary text-white text-sm font-bold rounded-lg hover:bg-secondary transition-colors shadow-sm">
+                    Guardar Registro Diario
                 </button>
             </div>
         </section>
@@ -1039,10 +1096,10 @@ window.onunhandledrejection = function(event) {
                 <h3 class="font-headline-md font-bold text-on-surface flex items-center gap-2">
                     <span class="material-symbols-outlined text-primary">monitoring</span> Evolución de Marcadores Clave
                 </h3>
-                <select class="text-sm bg-surface-container-low border border-surface-variant rounded-md pl-2 pr-8 py-1 outline-none text-on-surface">
-                    <option>Niveles de Energía</option>
-                    <option>Inflamación Sistémica</option>
-                    <option>Calidad del Sueño</option>
+                <select id="chart-metric-select" class="text-sm bg-surface-container-low border border-surface-variant rounded-md pl-2 pr-8 py-1 outline-none text-on-surface">
+                    <option value="energia">Niveles de Energía</option>
+                    <option value="inflamacion">Inflamación Sistémica</option>
+                    <option value="sueno">Calidad del Sueño</option>
                 </select>
             </div>
             <div class="w-full h-[300px] relative" id="chart-container">
@@ -1151,8 +1208,8 @@ window.onunhandledrejection = function(event) {
             <span class="material-symbols-outlined text-secondary">menu_book</span> Guías Nutricionales y PDFs
         </h2>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 fade-in-up delay-300 mb-8">
-            <!-- PDF Card 1 -->
+        <div id="pdfs-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 fade-in-up delay-300 mb-8">
+            <!-- PDF Card 1 (Estático: Recetario) -->
             <div class="bg-surface-container-lowest rounded-xl p-5 shadow-sm border border-surface-variant group hover:-translate-y-1 hover:shadow-md transition-all duration-300 flex flex-col h-full">
                 <div class="w-12 h-12 bg-secondary/10 text-secondary rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                     <span class="material-symbols-outlined text-2xl">picture_as_pdf</span>
@@ -1163,18 +1220,7 @@ window.onunhandledrejection = function(event) {
                     <span class="btn-text flex items-center gap-2">Leer Artículo <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
                 </button>
             </div>
-
-            <!-- PDF Card 2 -->
-            <div class="bg-surface-container-lowest rounded-xl p-5 shadow-sm border border-surface-variant group hover:-translate-y-1 hover:shadow-md transition-all duration-300 flex flex-col h-full">
-                <div class="w-12 h-12 bg-secondary/10 text-secondary rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <span class="material-symbols-outlined text-2xl">article</span>
-                </div>
-                <h3 class="font-bold text-on-surface text-sm mb-2">Guía de Ayuno Intermitente</h3>
-                <p class="text-xs text-on-surface-variant mb-4 flex-1">Cómo iniciar protocolos de ayuno 16/8 de manera segura y enfocada a mujeres.</p>
-                <button id="btn-download-pdf" class="w-full py-2 bg-surface border border-outline-variant text-on-surface text-xs font-bold rounded-lg hover:bg-surface-variant transition-colors flex items-center justify-center gap-2">
-                    <span class="material-symbols-outlined text-[16px] btn-icon">download</span> <span class="btn-text">Descargar PDF</span>
-                </button>
-            </div>
+            <!-- Aquí se inyectarán PDFs dinámicos desde Supabase -->
         </div>
     </div>
     <div id="view-mensajes" class="view-section hidden h-[calc(100vh-6rem)]">
@@ -1652,6 +1698,65 @@ window.onunhandledrejection = function(event) {
             </div>
         </div>
             
+    <!-- ============================================== -->
+    <!-- VIEW: FACTURACIÓN                              -->
+    <!-- ============================================== -->
+    <div id="view-facturacion" class="view-section hidden">
+        <h2 class="font-display-lg text-display-lg text-on-surface mb-lg fade-in-up">Facturación y Pagos</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-lg fade-in-up delay-100">
+            <!-- Zelle Option -->
+            <div class="bg-surface-container-lowest rounded-xl p-lg shadow-sm border border-surface-variant flex flex-col h-full hover:shadow-md transition-shadow">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 rounded-full bg-[#7411E3]/10 flex items-center justify-center text-[#7411E3] shrink-0">
+                        <span class="material-symbols-outlined text-[28px]">payments</span>
+                    </div>
+                    <h3 class="font-headline-md text-on-surface">Pago vía Zelle</h3>
+                </div>
+                <p class="text-on-surface-variant mb-6 flex-1">Puedes realizar tu pago único o cuotas a través de Zelle. Una vez realizado, por favor contáctanos con tu comprobante.</p>
+                <div class="bg-surface-variant/30 rounded-lg p-4 mb-6 text-sm">
+                    <p class="mb-2"><span class="font-bold text-on-surface">Correo:</span> pagos@antonellaepigenetica.com</p>
+                    <p><span class="font-bold text-on-surface">Nombre:</span> Antonella Epigenética LLC</p>
+                </div>
+                <button class="w-full py-3 bg-surface border border-outline-variant text-on-surface font-bold rounded-xl hover:bg-surface-variant transition-colors" onclick="showToast('Copiado al portapapeles')">
+                    Copiar Correo
+                </button>
+            </div>
+
+            <!-- Stripe Option -->
+            <div class="bg-surface-container-lowest rounded-xl p-lg shadow-sm border border-surface-variant flex flex-col h-full hover:shadow-md transition-shadow relative overflow-hidden">
+                <div class="absolute top-0 right-0 bg-primary text-white text-xs font-bold px-3 py-1 rounded-bl-lg">Recomendado</div>
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 rounded-full bg-[#635BFF]/10 flex items-center justify-center text-[#635BFF] shrink-0">
+                        <span class="material-symbols-outlined text-[28px]">credit_card</span>
+                    </div>
+                    <h3 class="font-headline-md text-on-surface">Tarjeta de Crédito / Stripe</h3>
+                </div>
+                <p class="text-on-surface-variant mb-6 flex-1">Paga de forma rápida y segura con cualquier tarjeta de crédito o débito, gestionado por Stripe.</p>
+                
+                <div class="mt-auto">
+                    <button class="w-full py-3 bg-[#635BFF] hover:bg-[#5249E5] text-white font-bold rounded-xl transition-colors shadow-md flex justify-center items-center gap-2" onclick="document.getElementById('checkout-modal').classList.remove('hidden'); setTimeout(() => { document.getElementById('checkout-modal').classList.add('opacity-100'); document.getElementById('checkout-content').classList.remove('scale-95'); }, 10);">
+                        Pagar con Tarjeta <span class="material-symbols-outlined text-[18px]">lock</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Historial de Pagos (Empty State) -->
+        <div class="mt-lg bg-surface-container-lowest rounded-xl p-lg shadow-sm border border-surface-variant fade-in-up delay-200">
+            <h3 class="font-headline-md text-on-surface mb-6 flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary">receipt_long</span> Historial de Transacciones
+            </h3>
+            <div class="flex flex-col items-center justify-center py-10 text-center">
+                <div class="w-16 h-16 bg-surface-variant rounded-full flex items-center justify-center text-outline-variant mb-4">
+                    <span class="material-symbols-outlined text-[32px]">receipt</span>
+                </div>
+                <h4 class="font-bold text-on-surface mb-2">No hay transacciones recientes</h4>
+                <p class="text-on-surface-variant text-sm max-w-md">Tus pagos y suscripciones futuras aparecerán aquí para que puedas descargar tus facturas.</p>
+            </div>
+        </div>
+    </div>
+
         </div> <!-- End Real Content -->
 </main> <!-- End Main Container -->
 
@@ -2046,4 +2151,10 @@ window.onunhandledrejection = function(event) {
         </div>
     </div>
 
-</body></html>
+    <script src="/checkin.js"></script>
+    <script src="/chat.js"></script>
+    <script src="/education.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/evaluaciones.js"></script>
+</body>
+</html>

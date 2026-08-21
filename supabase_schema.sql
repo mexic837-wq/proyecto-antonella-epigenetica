@@ -10,6 +10,8 @@ CREATE TABLE public.patients (
     id UUID REFERENCES auth.users(id) PRIMARY KEY,
     role user_role DEFAULT 'patient'::user_role NOT NULL,
     full_name TEXT NOT NULL,
+    last_name TEXT,
+    date_of_birth DATE,
     email TEXT UNIQUE NOT NULL,
     phone VARCHAR(20),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
@@ -120,3 +122,46 @@ BEGIN
     LIMIT match_count;
 END;
 $$;
+
+-- ==========================================
+-- 7. Tabla de Leads (Programa de Bienestar)
+-- ==========================================
+CREATE TABLE public.leads (
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    email TEXT UNIQUE NOT NULL,
+    source TEXT DEFAULT 'landing_bienestar',
+    status TEXT DEFAULT 'pending_webhook', -- pending, processed
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+ALTER TABLE public.leads ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Admins can view leads" ON public.leads FOR SELECT USING (
+    EXISTS (SELECT 1 FROM public.patients WHERE id = auth.uid() AND role = 'admin')
+);
+CREATE POLICY "Anyone can insert leads" ON public.leads FOR INSERT WITH CHECK (true);
+
+-- ==========================================
+-- 8. Alterar Tabla Patients (Rastreo de Secciones)
+-- ==========================================
+ALTER TABLE public.patients 
+ADD COLUMN acquisition_section TEXT;
+
+-- ==========================================
+-- 9. Tabla de Check-ins Mensuales (Dashboard)
+-- ==========================================
+CREATE TABLE public.monthly_checkins (
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    patient_id UUID REFERENCES public.patients(id) ON DELETE CASCADE,
+    energy_level TEXT NOT NULL,
+    digestion_score INTEGER CHECK (digestion_score BETWEEN 1 AND 5),
+    adherence_items TEXT[], 
+    eighty_percent_rule BOOLEAN,
+    habits TEXT[], 
+    supplements_consistency TEXT,
+    additional_notes TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+ALTER TABLE public.monthly_checkins ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Patients can view and insert own checkins" ON public.monthly_checkins 
+FOR ALL USING (patient_id = auth.uid());

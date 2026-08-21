@@ -1,0 +1,2049 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Antonella Epigenética - Dashboard del Paciente</title>
+<script>
+window.onerror = function(msg, url, line, col, error) {
+    document.addEventListener('DOMContentLoaded', () => {
+        document.body.insertAdjacentHTML('afterbegin', '<div style="background:red; color:white; padding:20px; position:fixed; top:0; left:0; right:0; z-index:99999;"><strong>JS Error:</strong> ' + msg + ' en ' + url + ' línea ' + line + '</div>');
+    });
+};
+window.onunhandledrejection = function(event) {
+    document.addEventListener('DOMContentLoaded', () => {
+        document.body.insertAdjacentHTML('afterbegin', '<div style="background:orange; color:white; padding:20px; position:fixed; top:60px; left:0; right:0; z-index:99999;"><strong>Promise Error:</strong> ' + event.reason + '</div>');
+    });
+};
+</script>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#D4AF37",
+                        "on-primary": "#ffffff",
+                        "primary-container": "#E8D8C8",
+                        "on-primary-container": "#8C5E35",
+                        
+                        "secondary": "#CD7F32",
+                        "on-secondary": "#ffffff",
+                        "secondary-container": "#E8D8C8",
+                        "on-secondary-container": "#8C5E35",
+                        
+                        "tertiary": "#8C5E35",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-container": "#E8D8C8",
+                        "on-tertiary-container": "#8C5E35",
+                        
+                        "error": "#ba1a1a",
+                        "on-error": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-error-container": "#93000a",
+                        
+                        "background": "#ffffff",
+                        "on-background": "#8C5E35",
+                        
+                        "surface": "#ffffff",
+                        "on-surface": "#8C5E35",
+                        "surface-variant": "#E8D8C8",
+                        "on-surface-variant": "#8C5E35",
+                        
+                        "outline": "#8C5E35",
+                        "outline-variant": "#CD7F32",
+                        
+                        "surface-container-lowest": "#F5F5DC",
+                        "surface-container-low": "#F5F5DC",
+                        "surface-container": "#E8D8C8",
+                        "surface-container-high": "#E8D8C8",
+                        "surface-container-highest": "#E8D8C8",
+                        
+                        "inverse-surface": "#8C5E35",
+                        "inverse-on-surface": "#F5F5DC",
+                        "inverse-primary": "#D4AF37",
+                        
+                        "surface-tint": "#D4AF37",
+                        "mint": "#4ADE80"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "20px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "xl": "32px",
+                        "sm": "8px",
+                        "gutter-mobile": "12px",
+                        "unit": "4px",
+                        "md": "16px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "display-lg-mobile": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "display-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "display-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "headline-lg": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        
+        .progress-bar-fill {
+            width: 0%;
+            transition: width 1.5s ease-out;
+        }
+
+        /* Sidebar Collapse Styles */
+        nav {
+            transition: width 0.3s ease;
+        }
+        main {
+            transition: margin-left 0.3s ease;
+        }
+        nav.collapsed {
+            width: 5rem !important; /* w-20 */
+        }
+        nav.collapsed .nav-text {
+            display: none !important;
+        }
+        nav.collapsed .nav-logo {
+            display: none !important;
+        }
+        nav.collapsed .nav-logo-collapsed {
+            display: block !important;
+        }
+        nav.collapsed .user-info {
+            display: none !important;
+        }
+        nav.collapsed #perfil-arrow {
+            display: none !important;
+        }
+        nav.collapsed .nav-item, nav.collapsed .user-profile-container {
+            justify-content: center !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+        main.expanded-main {
+            margin-left: 5rem !important; /* ml-20 */
+        }
+        .nav-logo-collapsed {
+            display: none !important;
+        }
+        .sidebar-toggle-btn {
+            position: absolute;
+            right: -14px;
+            top: 28px;
+            background: #ffffff;
+            border: 1px solid #E8D8C8;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 50;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            color: #8C5E35;
+        }
+        .sidebar-toggle-btn:hover {
+            background: #f8f9ff;
+        }
+        .sidebar-toggle-btn .material-symbols-outlined {
+            font-size: 18px;
+            transition: transform 0.3s ease;
+        }
+        nav.collapsed .sidebar-toggle-btn .material-symbols-outlined {
+            transform: rotate(180deg);
+        }
+    </style>
+<link rel="stylesheet" href="/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="/cmsService.js?v=9"></script>
+    <script src="/webhook_service.js?v=9"></script>
+    <script src="/patientServices.js?v=9"></script>
+    <script src="/main.js?v=9"></script>
+</head>
+<body class="page-transition bg-background text-on-background font-body-md min-h-screen flex">
+<!-- SideNavBar (Shared Component) -->
+<nav id="sidebar" class="hidden md:flex flex-col h-screen p-md gap-sm border-r border-outline-variant bg-surface-container-low dark:bg-surface-container-lowest w-64 fixed left-0 top-0 z-40 transition-all duration-300 ease-in-out">
+<button id="sidebar-toggle" class="sidebar-toggle-btn">
+    <span class="material-symbols-outlined">chevron_left</span>
+</button>
+<div class="pb-md mb-md border-b border-outline-variant flex items-center justify-center w-full h-16 box-content">
+<img src="/Antonella_Logo_SF.png" alt="Antonella Epigenética Logo" class="nav-logo h-16 w-auto object-contain drop-shadow-sm transition-all" />
+<div class="nav-logo-collapsed w-14 h-14 flex items-center justify-center translate-x-1 hover:scale-105 transition-transform duration-500 ease-in-out cursor-pointer">
+    <img src="/antonella_logo_pequeno.png" alt="Mariposa Logo" class="w-full h-full object-contain drop-shadow-sm scale-110" />
+</div>
+</div>
+<div class="user-profile-container flex items-center gap-md mb-lg p-sm rounded-lg hover:bg-surface-variant/50 transition-colors cursor-pointer overflow-hidden">
+<img alt="User profile picture" class="w-12 h-12 rounded-full object-cover shadow-sm shrink-0" data-alt="A professional headshot of a young woman with a clear complexion, smiling softly, lit by soft natural daylight against a clean, minimalist white background. The style is premium, clinical, and optimistic, reflecting advanced bioscience and wellness. High resolution, shallow depth of field." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtVPy8EDlBoE490cB9347Etx5dAVWoR2bxXMJMxMDc3uQl5DDbSk1caBLFR8w3kL2rVeFJWu_F6efrURvLAMqdmCclkCwnS6jlxjAxfFiGk--ZGlNKLK5EdNoXHis1ud9o9CUhtTQyoVh0Q9S9ZN5YqftYxCKEmr17yInCZ49GSPAOCexiPi4kqZFBgf4jrAK10ji8Udl2CpwLi7Bn8Cxg3qwchJRgiedQaW51Vg_7ZWecHr-EzGBs"/>
+<div class="user-info whitespace-nowrap">
+<p class="font-headline-md text-headline-md text-on-surface">Antonella</p>
+<p class="font-label-md text-label-md text-on-surface-variant">Paciente Premium</p>
+</div>
+</div>
+<div class="flex-1 flex flex-col gap-sm overflow-y-auto pr-2">
+<!-- Mi Plan (Active) -->
+<a href="#" class="nav-item active flex items-center gap-md p-sm bg-primary-container text-on-primary-container rounded-lg font-bold transition-all duration-200 hover:-translate-y-[2px]" data-target="view-mi-plan">
+<span class="material-symbols-outlined shrink-0" style="font-variation-settings: 'FILL' 1;">calendar_month</span>
+<span class="nav-text whitespace-nowrap" data-i18n="nav_plan">Mi Plan</span>
+</a>
+<!-- Mis Citas -->
+<a href="#" class="nav-item flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-variant/50 rounded-lg transition-all duration-200 hover:-translate-y-[2px]" data-target="view-citas">
+<span class="material-symbols-outlined shrink-0">event</span>
+<span class="nav-text whitespace-nowrap" data-i18n="nav_appointments">Mis Citas</span>
+</a>
+<!-- Evaluaciones -->
+<a href="#" class="nav-item flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-variant/50 rounded-lg transition-all duration-200 hover:-translate-y-[2px]" data-target="view-evaluaciones">
+<span class="material-symbols-outlined shrink-0">biotech</span>
+<span class="nav-text whitespace-nowrap" data-i18n="nav_evaluations">Evaluaciones</span>
+</a>
+<!-- Educación -->
+<a href="#" class="nav-item flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-variant/50 rounded-lg transition-all duration-200 hover:-translate-y-[2px]" data-target="view-educacion">
+<span class="material-symbols-outlined shrink-0">school</span>
+<span class="nav-text whitespace-nowrap" data-i18n="nav_education">Educación</span>
+</a>
+<!-- Mensajes -->
+<a href="#" class="nav-item flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-variant/50 rounded-lg transition-all duration-200 hover:-translate-y-[2px]" data-target="view-mensajes">
+<span class="material-symbols-outlined shrink-0">forum</span>
+<span class="nav-text whitespace-nowrap" data-i18n="nav_messages">Mensajes</span>
+</a>
+
+<!-- Mi Perfil (Accordion) -->
+<div class="relative mt-2 border-t border-outline-variant pt-2">
+    <button id="perfil-accordion-btn" class="w-full flex items-center justify-between p-sm text-on-surface-variant hover:bg-surface-variant/50 rounded-lg transition-all duration-200">
+        <div class="flex items-center gap-md nav-item w-full">
+            <span class="material-symbols-outlined shrink-0">person</span>
+            <span class="nav-text whitespace-nowrap" data-i18n="nav_profile">Mi Perfil</span>
+        </div>
+        <span class="material-symbols-outlined transition-transform duration-300" id="perfil-arrow">expand_more</span>
+    </button>
+    <!-- Sub-menu -->
+    <div id="perfil-submenu" class="flex flex-col gap-xs ml-10 mt-1 hidden overflow-hidden">
+        <a href="#" class="nav-item p-xs text-sm text-on-surface-variant hover:text-primary transition-colors" data-target="view-datos-personales" data-i18n="nav_personal_data">Datos Personales</a>
+        <a href="#" class="nav-item p-xs text-sm text-on-surface-variant hover:text-primary transition-colors" data-target="view-historial-medico" data-i18n="nav_medical_history">Historial Médico</a>
+        <a href="#" class="nav-item p-xs text-sm text-on-surface-variant hover:text-primary transition-colors" data-target="view-facturacion" data-i18n="nav_billing">Facturación</a>
+        <a href="#" class="nav-item p-xs text-sm text-on-surface-variant hover:text-primary transition-colors" data-target="view-ajustes" data-i18n="nav_settings">Ajustes</a>
+    </div>
+</div>
+</div>
+<div class="mt-auto pt-lg border-t border-outline-variant flex flex-col gap-2">
+<!-- Botón temporal para que el cliente navegue al panel admin fácilmente -->
+<a class="nav-item flex items-center gap-md p-sm bg-primary/10 text-primary hover:bg-primary/20 rounded-lg font-bold transition-all duration-200" href="/admin.html">
+<span class="material-symbols-outlined shrink-0">admin_panel_settings</span>
+<span class="nav-text whitespace-nowrap overflow-hidden text-ellipsis" data-i18n="nav_admin">Ir a Panel Admin</span>
+</a>
+<a href="login.html" class="nav-item flex items-center gap-md p-sm text-error hover:bg-error/10 rounded-lg transition-all duration-200 hover:-translate-y-[2px]">
+<span class="material-symbols-outlined shrink-0">logout</span>
+<span class="nav-text whitespace-nowrap" data-i18n="nav_logout">Cerrar Sesión</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main id="main-content" class="flex-1 md:ml-64 p-margin-mobile md:p-xl max-w-[1440px] min-h-screen">
+<!-- Header Mobile (Fallback for nav) -->
+<header class="md:hidden flex justify-between items-center mb-xl">
+<img src="/Antonella_Logo_SF.png" alt="Antonella Epigenética Logo" class="h-12 w-auto object-contain drop-shadow-sm" />
+<img alt="User" class="w-10 h-10 rounded-full object-cover shadow-sm" data-alt="A professional headshot of a young woman with a clear complexion, smiling softly, lit by soft natural daylight against a clean, minimalist white background. The style is premium, clinical, and optimistic, reflecting advanced bioscience and wellness. High resolution, shallow depth of field." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfETS0KxIyp_pxtd8x0NsyKRvwj1ZAlg7HNYcP7ow4yw-hyIC0WKo0S9hUXLORVjx-92KW44VwbDdr2ag44EgodcrMXkH-EJBTbGAmCVwNcvbw4vYiGpfwKc5v6a-59r8ZlMyquSWWsgxq7SpOHQsoqxnxKqL7EqVe1zn87tVQSmiSIk6oxKVSWBaqOSkftDwnFehw9em93_j-RxPmqkYja2RGW_Gczricdf7q_qJIkT3CXfiB9qDu"/>
+</header>
+
+<!-- Skeleton Screens (Visible Initially) -->
+<div id="skeleton-view" class="w-full space-y-8 mt-2">
+    <div class="skeleton-loader h-12 w-48 mb-8"></div>
+    <!-- Progress Skeleton -->
+    <div class="skeleton-loader h-32 w-full rounded-xl"></div>
+    <!-- Grid Skeleton -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-6">
+        <div class="lg:col-span-7 skeleton-loader h-64 rounded-xl"></div>
+        <div class="lg:col-span-5 flex flex-col gap-4">
+            <div class="skeleton-loader h-8 w-1/2 mb-2"></div>
+            <div class="skeleton-loader h-24 w-full rounded-xl"></div>
+            <div class="skeleton-loader h-24 w-full rounded-xl"></div>
+        </div>
+    </div>
+</div><!-- Real Content (Hidden Initially) -->
+<div id="real-content" class="w-full fade-in-content hidden">
+
+    <!-- ============================================== -->
+    <!-- VIEW: MI PLAN (PANEL PRINCIPAL)                -->
+    <!-- ============================================== -->
+    <div id="view-mi-plan" class="view-section">
+        <h1 id="dash-welcome-msg" class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface mb-lg fade-in-up">Hola, Antonella</h1>
+        
+        <!-- Top Metrics Row -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-md mb-xl fade-in-up delay-100">
+            <!-- Próxima Cita -->
+            <div class="bg-surface-container-lowest rounded-xl p-md shadow-sm border border-surface-variant flex items-center gap-4 hover:shadow-md transition-shadow">
+                <div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container shrink-0">
+                    <span class="material-symbols-outlined">calendar_clock</span>
+                </div>
+                <div>
+                    <p class="font-label-md text-on-surface-variant uppercase tracking-wider">Próxima Cita</p>
+                    <p class="font-headline-md font-bold text-on-surface">N/A</p>
+                    <p class="text-sm text-primary">N/A</p>
+                </div>
+            </div>
+
+            <!-- Progreso Protocolo -->
+            <div class="bg-surface-container-lowest rounded-xl p-md shadow-sm border border-surface-variant flex flex-col justify-center">
+                <div class="flex justify-between items-end mb-2">
+                    <div>
+                        <p class="font-label-md text-on-surface-variant uppercase tracking-wider">Progreso Protocolo</p>
+                        <p class="font-headline-md font-bold text-on-surface">Día 0 <span class="text-sm font-normal text-on-surface-variant">/ 90</span></p>
+                    </div>
+                    <span class="font-bold text-mint">0%</span>
+                </div>
+                <div class="w-full h-2 bg-surface-variant rounded-full overflow-hidden">
+                    <div class="h-full bg-mint rounded-full progress-bar-fill" style="width:0%"></div>
+                </div>
+            </div>
+
+            <!-- Notificaciones (Empty State) -->
+            <div class="bg-surface-container-lowest rounded-xl p-md shadow-sm border border-surface-variant flex items-center gap-4 hover:shadow-md transition-shadow cursor-default group">
+                <div class="w-12 h-12 rounded-full bg-surface-variant flex items-center justify-center text-outline-variant shrink-0 group-hover:bg-primary-container group-hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined">notifications_off</span>
+                </div>
+                <div>
+                    <p class="font-label-md text-on-surface-variant uppercase tracking-wider">Notificaciones</p>
+                    <p class="font-body-md text-on-surface-variant/70 leading-tight italic text-sm">No hay notificaciones nuevas</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Grid: Roadmap & Check-ins -->
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-lg fade-in-up delay-200">
+            
+            <!-- Roadmap de Hábitos (7 cols) -->
+            <section class="xl:col-span-8 bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant overflow-hidden">
+                <div class="p-lg border-b border-surface-variant flex justify-between items-center bg-surface/50 backdrop-blur-sm sticky top-0">
+                    <h3 class="font-headline-md text-headline-md text-on-surface flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">route</span> Mi Roadmap (30 Días)
+                    </h3>
+                </div>
+                <div class="p-lg space-y-0 relative before:absolute before:inset-0 before:ml-[3.25rem] before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-surface-variant before:to-transparent">
+                    
+                    <!-- Fase 1: Completada -->
+                    <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active py-4">
+                        <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-surface-container-lowest bg-emerald-500 text-white shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 relative z-10 transition-transform group-hover:scale-110">
+                            <span class="material-symbols-outlined text-sm">check</span>
+                        </div>
+                        <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-surface-container rounded-xl p-4 shadow-sm border border-emerald-500/30 opacity-100 transition-all hover:shadow-md">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider">Fase 1</span>
+                                <span class="text-xs text-on-surface-variant">Completada</span>
+                            </div>
+                            <h4 class="font-bold text-on-surface mb-1">Análisis Epigenético</h4>
+                            <p class="text-xs text-on-surface-variant">Muestra capilar enviada y analizada con éxito en Alemania.</p>
+                        </div>
+                    </div>
+
+                    <!-- Fase 2: En Progreso -->
+                    <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group py-4">
+                        <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-surface-container-lowest bg-primary text-white shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 relative z-10 animate-pulse-slow">
+                            <span class="material-symbols-outlined text-sm">cycle</span>
+                        </div>
+                        <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-primary-container/30 rounded-xl p-4 shadow-sm border border-primary/50 opacity-100 transition-all hover:shadow-md">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-xs font-bold text-primary uppercase tracking-wider">Fase 2</span>
+                                <span class="text-xs font-bold text-primary animate-pulse">En progreso</span>
+                            </div>
+                            <h4 class="font-bold text-on-surface mb-1">Desintoxicación Profunda</h4>
+                            <p class="text-xs text-on-surface-variant mb-3">Protocolo de 15 días enfocado en limpiar metales pesados y toxinas del hígado.</p>
+                            <!-- Progress Bar -->
+                            <div class="w-full h-1.5 bg-surface-variant rounded-full overflow-hidden">
+                                <div class="h-full bg-primary rounded-full" style="width: 60%"></div>
+                            </div>
+                            <p class="text-[10px] text-right mt-1 font-bold text-on-surface-variant">Día 9 de 15</p>
+                        </div>
+                    </div>
+
+                    <!-- Fase 3: Bloqueada -->
+                    <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group py-4">
+                        <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-surface-container-lowest bg-surface-variant text-on-surface-variant shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 relative z-10 transition-transform group-hover:scale-110">
+                            <span class="material-symbols-outlined text-sm">lock</span>
+                        </div>
+                        <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-surface rounded-xl p-4 shadow-sm border border-outline-variant opacity-70 transition-all hover:opacity-100">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Fase 3</span>
+                                <span class="text-xs text-on-surface-variant">Próximamente</span>
+                            </div>
+                            <h4 class="font-bold text-on-surface mb-1">Optimización Celular</h4>
+                            <p class="text-xs text-on-surface-variant">Activación de sirtuinas y reparación de ADN mediante precursores NAD+.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Sidebar Widgets (5 cols) -->
+            <section class="xl:col-span-4 flex flex-col gap-md">
+
+                <!-- Gamificación / Logros Widget -->
+                <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant p-lg">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-bold text-on-surface text-lg">Tus Logros</h3>
+                        <span class="text-xs font-bold text-primary bg-primary/10 px-2 py-1 rounded-full">Nivel 2</span>
+                    </div>
+                    <div id="achievements-grid" class="grid grid-cols-4 gap-3">
+                        <!-- Renderizado dinámicamente desde main.js -->
+                    </div>
+                </div>
+                
+                <!-- Video Instructivo Card -->
+                <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant p-lg relative overflow-hidden group cursor-pointer" onclick="document.getElementById('video-modal').classList.remove('hidden')">
+                    <!-- Overlay Play Button -->
+                    <div class="absolute inset-0 bg-black/20 flex items-center justify-center z-10 group-hover:bg-black/30 transition-colors">
+                        <div class="w-12 h-12 bg-white/90 text-primary rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined text-2xl ml-1">play_arrow</span>
+                        </div>
+                    </div>
+                    <!-- Thumbnail Placeholder -->
+                    <div class="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 opacity-80 transition-opacity"></div>
+                    
+                    <div class="relative z-20">
+                        <span class="px-2 py-1 bg-primary text-white text-[10px] font-bold uppercase rounded-md shadow-sm mb-3 inline-block">Tutorial</span>
+                        <h3 class="font-headline-md font-bold text-on-surface mb-2 dark:text-white">Recolección de Muestra Capilar</h3>
+                        <p class="text-sm text-on-surface-variant dark:text-gray-200">Aprende paso a paso cómo tomar la muestra en casa de forma correcta para el análisis epigenético.</p>
+                    </div>
+                </div>
+
+                <!-- Formularios de Seguimiento -->
+                <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant p-lg mt-4">
+                    <div class="w-12 h-12 bg-tertiary-container text-on-tertiary-container rounded-full flex items-center justify-center mb-4">
+                        <span class="material-symbols-outlined">assignment</span>
+                    </div>
+                    <h3 class="font-headline-md font-bold text-on-surface mb-2">Check-in Mensual</h3>
+                    <p class="text-sm text-on-surface-variant mb-6">Tu doctor necesita una actualización de tus síntomas y niveles de energía para ajustar el plan.</p>
+                    <button id="btn-start-checkin" class="w-full py-3 bg-on-surface text-white rounded-lg font-bold hover:bg-outline transition-colors flex items-center justify-center gap-2">
+                        Comenzar Cuestionario <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                    </button>
+                </div>
+            </section>
+        </div>
+    </div>
+    
+    <!-- Check-in Mensual Modal -->
+    <div id="checkin-modal" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" id="checkin-backdrop"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl bg-surface rounded-3xl p-8 shadow-2xl flex flex-col max-h-[90vh]">
+            
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="font-display-sm text-on-surface">Check-in Mensual</h2>
+                <button id="btn-close-checkin" class="w-10 h-10 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center hover:bg-outline-variant transition-colors">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <!-- Stepper Indicators -->
+            <div class="flex items-center gap-2 mb-8" id="checkin-indicators">
+                <div class="flex-1 h-2 rounded-full bg-primary transition-colors step-indicator" data-step="1"></div>
+                <div class="flex-1 h-2 rounded-full bg-surface-variant transition-colors step-indicator" data-step="2"></div>
+                <div class="flex-1 h-2 rounded-full bg-surface-variant transition-colors step-indicator" data-step="3"></div>
+                <div class="flex-1 h-2 rounded-full bg-surface-variant transition-colors step-indicator" data-step="4"></div>
+            </div>
+
+            <!-- Content Area (Scrollable) -->
+            <div class="flex-1 overflow-y-auto pr-2 relative" id="checkin-content-area">
+                
+                <!-- STEP 1: Energía -->
+                <div class="checkin-step block" id="checkin-step-1">
+                    <h3 class="font-bold text-lg text-on-surface mb-2">Paso 1: Energía y Sistema Gastrointestinal</h3>
+                    
+                    <div class="mb-6">
+                        <label class="block text-sm font-bold text-on-surface-variant mb-3">¿Cómo ha estado tu nivel de energía general este mes?</label>
+                        <div class="grid grid-cols-2 gap-3" id="energy-options">
+                            <label class="relative cursor-pointer group">
+                                <input type="radio" name="chk_energy" value="Agotado" class="peer sr-only">
+                                <div class="p-4 border-2 border-surface-variant rounded-xl text-center peer-checked:border-primary peer-checked:bg-primary/5 hover:border-primary/30 transition-all flex flex-col items-center gap-2">
+                                    <span class="material-symbols-outlined text-red-500">battery_0_bar</span>
+                                    <span class="font-semibold text-sm">Agotado</span>
+                                </div>
+                            </label>
+                            <label class="relative cursor-pointer group">
+                                <input type="radio" name="chk_energy" value="Cansado" class="peer sr-only">
+                                <div class="p-4 border-2 border-surface-variant rounded-xl text-center peer-checked:border-primary peer-checked:bg-primary/5 hover:border-primary/30 transition-all flex flex-col items-center gap-2">
+                                    <span class="material-symbols-outlined text-orange-500">battery_3_bar</span>
+                                    <span class="font-semibold text-sm">Cansado</span>
+                                </div>
+                            </label>
+                            <label class="relative cursor-pointer group">
+                                <input type="radio" name="chk_energy" value="Normal" class="peer sr-only">
+                                <div class="p-4 border-2 border-surface-variant rounded-xl text-center peer-checked:border-primary peer-checked:bg-primary/5 hover:border-primary/30 transition-all flex flex-col items-center gap-2">
+                                    <span class="material-symbols-outlined text-blue-500">battery_5_bar</span>
+                                    <span class="font-semibold text-sm">Normal</span>
+                                </div>
+                            </label>
+                            <label class="relative cursor-pointer group">
+                                <input type="radio" name="chk_energy" value="Con Energía" class="peer sr-only">
+                                <div class="p-4 border-2 border-surface-variant rounded-xl text-center peer-checked:border-primary peer-checked:bg-primary/5 hover:border-primary/30 transition-all flex flex-col items-center gap-2">
+                                    <span class="material-symbols-outlined text-mint">battery_full_alt</span>
+                                    <span class="font-semibold text-sm">Con Energía</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-on-surface-variant mb-2">¿Cómo evaluarías tu regularidad digestiva e inflamación abdominal?</label>
+                        <p class="text-xs text-on-surface-variant mb-4">1: Muy inflamado/Irregular — 5: Excelente digestión</p>
+                        <input type="range" min="1" max="5" value="3" class="w-full accent-primary" id="chk_digestion">
+                        <div class="flex justify-between text-xs text-on-surface-variant mt-2 font-bold">
+                            <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 2: Adherencia -->
+                <div class="checkin-step hidden" id="checkin-step-2">
+                    <h3 class="font-bold text-lg text-on-surface mb-4">Paso 2: Adherencia Nutricional (Protocolo)</h3>
+                    <p class="text-sm text-on-surface-variant mb-4">Durante este mes, ¿has logrado evitar los alimentos señalados en tu perfil?</p>
+                    
+                    <div class="space-y-3 mb-6">
+                        <label class="flex items-start gap-3 p-3 border border-surface-variant rounded-lg hover:bg-surface-variant/30 cursor-pointer transition-colors">
+                            <input type="checkbox" class="chk-adherence mt-1 accent-primary w-4 h-4 rounded text-primary focus:ring-primary" value="Gluten, Lácteos y Azúcar">
+                            <span class="text-sm font-medium text-on-surface">Gluten, Lácteos de vaca y Azúcar refinada</span>
+                        </label>
+                        <label class="flex items-start gap-3 p-3 border border-surface-variant rounded-lg hover:bg-surface-variant/30 cursor-pointer transition-colors">
+                            <input type="checkbox" class="chk-adherence mt-1 accent-primary w-4 h-4 rounded text-primary focus:ring-primary" value="Restrictivos Temporales">
+                            <span class="text-sm font-medium text-on-surface">Alimentos restrictivos temporales (Ej. Cerdo, Atún, Nueces)</span>
+                        </label>
+                        <label class="flex items-start gap-3 p-3 border border-surface-variant rounded-lg hover:bg-surface-variant/30 cursor-pointer transition-colors">
+                            <input type="checkbox" class="chk-adherence mt-1 accent-primary w-4 h-4 rounded text-primary focus:ring-primary" value="Aditivos">
+                            <span class="text-sm font-medium text-on-surface">Aditivos y edulcorantes (Ej. Aspartamo, Glutamato)</span>
+                        </label>
+                    </div>
+
+                    <div class="bg-primary/5 p-4 rounded-xl border border-primary/20">
+                        <label class="block text-sm font-bold text-primary mb-3">¿Cumpliste la dieta antiinflamatoria en un 80% o más?</label>
+                        <div class="flex gap-4">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="chk_80_rule" value="Si" class="accent-primary w-4 h-4 text-primary focus:ring-primary">
+                                <span class="text-sm font-medium">Sí</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="chk_80_rule" value="No" class="accent-primary w-4 h-4 text-primary focus:ring-primary">
+                                <span class="text-sm font-medium">No</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 3: Hábitos -->
+                <div class="checkin-step hidden" id="checkin-step-3">
+                    <h3 class="font-bold text-lg text-on-surface mb-4">Paso 3: Hábitos de Estilo de Vida y Entorno</h3>
+                    <p class="text-sm text-on-surface-variant mb-4">¿Cuáles de los siguientes hábitos lograste incorporar a tu rutina diaria?</p>
+                    
+                    <div class="space-y-3">
+                        <label class="flex items-center gap-3 p-3 border border-surface-variant rounded-lg hover:bg-surface-variant/30 cursor-pointer transition-colors">
+                            <input type="checkbox" class="chk-habits accent-primary w-4 h-4 rounded text-primary focus:ring-primary" value="Sol">
+                            <span class="text-sm font-medium text-on-surface">Exposición solar (15-20 min matutinos)</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 border border-surface-variant rounded-lg hover:bg-surface-variant/30 cursor-pointer transition-colors">
+                            <input type="checkbox" class="chk-habits accent-primary w-4 h-4 rounded text-primary focus:ring-primary" value="Grounding">
+                            <span class="text-sm font-medium text-on-surface">Grounding (Caminar descalzo 10-15 min)</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 border border-surface-variant rounded-lg hover:bg-surface-variant/30 cursor-pointer transition-colors">
+                            <input type="checkbox" class="chk-habits accent-primary w-4 h-4 rounded text-primary focus:ring-primary" value="Sueño">
+                            <span class="text-sm font-medium text-on-surface">Higiene del sueño (Cenar antes de las 8pm)</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 border border-surface-variant rounded-lg hover:bg-surface-variant/30 cursor-pointer transition-colors">
+                            <input type="checkbox" class="chk-habits accent-primary w-4 h-4 rounded text-primary focus:ring-primary" value="Hidratacion">
+                            <span class="text-sm font-medium text-on-surface">Hidratación (1.5 - 2 litros al día)</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 border border-surface-variant rounded-lg hover:bg-surface-variant/30 cursor-pointer transition-colors">
+                            <input type="checkbox" class="chk-habits accent-primary w-4 h-4 rounded text-primary focus:ring-primary" value="Electrosmog">
+                            <span class="text-sm font-medium text-on-surface">Reducción de Electrosmog (Apagar Wi-Fi de noche)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- STEP 4: Suplementación -->
+                <div class="checkin-step hidden" id="checkin-step-4">
+                    <h3 class="font-bold text-lg text-on-surface mb-4">Paso 4: Suplementación y Observaciones</h3>
+                    
+                    <div class="mb-6">
+                        <label class="block text-sm font-bold text-on-surface-variant mb-3">¿Has sido constante con tu fase actual de suplementación?</label>
+                        <div class="flex flex-col gap-3">
+                            <label class="flex items-center gap-3 p-3 border border-surface-variant rounded-lg cursor-pointer">
+                                <input type="radio" name="chk_supps" value="Todos los dias" class="accent-primary w-4 h-4 text-primary focus:ring-primary">
+                                <span class="text-sm font-medium">Todos los días</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-3 border border-surface-variant rounded-lg cursor-pointer">
+                                <input type="radio" name="chk_supps" value="La mayoria" class="accent-primary w-4 h-4 text-primary focus:ring-primary">
+                                <span class="text-sm font-medium">La mayoría de los días</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-3 border border-surface-variant rounded-lg cursor-pointer">
+                                <input type="radio" name="chk_supps" value="Olvide" class="accent-primary w-4 h-4 text-primary focus:ring-primary">
+                                <span class="text-sm font-medium">Olvidé varias tomas</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-sm font-bold text-on-surface-variant mb-2">Notas adicionales para tu médico</label>
+                        <textarea id="chk_notes" class="w-full p-3 border border-surface-variant rounded-xl bg-surface-container-lowest focus:ring-2 focus:ring-primary/20 focus:outline-none text-sm" rows="3" placeholder="Reacciones a suplementos, dudas, etc..."></textarea>
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="block text-sm font-bold text-on-surface-variant mb-2">Adjuntar análisis (Opcional)</label>
+                        <div class="border-2 border-dashed border-outline-variant rounded-xl p-6 flex flex-col items-center justify-center text-center hover:bg-surface-variant/30 transition-colors cursor-pointer" onclick="document.getElementById('chk_file').click()">
+                            <span class="material-symbols-outlined text-3xl text-primary mb-2">upload_file</span>
+                            <p class="font-bold text-sm text-primary">Subir PDF</p>
+                            <p class="text-xs text-on-surface-variant mt-1">Arrastra y suelta tu archivo aquí</p>
+                            <input type="file" id="chk_file" class="hidden" accept=".pdf,.jpg,.png">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer / Buttons -->
+            <div class="flex justify-between items-center mt-6 pt-6 border-t border-surface-variant">
+                <button id="btn-checkin-prev" class="px-6 py-2.5 rounded-xl font-bold text-on-surface-variant hover:bg-surface-variant transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                    Atrás
+                </button>
+                <div class="flex gap-3 items-center">
+                    <span id="checkin-error" class="text-xs text-red-500 font-bold hidden">Faltan campos obligatorios.</span>
+                    <button id="btn-checkin-next" class="px-6 py-2.5 bg-primary text-white rounded-xl font-bold hover:bg-secondary transition-colors flex items-center gap-2">
+                        Siguiente <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    
+    <!-- Video Modal -->
+    <div id="video-modal" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="document.getElementById('video-modal').classList.add('hidden')"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl px-4">
+            <div class="bg-surface rounded-2xl overflow-hidden shadow-2xl">
+                <div class="flex justify-between items-center p-4 border-b border-outline-variant bg-surface-container-lowest">
+                    <h3 class="font-bold text-on-surface flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">play_circle</span>
+                        Tutorial de Recolección Capilar
+                    </h3>
+                    <button onclick="document.getElementById('video-modal').classList.add('hidden')" class="text-on-surface-variant hover:text-error transition-colors">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <!-- Aspect Ratio Container for Video -->
+                <div class="relative w-full aspect-video bg-black flex items-center justify-center">
+                    <!-- Simulador de Reproductor -->
+                    <div class="absolute inset-0 flex flex-col items-center justify-center text-white/50">
+                        <span class="material-symbols-outlined text-6xl mb-2">smart_display</span>
+                        <p>Simulador de Reproductor de Video</p>
+                    </div>
+                    <!-- Controles Simulados -->
+                    <div class="absolute bottom-0 w-full p-4 bg-gradient-to-t from-black/80 to-transparent flex gap-4 items-center">
+                        <span class="material-symbols-outlined text-white cursor-pointer hover:text-primary">play_arrow</span>
+                        <div class="flex-1 h-1 bg-white/30 rounded-full">
+                            <div class="w-1/3 h-full bg-primary rounded-full relative">
+                                <div class="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full"></div>
+                            </div>
+                        </div>
+                        <span class="text-white text-xs font-mono">01:23 / 04:50</span>
+                        <span class="material-symbols-outlined text-white cursor-pointer hover:text-primary">volume_up</span>
+                        <span class="material-symbols-outlined text-white cursor-pointer hover:text-primary">fullscreen</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Historial Médico (Añadir Diagnóstico) -->
+    <div id="add-diagnosis-modal" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="document.getElementById('add-diagnosis-modal').classList.add('hidden')"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg px-4">
+            <div class="bg-surface rounded-2xl overflow-hidden shadow-2xl flex flex-col">
+                <div class="flex justify-between items-center p-4 border-b border-outline-variant bg-surface-container-lowest">
+                    <h3 class="font-bold text-on-surface flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">add_circle</span>
+                        Añadir Diagnóstico
+                    </h3>
+                    <button onclick="document.getElementById('add-diagnosis-modal').classList.add('hidden')" class="text-on-surface-variant hover:text-error transition-colors">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <div class="p-6">
+                    <form id="add-diagnosis-form" onsubmit="event.preventDefault(); showToast('Diagnóstico guardado'); document.getElementById('add-diagnosis-modal').classList.add('hidden'); this.reset();" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-bold text-on-surface mb-1">Diagnóstico Médico</label>
+                            <select id="diag-name" class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg pl-3 pr-10 py-3 text-sm focus:outline-none focus:border-primary" required>
+                                <option value="" disabled selected>Selecciona una condición médica...</option>
+                                <optgroup label="Neurodesarrollo y Conducta">
+                                    <option value="Trastorno del Espectro Autista (TEA)">Trastorno del Espectro Autista (TEA)</option>
+                                    <option value="Trastorno por Déficit de Atención e Hiperactividad (TDAH)">Trastorno por Déficit de Atención e Hiperactividad (TDAH)</option>
+                                    <option value="Trastorno del Procesamiento Sensorial (TPS)">Trastorno del Procesamiento Sensorial (TPS)</option>
+                                </optgroup>
+                                <optgroup label="Gastrointestinal y Nutricional">
+                                    <option value="Selectividad Alimentaria">Selectividad Alimentaria</option>
+                                    <option value="Disbiosis Intestinal">Disbiosis Intestinal</option>
+                                    <option value="Permeabilidad Intestinal (Leaky Gut)">Permeabilidad Intestinal (Leaky Gut)</option>
+                                    <option value="Enfermedad Celíaca">Enfermedad Celíaca</option>
+                                    <option value="Deficiencia Nutricional (Vitamina D, B12, etc.)">Deficiencia Nutricional (Vitamina D, B12, etc.)</option>
+                                </optgroup>
+                                <optgroup label="Genética y Epigenética">
+                                    <option value="Mutación MTHFR">Mutación MTHFR</option>
+                                    <option value="Sensibilidad Química Múltiple">Sensibilidad Química Múltiple</option>
+                                    <option value="Otra condición genética">Otra condición genética</option>
+                                </optgroup>
+                                <option value="Otra">Otra (Especificar en notas)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-on-surface mb-1">Fecha de Diagnóstico</label>
+                            <input type="date" id="diag-date" class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg p-3 text-sm focus:outline-none focus:border-primary" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-on-surface mb-1">Doctor / Especialista</label>
+                            <input type="text" id="diag-doctor" class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg p-3 text-sm focus:outline-none focus:border-primary" placeholder="Ej: Dr. Pérez" required>
+                        </div>
+                        <button type="submit" class="w-full mt-4 py-3 bg-primary text-white rounded-lg font-bold hover:bg-secondary transition-colors">
+                            Guardar Diagnóstico
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Añadir Alergia -->
+    <div id="add-allergy-modal" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="document.getElementById('add-allergy-modal').classList.add('hidden')"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg px-4">
+            <div class="bg-surface rounded-2xl overflow-hidden shadow-2xl flex flex-col">
+                <div class="flex justify-between items-center p-4 border-b border-outline-variant bg-surface-container-lowest">
+                    <h3 class="font-bold text-on-surface flex items-center gap-2">
+                        <span class="material-symbols-outlined text-error">coronavirus</span>
+                        Añadir Alergia / Sensibilidad
+                    </h3>
+                    <button onclick="document.getElementById('add-allergy-modal').classList.add('hidden')" class="text-on-surface-variant hover:text-error transition-colors">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <div class="p-6">
+                    <form id="add-allergy-form" onsubmit="event.preventDefault(); showToast('Alergia guardada'); document.getElementById('add-allergy-modal').classList.add('hidden'); this.reset();" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-bold text-on-surface mb-1">Tipo de Alergia o Sensibilidad</label>
+                            <select id="allergy-name" class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg pl-3 pr-10 py-3 text-sm focus:outline-none focus:border-error" required>
+                                <option value="" disabled selected>Selecciona una opción...</option>
+                                <optgroup label="Alimentos">
+                                    <option value="Gluten">Gluten</option>
+                                    <option value="Caseína (Lácteos)">Caseína (Lácteos)</option>
+                                    <option value="Soja">Soja</option>
+                                    <option value="Frutos secos (Maní, Almendras, etc.)">Frutos secos (Maní, Almendras, etc.)</option>
+                                    <option value="Huevo">Huevo</option>
+                                    <option value="Colorantes Artificiales (Rojo 40, etc.)">Colorantes Artificiales (Rojo 40, etc.)</option>
+                                    <option value="Conservantes / Sulfitos">Conservantes / Sulfitos</option>
+                                    <option value="Azúcar Refinada">Azúcar Refinada</option>
+                                </optgroup>
+                                <optgroup label="Medicamentos">
+                                    <option value="Penicilina">Penicilina</option>
+                                    <option value="Ibuprofeno / AINEs">Ibuprofeno / AINEs</option>
+                                    <option value="Amoxicilina">Amoxicilina</option>
+                                    <option value="Aspirina">Aspirina</option>
+                                </optgroup>
+                                <optgroup label="Ambientales y Otros">
+                                    <option value="Ácaros del polvo">Ácaros del polvo</option>
+                                    <option value="Polen">Polen</option>
+                                    <option value="Moho">Moho</option>
+                                    <option value="Caspa de animales">Caspa de animales</option>
+                                </optgroup>
+                                <option value="Otra">Otra (Especificar en notas)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-on-surface mb-1">Nivel de Severidad</label>
+                            <select id="allergy-severity" class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg pl-3 pr-10 py-3 text-sm focus:outline-none focus:border-error" required>
+                                <option value="Leve">Leve (Sensibilidad)</option>
+                                <option value="Moderada">Moderada (Reacción cutánea/digestiva)</option>
+                                <option value="Severa">Severa (Riesgo de anafilaxia)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-on-surface mb-1">Notas u Observaciones (Opcional)</label>
+                            <input type="text" id="allergy-notes" class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg p-3 text-sm focus:outline-none focus:border-error" placeholder="Ej: Provoca erupciones tras consumo">
+                        </div>
+                        <button type="submit" class="w-full mt-4 py-3 bg-error text-white rounded-lg font-bold hover:bg-red-700 transition-colors">
+                            Guardar Alergia
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Slide-over Recetario -->
+    <div id="recipe-slideover" class="fixed inset-0 z-[100] hidden overflow-hidden">
+        <div id="recipe-slideover-backdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm opacity-0 transition-opacity duration-300"></div>
+        <div class="fixed inset-y-0 right-0 max-w-md w-full flex">
+            <div id="recipe-slideover-panel" class="w-full h-full bg-surface shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300 ease-in-out">
+                <!-- Header -->
+                <div class="px-6 py-4 border-b border-outline-variant bg-surface-container-lowest flex items-center justify-between sticky top-0 z-10">
+                    <h2 class="font-bold text-on-surface text-lg">Recetario Antiinflamatorio</h2>
+                    <button id="btn-close-recipe" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-variant text-on-surface-variant transition-colors">
+                        <span class="material-symbols-outlined text-xl">close</span>
+                    </button>
+                </div>
+                <!-- Content -->
+                <div class="flex-1 overflow-y-auto p-6 space-y-8">
+                    <!-- Regla del plato -->
+                    <section>
+                        <h3 class="font-bold text-primary mb-3 flex items-center gap-2"><span class="material-symbols-outlined">pie_chart</span> Regla del Plato</h3>
+                        <div class="bg-primary/10 rounded-xl p-4 flex gap-4 items-center">
+                            <div class="w-16 h-16 rounded-full bg-primary flex items-center justify-center text-white shrink-0 shadow-sm border-2 border-surface">
+                                <span class="material-symbols-outlined text-3xl">restaurant</span>
+                            </div>
+                            <div>
+                                <ul class="text-sm text-on-surface font-medium space-y-1">
+                                    <li class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-primary"></div> 50% Proteína</li>
+                                    <li class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-mint"></div> 25% Vegetales</li>
+                                    <li class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-secondary"></div> 25% Carbohidratos</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <!-- Prohibidos -->
+                    <section>
+                        <h3 class="font-bold text-error mb-3 flex items-center gap-2"><span class="material-symbols-outlined">block</span> Alimentos a Evitar Temporalmente</h3>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1 bg-error/10 text-error rounded-full text-xs font-bold border border-error/20">Cerdo</span>
+                            <span class="px-3 py-1 bg-error/10 text-error rounded-full text-xs font-bold border border-error/20">Atún</span>
+                            <span class="px-3 py-1 bg-error/10 text-error rounded-full text-xs font-bold border border-error/20">Cebolla</span>
+                            <span class="px-3 py-1 bg-error/10 text-error rounded-full text-xs font-bold border border-error/20">Ajo</span>
+                            <span class="px-3 py-1 bg-error/10 text-error rounded-full text-xs font-bold border border-error/20">Gluten</span>
+                        </div>
+                    </section>
+
+                    <!-- Recetas -->
+                    <section>
+                        <h3 class="font-bold text-on-surface mb-4 flex items-center gap-2"><span class="material-symbols-outlined text-secondary">menu_book</span> Recetas Recomendadas</h3>
+                        <div class="space-y-4">
+                            <!-- Receta 1 -->
+                            <div class="border border-outline-variant rounded-xl p-4 bg-surface-container-lowest shadow-sm hover:shadow-md transition-shadow">
+                                <h4 class="font-bold text-on-surface text-sm mb-1">Panquecas de Yuca</h4>
+                                <p class="text-xs text-on-surface-variant mb-2">Alternativa sin gluten ideal para desayunos.</p>
+                                <div class="bg-surface p-2 rounded-lg text-xs text-on-surface"><strong>Ingredientes:</strong> Yuca hervida, huevos, aceite de coco, sal marina.</div>
+                            </div>
+                            <!-- Receta 2 -->
+                            <div class="border border-outline-variant rounded-xl p-4 bg-surface-container-lowest shadow-sm hover:shadow-md transition-shadow">
+                                <h4 class="font-bold text-on-surface text-sm mb-1">Nuggets de Pollo Caseros</h4>
+                                <p class="text-xs text-on-surface-variant mb-2">Rebozados con harina de yuca, horneados.</p>
+                                <div class="bg-surface p-2 rounded-lg text-xs text-on-surface"><strong>Ingredientes:</strong> Pechuga de pollo, harina de yuca, especias suaves, AOVE.</div>
+                            </div>
+                            <!-- Receta 3 -->
+                            <div class="border border-outline-variant rounded-xl p-4 bg-surface-container-lowest shadow-sm hover:shadow-md transition-shadow">
+                                <h4 class="font-bold text-on-surface text-sm mb-1">Brownies de Plátano</h4>
+                                <p class="text-xs text-on-surface-variant mb-2">Postre libre de azúcar refinada.</p>
+                                <div class="bg-surface p-2 rounded-lg text-xs text-on-surface"><strong>Ingredientes:</strong> Plátano maduro, cacao puro en polvo, huevos, nueces.</div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Bebidas -->
+                    <section class="mt-6">
+                        <h3 class="font-bold text-on-surface mb-4 flex items-center gap-2"><span class="material-symbols-outlined text-secondary">local_cafe</span> Bebidas Antiinflamatorias</h3>
+                        <div class="space-y-4">
+                            <div class="border border-outline-variant rounded-xl p-4 bg-surface-container-lowest shadow-sm hover:shadow-md transition-shadow">
+                                <h4 class="font-bold text-on-surface text-sm mb-1">Golden Milk (Leche Dorada)</h4>
+                                <p class="text-xs text-on-surface-variant mb-2">Poderoso antiinflamatorio para consumir antes de dormir.</p>
+                                <div class="bg-surface p-2 rounded-lg text-xs text-on-surface"><strong>Ingredientes:</strong> Leche de coco o almendra, cúrcuma en polvo, pizca de pimienta negra, canela.</div>
+                            </div>
+                            <div class="border border-outline-variant rounded-xl p-4 bg-surface-container-lowest shadow-sm hover:shadow-md transition-shadow">
+                                <h4 class="font-bold text-on-surface text-sm mb-1">Té Verde con Jengibre</h4>
+                                <p class="text-xs text-on-surface-variant mb-2">Antioxidante y estimulante metabólico suave para las mañanas.</p>
+                                <div class="bg-surface p-2 rounded-lg text-xs text-on-surface"><strong>Ingredientes:</strong> Té verde orgánico, rodajas de jengibre fresco, unas gotas de limón.</div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Suplementación Básica -->
+                    <section class="mt-6">
+                        <h3 class="font-bold text-on-surface mb-4 flex items-center gap-2"><span class="material-symbols-outlined text-secondary">medication</span> Suplementación Complementaria</h3>
+                        <ul class="space-y-3 text-sm text-on-surface-variant">
+                            <li class="flex items-start gap-2">
+                                <span class="material-symbols-outlined text-mint text-[18px] shrink-0 mt-0.5">check_circle</span>
+                                <span><strong>Omega 3 (EPA/DHA):</strong> Crucial para reducir la inflamación sistémica a nivel celular.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="material-symbols-outlined text-mint text-[18px] shrink-0 mt-0.5">check_circle</span>
+                                <span><strong>Magnesio (Glicinato):</strong> Apoya la relajación muscular y optimiza más de 300 procesos metabólicos.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="material-symbols-outlined text-mint text-[18px] shrink-0 mt-0.5">check_circle</span>
+                                <span><strong>Cúrcuma con Pimienta Negra:</strong> Potente modulador epigenético de la inflamación.</span>
+                            </li>
+                        </ul>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- VIEW: EVALUACIONES Y RESULTADOS                -->
+    <!-- ============================================== -->
+    <div id="view-evaluaciones" class="view-section hidden">
+        <h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface mb-lg">Tus Resultados Epigenéticos</h1>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-lg mb-xl">
+            <!-- Informe Capilar Card -->
+            <div class="bg-surface-container-lowest rounded-xl p-lg shadow-sm border border-surface-variant hover:shadow-md transition-shadow relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-full -z-0"></div>
+                <div class="flex justify-between items-start relative z-10 mb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-primary-container text-on-primary-container rounded-lg flex items-center justify-center">
+                            <span class="material-symbols-outlined">science</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-on-surface text-lg">Informe Capilar</h3>
+                            <p class="text-xs text-on-surface-variant">Actualizado: 12 Oct 2024</p>
+                        </div>
+                    </div>
+                    <span class="px-2 py-1 bg-mint/20 text-mint text-[10px] font-bold rounded-full">Completado</span>
+                </div>
+                <div class="bg-surface-container-low p-4 rounded-lg mb-4 text-sm text-on-surface-variant border border-surface-variant">
+                    <p class="font-bold text-primary mb-1">Resumen Simplificado:</p>
+                    Tu sistema muestra niveles óptimos de vitaminas B, pero hay indicadores de estrés oxidativo alto. Sugerimos incrementar antioxidantes (Glutatión).
+                </div>
+                <button id="btn-download-full-report" class="w-full py-2 border-2 border-primary text-primary rounded-lg font-bold hover:bg-primary hover:text-white transition-colors flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-sm">download</span> Descargar PDF Completo
+                </button>
+            </div>
+            
+            <!-- Bioresonancia Card -->
+            <div class="bg-surface-container-lowest rounded-xl p-lg shadow-sm border border-surface-variant hover:shadow-md transition-shadow relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-tertiary/5 rounded-bl-full -z-0"></div>
+                <div class="flex justify-between items-start relative z-10 mb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-surface-variant text-on-surface-variant rounded-lg flex items-center justify-center">
+                            <span class="material-symbols-outlined">waves</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-on-surface text-lg">Bioresonancia Magnética</h3>
+                            <p class="text-xs text-on-surface-variant">Fecha: 05 Nov 2024</p>
+                        </div>
+                    </div>
+                    <div class="group relative">
+                        <span class="px-2 py-1 bg-surface-variant text-on-surface-variant text-[10px] font-bold rounded-full flex items-center gap-1 cursor-help">
+                            En Proceso <span class="material-symbols-outlined text-[12px]">info</span>
+                        </span>
+                        <!-- Tooltip -->
+                        <div class="hidden group-hover:block absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-on-surface text-white text-[10px] rounded shadow-lg z-50 text-center font-normal">
+                            Tu muestra está siendo analizada. Los resultados suelen tardar entre 5 a 7 días hábiles.
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-surface-container-low p-4 rounded-lg mb-4 text-sm text-on-surface-variant flex items-center justify-center h-[92px] border border-surface-variant">
+                    <p class="text-center italic">El laboratorio está analizando tus datos frecuenciales. Te notificaremos cuando esté listo.</p>
+                </div>
+                <button class="w-full py-2 bg-surface-variant text-on-surface-variant rounded-lg font-bold cursor-not-allowed opacity-50 flex items-center justify-center gap-2" disabled>
+                    <span class="material-symbols-outlined text-sm">hourglass_empty</span> Pendiente
+                </button>
+            </div>
+        </div>
+
+        <!-- Gráfico de Progreso Adaptativo (Tracker Cualitativo) -->
+        <section class="bg-surface-container-lowest rounded-xl p-lg shadow-sm border border-surface-variant mb-xl">
+            <h3 class="font-headline-md font-bold text-on-surface flex items-center gap-2 mb-2">
+                <span class="material-symbols-outlined text-primary">battery_charging_full</span> Tu Energía Hoy
+            </h3>
+            <p class="text-sm text-on-surface-variant mb-6">Ayuda a tu médico a correlacionar tus biomarcadores con cómo te sientes día a día.</p>
+            
+            <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
+                <!-- Nivel 1 -->
+                <label class="flex-1 w-full relative cursor-pointer group">
+                    <input type="radio" name="energia" class="peer sr-only">
+                    <div class="p-4 border-2 border-surface-variant rounded-xl text-center peer-checked:border-error peer-checked:bg-error/10 hover:border-error/50 transition-all">
+                        <span class="material-symbols-outlined text-3xl text-error mb-2">battery_0_bar</span>
+                        <p class="font-bold text-on-surface text-sm">Agotado</p>
+                    </div>
+                </label>
+                <!-- Nivel 2 -->
+                <label class="flex-1 w-full relative cursor-pointer group">
+                    <input type="radio" name="energia" class="peer sr-only">
+                    <div class="p-4 border-2 border-surface-variant rounded-xl text-center peer-checked:border-amber-500 peer-checked:bg-amber-500/10 hover:border-amber-500/50 transition-all">
+                        <span class="material-symbols-outlined text-3xl text-amber-500 mb-2">battery_3_bar</span>
+                        <p class="font-bold text-on-surface text-sm">Cansado</p>
+                    </div>
+                </label>
+                <!-- Nivel 3 -->
+                <label class="flex-1 w-full relative cursor-pointer group">
+                    <input type="radio" name="energia" class="peer sr-only" checked>
+                    <div class="p-4 border-2 border-surface-variant rounded-xl text-center peer-checked:border-primary peer-checked:bg-primary/10 hover:border-primary/50 transition-all">
+                        <span class="material-symbols-outlined text-3xl text-primary mb-2">battery_5_bar</span>
+                        <p class="font-bold text-on-surface text-sm">Normal</p>
+                    </div>
+                </label>
+                <!-- Nivel 4 -->
+                <label class="flex-1 w-full relative cursor-pointer group">
+                    <input type="radio" name="energia" class="peer sr-only">
+                    <div class="p-4 border-2 border-surface-variant rounded-xl text-center peer-checked:border-mint peer-checked:bg-mint/10 hover:border-mint/50 transition-all">
+                        <span class="material-symbols-outlined text-3xl text-mint mb-2">battery_full</span>
+                        <p class="font-bold text-on-surface text-sm">Con Energía</p>
+                    </div>
+                </label>
+            </div>
+            <div class="mt-4 flex justify-end">
+                <button class="px-6 py-2 bg-primary text-white text-sm font-bold rounded-lg hover:bg-secondary transition-colors" onclick="showToast('Progreso guardado. ¡Sigue así!')">
+                    Guardar Registro
+                </button>
+            </div>
+        </section>
+
+
+        <!-- Histórico Chart.js -->
+        <section class="bg-surface-container-lowest rounded-xl p-lg shadow-sm border border-surface-variant">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="font-headline-md font-bold text-on-surface flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary">monitoring</span> Evolución de Marcadores Clave
+                </h3>
+                <select class="text-sm bg-surface-container-low border border-surface-variant rounded-md pl-2 pr-8 py-1 outline-none text-on-surface">
+                    <option>Niveles de Energía</option>
+                    <option>Inflamación Sistémica</option>
+                    <option>Calidad del Sueño</option>
+                </select>
+            </div>
+            <div class="w-full h-[300px] relative" id="chart-container">
+                <!-- Skeleton Loader -->
+                <div id="chart-skeleton" class="absolute inset-0 bg-surface-container-lowest flex items-end gap-2 p-4 z-10">
+                    <div class="w-full h-full bg-surface-variant/50 animate-pulse rounded-lg"></div>
+                </div>
+                <!-- Actual Chart -->
+                <canvas id="historicalChart"></canvas>
+            </div>
+        </section>
+
+    </div> <!-- Fin View Evaluaciones -->
+
+    <!-- ============================================== -->
+    <!-- VIEW: MIS CITAS                                -->
+    <!-- ============================================== -->
+    <div id="view-citas" class="view-section hidden">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-lg gap-4">
+            <h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface fade-in-up">Mis Citas</h1>
+            <!-- TODO: Vincular con API de creación de citas de Google Calendar -->
+            <button class="bg-primary text-white px-5 py-2.5 rounded-lg font-bold hover:bg-secondary transition-all hover:shadow-md flex items-center gap-2 shadow-sm fade-in-up delay-100" onclick="showToast('Programando check-in automático...')">
+                <span class="material-symbols-outlined text-[20px]">add</span> Programar Check-in Automático
+            </button>
+            <button class="bg-primary text-white px-5 py-2.5 rounded-lg font-bold hover:bg-secondary transition-all hover:shadow-md flex items-center gap-2 shadow-sm fade-in-up delay-100" onclick="showToast('Abriendo calendario para agendar...')">
+                <span class="material-symbols-outlined text-sm">add</span> Agendar Nueva Cita
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-lg">
+            <!-- Columna Izquierda: Cita Próxima e Historial -->
+            <div class="xl:col-span-8 flex flex-col gap-6 fade-in-up delay-200">
+                <!-- Tarjeta de Próxima Cita -->
+                <div class="bg-surface-container-lowest rounded-xl p-lg shadow-sm border border-surface-variant relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -z-0"></div>
+                    <div class="flex items-center gap-2 mb-4 relative z-10">
+                        <span class="material-symbols-outlined text-primary">event_upcoming</span>
+                        <h3 class="font-headline-md font-bold text-on-surface">Tu Próxima Cita</h3>
+                    </div>
+                    
+                    <div class="bg-surface-container-low border border-primary/20 rounded-lg p-6 relative z-10 flex justify-center items-center gap-6 hover:border-primary/40 transition-colors">
+                        <p class="text-on-surface-variant text-sm">No tienes citas programadas próximamente.</p>
+                    </div>
+                </div>
+
+                <!-- Historial de Citas -->
+                <div class="bg-surface-container-lowest rounded-xl p-lg shadow-sm border border-surface-variant">
+                    <h3 class="font-headline-md font-bold text-on-surface mb-4">Historial de Citas</h3>
+                    <div class="flex flex-col gap-0 divide-y divide-surface-variant text-center py-6">
+                        <p class="text-sm text-on-surface-variant">No hay historial de citas.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna Derecha: Widget Informativo Calendar -->
+            <div class="xl:col-span-4 flex flex-col gap-6 fade-in-up delay-300">
+                <div class="bg-surface-container-lowest rounded-xl p-lg shadow-sm border border-surface-variant text-center relative overflow-hidden">
+                    <!-- Decoración fondo -->
+                    <div class="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-surface-variant/50 to-transparent pointer-events-none"></div>
+                    
+                    <div class="w-16 h-16 mx-auto bg-surface-container-lowest shadow-sm rounded-2xl flex items-center justify-center mb-5 relative z-10 border border-surface-variant">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Google_Calendar_icon_%282020%29.svg" alt="Google Calendar" class="w-8 h-8">
+                    </div>
+                    
+                    <h3 class="font-headline-md font-bold text-on-surface mb-3 relative z-10">Sincronización Inteligente</h3>
+                    <p class="text-sm text-on-surface-variant mb-6 relative z-10 leading-relaxed">
+                        Tus citas se agendarán automáticamente a través de <strong>Google Calendar</strong>. 
+                        Recibirás invitaciones por correo electrónico con los enlaces seguros a <strong>Google Meet</strong>.
+                    </p>
+                    
+                    <div class="text-xs text-mint bg-mint/10 p-3 rounded-lg font-medium border border-mint/20 flex items-center justify-center gap-2 relative z-10">
+                        <span class="material-symbols-outlined text-[16px]">check_circle</span> 
+                        <span>Arquitectura lista para conectar API</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ============================================== -->
+    <!-- VIEW: EDUCACIÓN                                -->
+    <!-- ============================================== -->
+    <div id="view-educacion" class="view-section hidden">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-lg gap-4">
+            <div>
+                <h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface fade-in-up">Academia Epigenética</h1>
+                <p class="text-on-surface-variant mt-2 fade-in-up delay-100">Contenido exclusivo para optimizar tu salud y complementar tu protocolo.</p>
+            </div>
+            <!-- Barra de búsqueda rápida -->
+            <div class="relative w-full md:w-64 fade-in-up delay-100">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+                <input type="text" placeholder="Buscar temas, videos..." class="w-full bg-surface-container-lowest border border-surface-variant rounded-full pl-10 pr-4 py-2 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all shadow-sm">
+            </div>
+        </div>
+
+        <!-- Categoría 1: Masterclasses (Videos) -->
+        <h2 class="font-headline-md font-bold text-on-surface mb-4 mt-8 fade-in-up delay-200 flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary">play_circle</span> Masterclasses y Hábitos
+        </h2>
+        
+        <div id="masterclasses-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 fade-in-up delay-300">
+            <!-- Dynamic content will be loaded here via main.js -->
+        </div>
+
+        <!-- Categoría 2: Recursos y Recetas (PDFs) -->
+        <h2 class="font-headline-md font-bold text-on-surface mb-4 mt-12 fade-in-up delay-200 flex items-center gap-2">
+            <span class="material-symbols-outlined text-secondary">menu_book</span> Guías Nutricionales y PDFs
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 fade-in-up delay-300 mb-8">
+            <!-- PDF Card 1 -->
+            <div class="bg-surface-container-lowest rounded-xl p-5 shadow-sm border border-surface-variant group hover:-translate-y-1 hover:shadow-md transition-all duration-300 flex flex-col h-full">
+                <div class="w-12 h-12 bg-secondary/10 text-secondary rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <span class="material-symbols-outlined text-2xl">picture_as_pdf</span>
+                </div>
+                <h3 class="font-bold text-on-surface text-sm mb-2">Recetario Antiinflamatorio Semanal</h3>
+                <p class="text-xs text-on-surface-variant mb-4 flex-1">Planes de comida adaptados a tu sensibilidad al gluten identificada en el test.</p>
+                <button id="btn-read-recipe" class="w-full py-2 bg-surface border border-outline-variant text-on-surface text-xs font-bold rounded-lg hover:bg-surface-variant transition-colors flex items-center justify-center gap-2">
+                    <span class="btn-text flex items-center gap-2">Leer Artículo <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+                </button>
+            </div>
+
+            <!-- PDF Card 2 -->
+            <div class="bg-surface-container-lowest rounded-xl p-5 shadow-sm border border-surface-variant group hover:-translate-y-1 hover:shadow-md transition-all duration-300 flex flex-col h-full">
+                <div class="w-12 h-12 bg-secondary/10 text-secondary rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <span class="material-symbols-outlined text-2xl">article</span>
+                </div>
+                <h3 class="font-bold text-on-surface text-sm mb-2">Guía de Ayuno Intermitente</h3>
+                <p class="text-xs text-on-surface-variant mb-4 flex-1">Cómo iniciar protocolos de ayuno 16/8 de manera segura y enfocada a mujeres.</p>
+                <button id="btn-download-pdf" class="w-full py-2 bg-surface border border-outline-variant text-on-surface text-xs font-bold rounded-lg hover:bg-surface-variant transition-colors flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-[16px] btn-icon">download</span> <span class="btn-text">Descargar PDF</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div id="view-mensajes" class="view-section hidden h-[calc(100vh-6rem)]">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+            <div>
+                <h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface fade-in-up">Centro de Mensajes</h1>
+                <p class="text-on-surface-variant mt-2 fade-in-up delay-100">Comunicación directa y segura con tu equipo médico.</p>
+            </div>
+        </div>
+
+        <div class="bg-surface-container-lowest border border-surface-variant rounded-2xl shadow-sm overflow-hidden flex flex-col h-full max-h-[700px] fade-in-up delay-200">
+            
+            <!-- Chat Header -->
+            <div class="h-16 border-b border-surface-variant flex items-center justify-between px-6 bg-surface-container-lowest shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-primary-container text-on-primary-container rounded-full flex items-center justify-center font-bold relative">
+                        EQ
+                        <span class="absolute bottom-0 right-0 w-3 h-3 bg-mint border-2 border-surface-container-lowest rounded-full"></span>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold text-on-surface">Equipo Médico Antonella</h3>
+                        <p class="text-[11px] text-mint font-medium flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">verified</span> En línea</p>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button class="w-8 h-8 rounded-full hover:bg-surface-variant flex items-center justify-center text-on-surface-variant transition-colors" onclick="showToast('Iniciando videollamada...')">
+                        <span class="material-symbols-outlined text-[20px]">videocam</span>
+                    </button>
+                    <div class="relative">
+                        <button class="w-8 h-8 rounded-full hover:bg-surface-variant flex items-center justify-center text-on-surface-variant transition-colors" onclick="const menu = this.nextElementSibling; menu.classList.toggle('hidden');">
+                            <span class="material-symbols-outlined text-[20px]">more_vert</span>
+                        </button>
+                        <!-- Dropdown Menu -->
+                        <div class="absolute right-0 mt-2 w-48 bg-surface rounded-xl shadow-lg border border-outline-variant hidden z-50 py-2">
+                            <button class="w-full text-left px-4 py-2 text-sm text-on-surface hover:bg-surface-variant transition-colors flex items-center gap-2" onclick="if(typeof showToast === 'function') showToast('Notificaciones silenciadas'); this.parentElement.classList.add('hidden');">
+                                <span class="material-symbols-outlined text-[18px]">notifications_off</span> Silenciar
+                            </button>
+                            <button class="w-full text-left px-4 py-2 text-sm text-on-surface hover:bg-surface-variant transition-colors flex items-center gap-2" onclick="if(typeof window.exportChat === 'function') { window.exportChat(); } else if(typeof showToast === 'function') { showToast('Exportando historial...'); } this.parentElement.classList.add('hidden');">
+                                <span class="material-symbols-outlined text-[18px]">download</span> Exportar Chat
+                            </button>
+                            <div class="h-px bg-outline-variant my-1"></div>
+                            <button class="w-full text-left px-4 py-2 text-sm text-error hover:bg-error/10 transition-colors flex items-center gap-2" onclick="if(confirm('¿Estás seguro de vaciar este chat?')){ document.getElementById('patient-chat-messages').innerHTML='<div id=\'patient-chat-empty\' class=\'h-full flex flex-col items-center justify-center text-center\'><div class=\'w-16 h-16 bg-surface-variant text-outline-variant rounded-full flex items-center justify-center mb-4\'><span class=\'material-symbols-outlined text-[32px]\'>speaker_notes_off</span></div><h3 class=\'text-on-surface font-bold mb-1\'>No hay mensajes recientes</h3><p class=\'text-on-surface-variant text-sm max-w-xs\'>Escribe aquí para comunicarte directamente con tu equipo médico asignado.</p></div>'; } this.parentElement.classList.add('hidden');">
+                                <span class="material-symbols-outlined text-[18px]">delete</span> Vaciar Chat
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Messages Area -->
+            <div id="patient-chat-messages" class="flex-1 overflow-y-auto p-4 md:p-6 bg-surface-container-low flex flex-col gap-4">
+                
+                <div id="patient-chat-empty" class="h-full flex flex-col items-center justify-center text-center">
+                    <div class="w-16 h-16 bg-surface-variant text-outline-variant rounded-full flex items-center justify-center mb-4">
+                        <span class="material-symbols-outlined text-[32px]">speaker_notes_off</span>
+                    </div>
+                    <h3 class="text-on-surface font-bold mb-1">No hay mensajes recientes</h3>
+                    <p class="text-on-surface-variant text-sm max-w-xs">Escribe aquí para comunicarte directamente con tu equipo médico asignado.</p>
+                </div>
+
+            </div>
+
+            <!-- Input Area -->
+            <div class="p-4 border-t border-surface-variant bg-surface-container-lowest">
+                <div class="flex items-end gap-2 bg-surface border border-outline-variant rounded-2xl p-2 focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all">
+                    <input type="file" id="patient-chat-upload" class="hidden" accept="image/*,.pdf" onchange="if(this.files[0]) showToast('Archivo adjuntado: ' + this.files[0].name)">
+                    <button class="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-xl shrink-0" onclick="document.getElementById('patient-chat-upload').click()">
+                        <span class="material-symbols-outlined">attach_file</span>
+                    </button>
+                    <textarea id="patient-chat-input" placeholder="Escribe un mensaje al equipo médico..." rows="1" class="flex-1 bg-transparent border-none resize-none focus:ring-0 text-sm py-2 max-h-32 min-h-[40px]"></textarea>
+                    <button id="btn-send-patient-msg" class="bg-primary hover:bg-secondary text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-sm shrink-0 transition-colors">
+                        <span class="material-symbols-outlined text-[20px] ml-1">send</span>
+                    </button>
+                </div>
+                <p class="text-[10px] text-center text-on-surface-variant mt-2">Mensajería encriptada de extremo a extremo (HIPAA Compliant).</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- VIEW: DATOS PERSONALES                         -->
+    <!-- ============================================== -->
+    <div id="view-datos-personales" class="view-section hidden">
+        <h1 class="font-display-lg text-display-lg text-on-surface mb-lg fade-in-up">Datos Personales</h1>
+        
+        <div class="bg-surface-container-lowest rounded-2xl p-xl shadow-sm border border-surface-variant fade-in-up delay-100">
+            <form onsubmit="event.preventDefault(); showToast('Datos actualizados exitosamente');">
+                <div class="flex flex-col md:flex-row gap-8 mb-8">
+                    <!-- Foto de Perfil -->
+                    <div class="flex flex-col items-center gap-4 shrink-0">
+                        <label for="profile-photo-upload" class="relative w-24 h-24 rounded-full overflow-hidden border-2 border-primary group cursor-pointer block">
+                            <img src="https://ui-avatars.com/api/?name=Antonella+D&background=f8fafc&color=0f172a" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <span class="material-symbols-outlined text-white">photo_camera</span>
+                            </div>
+                        </label>
+                        <label for="profile-photo-upload" class="text-xs font-bold text-primary hover:text-secondary transition-colors cursor-pointer">Cambiar Foto</label>
+                        <input id="profile-photo-upload" type="file" class="sr-only" accept="image/png, image/jpeg, image/jpg" onchange="if(this.files && this.files[0] && typeof showToast === 'function') { showToast('Imagen seleccionada: ' + this.files[0].name); }">
+                    </div>
+
+                    <!-- Campos del Formulario -->
+                    <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-on-surface mb-1">Nombre</label>
+                            <input type="text" value="Antonella" class="w-full p-2.5 bg-surface border border-outline-variant rounded-lg focus:ring-primary focus:border-primary text-sm text-on-surface" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-on-surface mb-1">Apellido</label>
+                            <input type="text" value="D." class="w-full p-2.5 bg-surface border border-outline-variant rounded-lg focus:ring-primary focus:border-primary text-sm text-on-surface" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-on-surface mb-1">Correo Electrónico</label>
+                            <input type="email" value="antonella@example.com" class="w-full p-2.5 bg-surface border border-outline-variant rounded-lg focus:ring-primary focus:border-primary text-sm text-on-surface" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-on-surface mb-1">Número de Teléfono</label>
+                            <input type="tel" value="+1 (555) 012-3456" class="w-full p-2.5 bg-surface border border-outline-variant rounded-lg focus:ring-primary focus:border-primary text-sm text-on-surface" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-on-surface mb-1">Fecha de Nacimiento</label>
+                            <input type="date" value="2019-06-15" class="w-full p-2.5 bg-surface border border-outline-variant rounded-lg focus:ring-primary focus:border-primary text-sm text-on-surface" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-on-surface mb-1">Género</label>
+                            <select class="w-full pl-3 pr-10 py-2.5 bg-surface border border-outline-variant rounded-lg focus:ring-primary focus:border-primary text-sm text-on-surface">
+                                <option>Femenino</option>
+                                <option>Masculino</option>
+                                <option>Otro</option>
+                                <option>Prefiero no decirlo</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-on-surface mb-1">Dirección Física</label>
+                            <input type="text" value="123 Wellness Avenue, Miami, FL 33132" class="w-full p-2.5 bg-surface border border-outline-variant rounded-lg focus:ring-primary focus:border-primary text-sm text-on-surface">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-3 border-t border-surface-variant pt-6">
+                    <button type="button" class="px-6 py-2.5 bg-surface border border-outline-variant text-on-surface text-sm font-bold rounded-lg hover:bg-surface-variant transition-colors" onclick="showToast('Edición cancelada')">Cancelar</button>
+                    <button type="submit" class="px-6 py-2.5 bg-primary text-white text-sm font-bold rounded-lg hover:bg-secondary transition-colors shadow-sm">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- VIEW: HISTORIAL MÉDICO                         -->
+    <!-- ============================================== -->
+    <div id="view-historial-medico" class="view-section hidden">
+        <h1 class="font-display-lg text-display-lg text-on-surface mb-lg fade-in-up">Historial Médico</h1>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 fade-in-up delay-100">
+            
+            <!-- Resumen Clínico -->
+            <div class="lg:col-span-2 flex flex-col gap-6">
+                <!-- Diagnósticos Previos -->
+                <div class="bg-surface-container-lowest rounded-2xl p-xl shadow-sm border border-surface-variant relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -z-0"></div>
+                    <div class="flex justify-between items-start relative z-10 mb-6">
+                        <h2 class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">medical_information</span> Diagnósticos Activos
+                        </h2>
+                        <button id="btn-add-diagnosis" class="text-xs font-bold text-primary hover:text-secondary flex items-center gap-1 transition-colors" onclick="document.getElementById('add-diagnosis-modal').classList.remove('hidden')">
+                            <span class="material-symbols-outlined text-sm">add</span> Añadir
+                        </button>
+                    </div>
+                    
+                    <div class="space-y-4 relative z-10">
+                        <div class="p-6 bg-surface-container-low border border-dashed border-outline-variant rounded-xl flex justify-center items-center">
+                            <p class="text-on-surface-variant text-sm">No hay diagnósticos registrados.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alergias y Sensibilidades -->
+                <div class="bg-surface-container-lowest rounded-2xl p-xl shadow-sm border border-surface-variant">
+                    <div class="flex justify-between items-start mb-6">
+                        <h2 class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-2">
+                            <span class="material-symbols-outlined text-error">coronavirus</span> Alergias y Sensibilidades
+                        </h2>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-2 items-center">
+                        <p class="text-on-surface-variant text-sm italic mr-2">No hay alergias registradas.</p>
+                        <button class="px-3 py-1.5 bg-surface border border-dashed border-outline-variant text-on-surface-variant font-bold text-xs rounded-lg flex items-center gap-1 hover:border-primary hover:text-primary transition-colors" onclick="document.getElementById('add-allergy-modal').classList.remove('hidden')">
+                            <span class="material-symbols-outlined text-[14px]">add</span> Nueva alergia
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel Lateral: Vacunas y Antecedentes -->
+            <div class="flex flex-col gap-6">
+                <!-- Vacunación -->
+                <div class="bg-surface-container-lowest rounded-2xl p-xl shadow-sm border border-surface-variant">
+                    <h2 class="font-headline-sm text-headline-sm text-on-surface mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-mint">vaccines</span> Esquema de Vacunación
+                    </h2>
+                    <div class="bg-surface-container-low border border-dashed border-outline-variant p-4 rounded-lg mb-4 text-center">
+                        <p class="text-on-surface-variant text-sm">No hay esquema de vacunación cargado.</p>
+                    </div>
+                    <button class="w-full py-2 bg-surface border border-outline-variant text-on-surface font-bold text-xs rounded-lg hover:bg-surface-variant transition-colors flex items-center justify-center gap-2" onclick="showToast('Descargando historial médico (.pdf)')">
+                        <span class="material-symbols-outlined text-sm">upload_file</span> Subir Cartilla (PDF)
+                    </button>
+                </div>
+
+                <!-- Antecedentes Familiares -->
+                <div class="bg-surface-container-lowest rounded-2xl p-xl shadow-sm border border-surface-variant">
+                    <h2 class="font-headline-sm text-headline-sm text-on-surface mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-on-surface-variant">family_history</span> Antecedentes Familiares
+                    </h2>
+                    <div class="bg-surface-container-low border border-dashed border-outline-variant p-4 rounded-lg mb-4 text-center">
+                        <p class="text-on-surface-variant text-sm">No hay antecedentes familiares registrados.</p>
+                    </div>
+                    <button class="mt-2 w-full py-2 bg-surface-variant text-on-surface font-bold text-xs rounded-lg hover:bg-outline-variant transition-colors" onclick="showToast('Abriendo panel de antecedentes...')">
+                        Editar Antecedentes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- VIEW: FACTURACIÓN                              -->
+    <!-- ============================================== -->
+    <div id="view-facturacion" class="view-section hidden">
+        <h1 class="font-display-lg text-display-lg text-on-surface mb-lg fade-in-up">Facturación y Suscripciones</h1>
+        
+        <div class="flex flex-col gap-8 fade-in-up delay-100">
+            <!-- Métodos de Pago -->
+            <div class="bg-surface-container-lowest rounded-2xl p-xl shadow-sm border border-surface-variant flex flex-col gap-md mb-6">
+                <h2 class="font-headline-sm text-headline-sm text-on-surface mb-4">Métodos de Pago</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Zelle -->
+                    <label class="relative cursor-pointer group">
+                        <input type="radio" name="payment_method" class="peer sr-only" checked>
+                        <div class="p-4 border-2 border-surface-variant rounded-xl text-center peer-checked:border-primary peer-checked:bg-primary/5 hover:border-primary/50 transition-all">
+                            <div class="h-8 flex items-center justify-center mb-2">
+                                <span class="font-bold text-purple-700 text-lg">Zelle</span>
+                            </div>
+                            <p class="text-xs text-on-surface-variant">Transferencia Directa</p>
+                        </div>
+                    </label>
+                    <!-- Stripe -->
+                    <label class="relative cursor-pointer group">
+                        <input type="radio" name="payment_method" class="peer sr-only">
+                        <div class="p-4 border-2 border-surface-variant rounded-xl text-center peer-checked:border-primary peer-checked:bg-primary/5 hover:border-primary/50 transition-all">
+                            <div class="h-8 flex items-center justify-center mb-2">
+                                <span class="font-bold text-indigo-500 text-lg">Stripe</span>
+                            </div>
+                            <p class="text-xs text-on-surface-variant">Tarjeta de Crédito</p>
+                        </div>
+                    </label>
+                    <!-- PayPal -->
+                    <label class="relative cursor-pointer group">
+                        <input type="radio" name="payment_method" class="peer sr-only">
+                        <div class="p-4 border-2 border-surface-variant rounded-xl text-center peer-checked:border-primary peer-checked:bg-primary/5 hover:border-primary/50 transition-all">
+                            <div class="h-8 flex items-center justify-center mb-2">
+                                <span class="font-bold text-blue-700 text-lg italic">PayPal</span>
+                            </div>
+                            <p class="text-xs text-on-surface-variant">Pago Seguro</p>
+                        </div>
+                    </label>
+                </div>
+                <button class="mt-4 px-6 py-2 bg-primary text-white text-sm font-bold rounded-lg hover:bg-secondary transition-colors w-max" onclick="showToast('Método de pago guardado')">
+                    Guardar Método
+                </button>
+            </div>
+
+            <!-- Planes de Suscripción -->
+            <div class="bg-surface-container-lowest rounded-2xl p-xl shadow-sm border border-surface-variant flex flex-col gap-md">
+                <h2 class="font-headline-sm text-headline-sm text-on-surface mb-2">Planes de Suscripción</h2>
+                <p class="text-sm text-on-surface-variant mb-4">Elige el nivel de acompañamiento clínico que mejor se adapte a tus necesidades.</p>
+                
+                <div id="dash-planes-container" class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                    <!-- Generado dinámicamente por cmsService en main.js -->
+                </div>
+            </div>
+
+            <!-- Historial de Pagos -->
+            <div class="bg-surface-container-lowest rounded-2xl p-xl shadow-sm border border-surface-variant flex flex-col gap-md">
+                <h2 class="font-headline-sm text-headline-sm text-on-surface mb-2">Historial de Pagos</h2>
+                <p class="text-sm text-on-surface-variant mb-4">Registro de todas tus transacciones y suscripciones activas.</p>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse min-w-[600px]">
+                        <thead>
+                            <tr class="bg-surface-variant/30 border-b border-surface-variant">
+                                <th class="px-4 py-3 text-xs font-bold text-on-surface-variant uppercase tracking-wider">Fecha</th>
+                                <th class="px-4 py-3 text-xs font-bold text-on-surface-variant uppercase tracking-wider">Plan Adquirido</th>
+                                <th class="px-4 py-3 text-xs font-bold text-on-surface-variant uppercase tracking-wider">Monto</th>
+                                <th class="px-4 py-3 text-xs font-bold text-on-surface-variant uppercase tracking-wider">Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historial-pagos-tbody" class="divide-y divide-surface-variant">
+                            <!-- Los pagos se insertarán aquí dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+
+            <!-- Programa de Referidos -->
+            <div class="bg-primary/5 rounded-2xl p-xl shadow-sm border border-primary/20 flex flex-col gap-md relative overflow-hidden mt-2">
+                <div class="absolute top-0 right-0 w-48 h-48 bg-primary/10 rounded-bl-full -z-0"></div>
+                <h2 class="font-headline-sm text-headline-sm text-primary mb-2 flex items-center gap-2 relative z-10">
+                    <span class="material-symbols-outlined">redeem</span> Programa de Referidos
+                </h2>
+                <p class="text-sm text-on-surface-variant mb-4 relative z-10">¡Invita a un amigo y ambos obtienen un 15% de descuento en su próximo mes de suscripción!</p>
+                
+                <div class="flex flex-col sm:flex-row items-center gap-2 mb-6 relative z-10">
+                    <input type="text" id="referral-code" value="ANTO-AD2026" class="w-full sm:w-auto flex-1 max-w-xs p-3 bg-white border border-outline-variant rounded-xl text-center font-bold tracking-widest text-primary focus:outline-none focus:ring-2 focus:ring-primary/20">
+                    <button onclick="const btn = this; const code = document.getElementById('referral-code').value; navigator.clipboard.writeText(code); btn.innerHTML = '¡Copiado!'; btn.classList.add('bg-secondary'); if(typeof showToast === 'function'){showToast('Código copiado al portapapeles');} setTimeout(() => { btn.innerHTML = 'Copiar Código'; btn.classList.remove('bg-secondary'); }, 3000);" class="w-full sm:w-auto px-6 py-3 bg-primary text-white font-bold rounded-xl hover:bg-primary/90 transition-colors shadow-sm">
+                        Copiar Código
+                    </button>
+                </div>
+
+                <div class="relative z-10">
+                    <h3 class="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-3">Tus Referidos Exitosos</h3>
+                    <div class="space-y-2 max-w-md">
+                        <div class="flex items-center justify-between p-3 bg-white/60 border border-primary/10 rounded-lg">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-xs">MG</div>
+                                <span class="font-medium text-sm text-on-surface">María G.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- VIEW: AJUSTES                                  -->
+    <!-- ============================================== -->
+    <div id="view-ajustes" class="view-section hidden">
+        <h1 class="font-display-lg text-display-lg text-on-surface mb-lg fade-in-up">Ajustes</h1>
+        
+        <div class="flex flex-col md:flex-row gap-8 fade-in-up delay-100">
+            <!-- Sidebar Tabs -->
+            <div class="w-full md:w-64 flex flex-col gap-2 shrink-0 border-r border-surface-variant pr-0 md:pr-4">
+                <button class="ajustes-tab active flex items-center gap-3 w-full p-3 rounded-lg bg-primary-container text-on-primary-container font-bold text-left transition-colors" data-tab="tab-cuenta">
+                    <span class="material-symbols-outlined">shield_person</span> Cuenta y Seguridad
+                </button>
+                <button class="ajustes-tab flex items-center gap-3 w-full p-3 rounded-lg text-on-surface hover:bg-surface-variant font-medium text-left transition-colors" data-tab="tab-notificaciones">
+                    <span class="material-symbols-outlined">notifications</span> Notificaciones
+                </button>
+                <button class="ajustes-tab flex items-center gap-3 w-full p-3 rounded-lg text-on-surface hover:bg-surface-variant font-medium text-left transition-colors" data-tab="tab-preferencias">
+                    <span class="material-symbols-outlined">settings</span> Preferencias
+                </button>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="flex-1">
+                <!-- Tab: Cuenta y Seguridad -->
+                <div id="tab-cuenta" class="ajustes-content block animate-fade-in">
+                    <div class="bg-surface-container-lowest rounded-2xl p-xl shadow-sm border border-surface-variant flex flex-col gap-md mb-6">
+                        <h2 class="font-headline-sm text-headline-sm text-on-surface mb-4">Cambiar Contraseña</h2>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-on-surface mb-1">Contraseña Actual</label>
+                                <input type="password" class="w-full p-2.5 bg-surface border border-outline-variant rounded-lg focus:ring-primary focus:border-primary text-sm text-on-surface" placeholder="••••••••">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-on-surface mb-1">Nueva Contraseña</label>
+                                <input type="password" class="w-full p-2.5 bg-surface border border-outline-variant rounded-lg focus:ring-primary focus:border-primary text-sm text-on-surface" placeholder="••••••••">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-on-surface mb-1">Confirmar Nueva Contraseña</label>
+                                <input type="password" class="w-full p-2.5 bg-surface border border-outline-variant rounded-lg focus:ring-primary focus:border-primary text-sm text-on-surface" placeholder="••••••••">
+                            </div>
+                            <button class="mt-2 px-4 py-2 bg-primary text-white rounded-lg font-bold text-sm hover:bg-secondary transition-colors" onclick="showToast('Contraseña actualizada con éxito')">Actualizar Contraseña</button>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-surface-container-lowest rounded-2xl p-xl shadow-sm border border-surface-variant flex flex-col gap-md">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h2 class="font-headline-sm text-headline-sm text-on-surface">Autenticación en 2 Pasos (2FA)</h2>
+                                <p class="text-sm text-on-surface-variant mt-1">Añade una capa extra de seguridad a tu cuenta.</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer" onchange="showToast(this.checked ? '2FA Activado' : '2FA Desactivado')">
+                                <div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: Notificaciones -->
+                <div id="tab-notificaciones" class="ajustes-content hidden animate-fade-in">
+                    <div class="bg-surface-container-lowest rounded-2xl p-xl shadow-sm border border-surface-variant flex flex-col gap-md mb-6">
+                        <h2 class="font-headline-sm text-headline-sm text-on-surface mb-4">Canales de Comunicación</h2>
+                        <div class="space-y-4">
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="checkbox" checked class="w-4 h-4 text-primary bg-surface border-outline-variant rounded focus:ring-primary">
+                                <span class="text-sm text-on-surface font-medium">Correo Electrónico (Email)</span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 text-primary bg-surface border-outline-variant rounded focus:ring-primary">
+                                <span class="text-sm text-on-surface font-medium">Mensajes SMS</span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="checkbox" checked class="w-4 h-4 text-primary bg-surface border-outline-variant rounded focus:ring-primary">
+                                <span class="text-sm text-on-surface font-medium">Notificaciones Push (Navegador)</span>
+                            </label>
+                        </div>
+                        <button class="mt-4 px-4 py-2 bg-surface border border-outline-variant text-on-surface rounded-lg font-bold text-sm hover:bg-surface-variant w-max" onclick="showToast('Preferencias de canales guardadas')">Guardar Preferencias</button>
+                    </div>
+
+                    <div class="bg-surface-container-lowest rounded-2xl p-xl shadow-sm border border-surface-variant flex flex-col gap-md">
+                        <h2 class="font-headline-sm text-headline-sm text-on-surface mb-4">Tipos de Alertas</h2>
+                        <div class="space-y-4">
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="checkbox" checked class="w-4 h-4 text-primary bg-surface border-outline-variant rounded focus:ring-primary">
+                                <span class="text-sm text-on-surface font-medium">Recordatorios diarios de hábitos</span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="checkbox" checked class="w-4 h-4 text-primary bg-surface border-outline-variant rounded focus:ring-primary">
+                                <span class="text-sm text-on-surface font-medium">Próximas citas médicas</span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="checkbox" checked class="w-4 h-4 text-primary bg-surface border-outline-variant rounded focus:ring-primary">
+                                <span class="text-sm text-on-surface font-medium">Resultados de laboratorio listos</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: Preferencias -->
+                <div id="tab-preferencias" class="ajustes-content hidden animate-fade-in">
+                    <div class="bg-surface-container-lowest rounded-2xl p-xl shadow-sm border border-surface-variant flex flex-col gap-md mb-6">
+                        <h2 class="font-headline-sm text-headline-sm text-on-surface mb-4">Apariencia e Idioma</h2>
+                        <div class="flex items-center justify-between border-b border-surface-variant pb-4 mb-4">
+                            <div>
+                                <p class="font-bold text-on-surface">Modo Oscuro</p>
+                                <p class="text-sm text-on-surface-variant">Cambia la paleta a colores oscuros.</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="dark-mode-toggle" class="sr-only peer">
+                                <div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-bold text-on-surface">Idioma de la plataforma</p>
+                                <p class="text-sm text-on-surface-variant">Selecciona tu idioma preferido.</p>
+                            </div>
+                            <select id="language-select" class="bg-surface border border-outline-variant text-on-surface text-sm rounded-lg focus:ring-primary focus:border-primary block pl-2 pr-10 py-2 transition-colors w-40">
+                                <option value="es">Español (ES)</option>
+                                <option value="en">English (EN)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="bg-surface-container-lowest rounded-2xl p-xl shadow-sm border border-surface-variant flex flex-col gap-md">
+                        <h2 class="font-headline-sm text-headline-sm text-on-surface mb-4">Integraciones</h2>
+                        <div class="flex items-center justify-between p-4 border border-surface-variant rounded-xl bg-surface">
+                            <div class="flex items-center gap-4">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Google_Calendar_icon_%282020%29.svg" alt="Google Calendar" class="w-8 h-8">
+                                <div>
+                                    <p class="font-bold text-on-surface">Google Calendar</p>
+                                    <p class="text-xs text-on-surface-variant">Sincroniza tus citas automáticamente.</p>
+                                </div>
+                            </div>
+                            <button class="px-4 py-2 border border-outline-variant text-on-surface text-sm font-bold rounded-lg hover:bg-surface-variant transition-colors" onclick="toggleIntegration(this)">
+                                Conectar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+            
+        </div> <!-- End Real Content -->
+</main> <!-- End Main Container -->
+
+<!-- Toast Notification Container -->
+<div id="toast-container" class="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+<!-- FAB Support Chatbot -->
+<button id="chatbot-fab" class="fixed bottom-lg right-lg w-[56px] h-[56px] bg-primary text-white rounded-full flex items-center justify-center shadow-lg hover:-translate-y-1 hover:shadow-xl transition-all duration-300 z-50">
+    <span class="material-symbols-outlined text-[28px]">smart_toy</span>
+</button>
+
+<!-- Chatbot Window (Hidden by default) -->
+<div id="chatbot-window" class="fixed bottom-24 right-lg w-80 md:w-96 bg-surface-container-lowest rounded-2xl shadow-2xl border border-surface-variant z-50 hidden flex-col overflow-hidden transition-all duration-300">
+    <div class="bg-primary p-4 text-white flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined">smart_toy</span>
+            <span class="font-bold">Asistente Epigenético</span>
+        </div>
+        <button id="close-chatbot" class="text-white hover:text-gray-200"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <div id="chat-messages" class="p-4 h-64 overflow-y-auto bg-surface flex flex-col gap-3 text-sm">
+        <div class="bg-surface-variant text-on-surface p-3 rounded-lg rounded-tl-none self-start max-w-[80%]">
+            ¡Hola, Antonella! Soy tu asistente virtual. ¿En qué puedo ayudarte con tu protocolo hoy?
+        </div>
+    </div>
+    <div class="p-3 border-t border-surface-variant bg-surface-container-lowest flex gap-2">
+        <input type="text" id="chat-input" placeholder="Escribe un mensaje..." class="flex-1 bg-surface border border-outline-variant rounded-full px-4 py-2 text-sm focus:outline-none focus:border-primary">
+        <button id="chat-send-btn" class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center hover:bg-secondary transition-colors">
+            <span class="material-symbols-outlined text-sm">send</span>
+        </button>
+    </div>
+</div>
+
+<script>
+    // Toggle Chatbot logic
+    document.addEventListener('DOMContentLoaded', () => {
+        const fab = document.getElementById('chatbot-fab');
+        const chatbotWindow = document.getElementById('chatbot-window');
+        const closeBtn = document.getElementById('close-chatbot');
+        
+        if(fab && chatbotWindow && closeBtn) {
+            fab.addEventListener('click', () => {
+                chatbotWindow.classList.toggle('hidden');
+                chatbotWindow.classList.toggle('flex');
+            });
+            closeBtn.addEventListener('click', () => {
+                chatbotWindow.classList.add('hidden');
+                chatbotWindow.classList.remove('flex');
+            });
+        }
+
+        // Lógica del Chatbot (Comunicación con Backend RAG)
+        const chatInput = document.getElementById('chat-input');
+        const chatSendBtn = document.getElementById('chat-send-btn');
+        const chatMessages = document.getElementById('chat-messages');
+
+        if(chatInput && chatSendBtn && chatMessages) {
+            const sendMessage = async () => {
+                const message = chatInput.value.trim();
+                if(!message) return;
+
+                // Agregar mensaje del usuario a la UI
+                chatMessages.innerHTML += `
+                    <div class="bg-primary text-white p-3 rounded-lg rounded-tr-none self-end max-w-[80%] shadow-sm">
+                        ${message}
+                    </div>
+                `;
+                chatInput.value = '';
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                // Indicador de "Escribiendo..."
+                const loadingId = 'loading-' + Date.now();
+                chatMessages.innerHTML += `
+                    <div id="${loadingId}" class="bg-surface-variant text-on-surface p-3 rounded-lg rounded-tl-none self-start max-w-[80%] italic text-xs shadow-sm">
+                        <span class="animate-pulse">Consultando tu protocolo...</span>
+                    </div>
+                `;
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                try {
+                    const response = await fetch('http://localhost:3000/api/chat', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ message: message, patientId: "test-user-id" })
+                    });
+                    
+                    document.getElementById(loadingId)?.remove();
+                    
+                    if(response.ok) {
+                        const data = await response.json();
+                        chatMessages.innerHTML += `
+                            <div class="bg-surface-variant text-on-surface p-3 rounded-lg rounded-tl-none self-start max-w-[80%] shadow-sm whitespace-pre-wrap">
+                                ${data.reply}
+                            </div>
+                        `;
+                    } else {
+                        chatMessages.innerHTML += `
+                            <div class="bg-error-container text-on-error-container p-3 rounded-lg rounded-tl-none self-start max-w-[80%] text-xs shadow-sm">
+                                ⚠️ Error: Configura tus claves de API en el backend para que la IA responda.
+                            </div>
+                        `;
+                    }
+                } catch(e) {
+                    document.getElementById(loadingId)?.remove();
+                    chatMessages.innerHTML += `
+                        <div class="bg-error-container text-on-error-container p-3 rounded-lg rounded-tl-none self-start max-w-[80%] text-xs shadow-sm">
+                            ⚠️ El "Cerebro RAG" no está conectado. Necesitas iniciar el servidor Node.js en el puerto 3000.
+                        </div>
+                    `;
+                }
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            };
+
+            chatSendBtn.addEventListener('click', sendMessage);
+            chatInput.addEventListener('keypress', (e) => {
+                if(e.key === 'Enter') sendMessage();
+            });
+        }
+
+        // Animate protocol progress smoothly
+        setTimeout(() => {
+            const progressBar = document.querySelector('.progress-bar-fill');
+            const progressText = document.querySelector('.font-bold.text-mint');
+            if (progressBar && progressText) {
+                progressBar.style.width = progressText.innerText.trim() || '0%';
+            }
+        }, 300);
+
+        // Skeleton Loader logic
+        setTimeout(() => {
+            const skeleton = document.getElementById('chart-skeleton');
+            if (skeleton) {
+                skeleton.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+                setTimeout(() => skeleton.remove(), 500);
+            }
+        }, 2000);
+    });
+
+    // Función "Marcar de hoy"
+    window.marcarHoy = function() {
+        const btn = document.getElementById('btn-marcar-hoy');
+        if (btn) {
+            btn.innerHTML = '<span class="material-symbols-outlined text-sm">check</span> Completado';
+            btn.classList.remove('bg-primary', 'hover:bg-secondary');
+            btn.classList.add('bg-surface-variant', 'text-on-surface-variant', 'cursor-not-allowed');
+            btn.disabled = true;
+            
+            showToast('¡Excelente! Has registrado tu suplementación de hoy');
+        }
+    };
+
+    // Función Toast
+    window.showToast = function(message) {
+        const container = document.getElementById('toast-container');
+        if (!container) return;
+
+        const toast = document.createElement('div');
+        toast.className = 'bg-primary-container text-on-primary-container px-4 py-2 rounded-lg shadow-lg font-bold text-sm flex items-center gap-2 transform translate-y-full opacity-0 transition-all duration-300';
+        toast.innerHTML = `<span class="material-symbols-outlined">check_circle</span> ${message}`;
+        
+        container.appendChild(toast);
+        
+        // Show
+        setTimeout(() => {
+            toast.classList.remove('translate-y-full', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+        }, 10);
+        
+        // Hide
+        setTimeout(() => {
+            toast.classList.remove('translate-y-0', 'opacity-100');
+            toast.classList.add('translate-y-full', 'opacity-0');
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+        // Hide
+        setTimeout(() => {
+            toast.classList.remove('translate-y-0', 'opacity-100');
+            toast.classList.add('translate-y-full', 'opacity-0');
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    };
+
+    // Tabs Ajustes Logic
+    document.addEventListener('DOMContentLoaded', () => {
+        const tabs = document.querySelectorAll('.ajustes-tab');
+        const contents = document.querySelectorAll('.ajustes-content');
+        
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active states
+                tabs.forEach(t => {
+                    t.classList.remove('bg-primary-container', 'text-on-primary-container', 'active');
+                    t.classList.add('text-on-surface', 'hover:bg-surface-variant');
+                });
+                contents.forEach(c => {
+                    c.classList.add('hidden');
+                    c.classList.remove('block');
+                });
+                
+                // Add active state
+                tab.classList.remove('text-on-surface', 'hover:bg-surface-variant');
+                tab.classList.add('bg-primary-container', 'text-on-primary-container', 'active');
+                
+                const target = document.getElementById(tab.getAttribute('data-tab'));
+                if(target) {
+                    target.classList.remove('hidden');
+                    target.classList.add('block');
+                }
+            });
+        });
+    });
+
+    // Toggle Integration Logic
+    window.toggleIntegration = function(btn) {
+        if(btn.innerText.trim() === 'Conectar') {
+            btn.innerText = 'Desconectar';
+            btn.classList.remove('bg-surface', 'text-on-surface', 'border-outline-variant');
+            btn.classList.add('bg-error-container', 'text-on-error-container', 'border-error');
+            showToast('Google Calendar conectado exitosamente');
+        } else {
+            btn.innerText = 'Conectar';
+            btn.classList.remove('bg-error-container', 'text-on-error-container', 'border-error');
+            btn.classList.add('bg-surface', 'text-on-surface', 'border-outline-variant');
+            showToast('Google Calendar desconectado');
+        }
+    };
+
+</script>
+<style>
+.animate-fade-in {
+    animation: fadeInTab 0.3s ease-out forwards;
+}
+@keyframes fadeInTab {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.dark body {
+    background-color: #000000 !important;
+}
+.dark .bg-surface-container-lowest {
+    background-color: #121212 !important;
+    border-color: #2D2D2D !important;
+}
+.dark .bg-surface-container-low {
+    background-color: #000000 !important;
+    border-color: #2D2D2D !important;
+}
+.dark .bg-surface {
+    background-color: #1A1A1A !important;
+}
+.dark .text-on-surface {
+    color: #FFFFFF !important;
+}
+.dark .text-on-surface-variant {
+    color: #B3B3B3 !important;
+}
+.dark .border-outline-variant {
+    border-color: #2D2D2D !important;
+}
+.dark .border-surface-variant {
+    border-color: #2D2D2D !important;
+}
+</style>
+
+<!-- Checkout Modal -->
+<div id="checkout-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
+    <div class="bg-surface border border-outline-variant rounded-2xl shadow-xl w-full max-w-md overflow-hidden transform scale-95 transition-transform duration-300" id="checkout-content">
+        <div class="px-6 py-4 border-b border-outline-variant flex justify-between items-center bg-surface-container-lowest">
+            <h3 class="font-bold text-lg text-on-surface">Confirmar Pago</h3>
+            <button onclick="closeCheckout()" class="text-on-surface-variant hover:text-on-surface transition-colors">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <p class="text-xs font-bold text-primary uppercase tracking-wider mb-1">Plan Seleccionado</p>
+                    <h4 class="font-bold text-on-surface text-lg" id="checkout-plan-name">Plan Premium</h4>
+                </div>
+                <div class="text-right">
+                    <p class="font-black text-2xl text-on-surface" id="checkout-plan-price">$89</p>
+                    <p class="text-xs text-on-surface-variant">/mes</p>
+                </div>
+            </div>
+
+            <div class="border-t border-b border-outline-variant py-4 mb-6">
+                <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-2">Código de Descuento</label>
+                <div class="flex gap-2">
+                    <input type="text" id="checkout-coupon-code" placeholder="Ej. VERANO26" class="flex-1 bg-surface-container-lowest border border-outline-variant rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 uppercase">
+                    <button onclick="applyCoupon()" id="btn-apply-coupon" class="px-4 py-2 bg-secondary text-on-secondary font-bold text-sm rounded-xl hover:opacity-90 transition-opacity">Aplicar</button>
+                </div>
+                <p id="checkout-coupon-message" class="text-xs mt-2 hidden font-medium"></p>
+            </div>
+
+            <div class="space-y-2 mb-6 text-sm">
+                <div class="flex justify-between text-on-surface-variant">
+                    <span>Subtotal</span>
+                    <span id="checkout-subtotal">$89.00</span>
+                </div>
+                <div class="flex justify-between text-emerald-600 font-medium hidden" id="checkout-discount-row">
+                    <span id="checkout-discount-label">Descuento</span>
+                    <span id="checkout-discount-amount">-$0.00</span>
+                </div>
+                <div class="flex justify-between font-bold text-on-surface text-lg pt-2 border-t border-outline-variant">
+                    <span>Total a Pagar</span>
+                    <span id="checkout-total">$89.00</span>
+                </div>
+            </div>
+
+            <button id="btn-procesar-pago" onclick="procesarPago()" class="w-full py-3 bg-primary text-white font-bold rounded-xl hover:bg-secondary transition-colors shadow-md flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined text-[18px]">lock</span> Pagar de forma segura
+            </button>
+        </div>
+    </div>
+</div>
+
+    <!-- ============================================== -->
+    <!-- MODAL: TRIAJE CLÍNICO (ONBOARDING)             -->
+    <!-- ============================================== -->
+    <div id="triaje-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-md"></div>
+        <div class="bg-surface-container-lowest w-full max-w-2xl max-h-[90vh] rounded-3xl shadow-2xl relative z-10 flex flex-col overflow-hidden animate-fade-in mx-4">
+            
+            <!-- Header -->
+            <div class="px-8 py-6 border-b border-surface-variant bg-surface text-center">
+                <div class="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="material-symbols-outlined text-[32px]">health_and_safety</span>
+                </div>
+                <h2 class="text-2xl font-bold text-on-surface mb-2">Bienvenido a tu perfil Epigenético</h2>
+                <p class="text-sm text-on-surface-variant">Para personalizar tu experiencia, necesitamos conocer algunos detalles sobre ti.</p>
+            </div>
+
+            <!-- Body (Form) -->
+            <div class="p-8 overflow-y-auto flex-1">
+                <form id="triaje-form" onsubmit="event.preventDefault(); document.getElementById('triaje-modal').classList.add('hidden'); localStorage.setItem('triaje_completado', 'true'); showToast('¡Gracias! Tu perfil ha sido configurado.');">
+                    <div class="space-y-6">
+                        <!-- Q1 -->
+                        <div>
+                            <label class="block text-sm font-bold text-on-surface mb-2">1. ¿Cuántas horas duermes en promedio al día?</label>
+                            <select class="w-full bg-surface border border-outline-variant rounded-xl pl-4 pr-10 py-3 text-sm focus:outline-none focus:border-primary" required>
+                                <option value="" disabled selected>Selecciona una opción</option>
+                                <option value="menos_5">Menos de 5 horas</option>
+                                <option value="5_7">Entre 5 y 7 horas</option>
+                                <option value="7_9">Entre 7 y 9 horas</option>
+                                <option value="mas_9">Más de 9 horas</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Q2 -->
+                        <div>
+                            <label class="block text-sm font-bold text-on-surface mb-2">2. ¿Cómo describirías tu nivel de energía general?</label>
+                            <div class="grid grid-cols-3 gap-3">
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="energia" value="baja" class="peer sr-only" required>
+                                    <div class="p-3 text-center border border-outline-variant rounded-xl peer-checked:bg-primary/10 peer-checked:border-primary peer-checked:text-primary hover:bg-surface-variant transition-colors">
+                                        <span class="block text-xl mb-1">🔋</span>
+                                        <span class="text-xs font-bold">Baja</span>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="energia" value="media" class="peer sr-only">
+                                    <div class="p-3 text-center border border-outline-variant rounded-xl peer-checked:bg-primary/10 peer-checked:border-primary peer-checked:text-primary hover:bg-surface-variant transition-colors">
+                                        <span class="block text-xl mb-1">⚡️</span>
+                                        <span class="text-xs font-bold">Media</span>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="energia" value="alta" class="peer sr-only">
+                                    <div class="p-3 text-center border border-outline-variant rounded-xl peer-checked:bg-primary/10 peer-checked:border-primary peer-checked:text-primary hover:bg-surface-variant transition-colors">
+                                        <span class="block text-xl mb-1">🔥</span>
+                                        <span class="text-xs font-bold">Alta</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Q3 -->
+                        <div>
+                            <label class="block text-sm font-bold text-on-surface mb-2">3. ¿Cuál es tu objetivo principal de salud?</label>
+                            <textarea rows="3" placeholder="Ej. Quiero mejorar mi digestión, perder peso, reducir el estrés..." class="w-full bg-surface border border-outline-variant rounded-xl p-4 text-sm focus:outline-none focus:border-primary resize-none" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="mt-8">
+                        <button type="submit" class="w-full py-4 bg-primary text-white font-bold rounded-xl hover:bg-secondary transition-colors shadow-md flex items-center justify-center gap-2 text-lg">
+                            Comenzar mi transformación <span class="material-symbols-outlined">arrow_forward</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</body></html>

@@ -1,6 +1,50 @@
 // Antonella Epigenética - Frontend Interactivity
 
 document.addEventListener('DOMContentLoaded', () => {
+    // ==========================================
+    // 0. MOBILE MENU LOGIC
+    // ==========================================
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const closeMenuBtn = document.getElementById('close-menu-btn');
+    const mobileLinks = document.querySelectorAll('.mobile-link');
+
+    if (mobileMenuBtn && mobileMenu && closeMenuBtn) {
+        // Create an overlay for the mobile menu
+        const menuOverlay = document.createElement('div');
+        menuOverlay.className = 'fixed inset-0 bg-black/50 z-[55] hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm md:hidden';
+        document.body.appendChild(menuOverlay);
+
+        const openMenu = () => {
+            mobileMenu.classList.remove('translate-x-full');
+            menuOverlay.classList.remove('hidden');
+            // Small delay to allow display:block to apply before changing opacity
+            setTimeout(() => {
+                menuOverlay.classList.remove('opacity-0');
+                menuOverlay.classList.add('opacity-100');
+            }, 10);
+            document.body.style.overflow = 'hidden';
+        };
+
+        const closeMenu = () => {
+            mobileMenu.classList.add('translate-x-full');
+            menuOverlay.classList.remove('opacity-100');
+            menuOverlay.classList.add('opacity-0');
+            setTimeout(() => {
+                menuOverlay.classList.add('hidden');
+            }, 300);
+            document.body.style.overflow = '';
+        };
+
+        mobileMenuBtn.addEventListener('click', openMenu);
+        closeMenuBtn.addEventListener('click', closeMenu);
+        menuOverlay.addEventListener('click', closeMenu);
+
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', closeMenu);
+        });
+    }
+
     // 0. Page Entry Blur Effect
     document.body.classList.add('page-blur-transition');
     document.body.classList.add('page-blur-active');
@@ -476,53 +520,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         }
-
-        // Chart.js Initialization
-        const ctx = document.getElementById('historicalChart');
-        if (ctx) {
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['Jul', 'Ago', 'Sep', 'Oct', 'Nov'],
-                    datasets: [{
-                        label: 'Niveles de Energía',
-                        data: [40, 55, 65, 80, 85],
-                        borderColor: '#006194', // primary color
-                        backgroundColor: 'rgba(0, 97, 148, 0.1)',
-                        borderWidth: 3,
-                        pointBackgroundColor: '#4ADE80', // mint color
-                        pointBorderColor: '#fff',
-                        pointBorderWidth: 2,
-                        pointRadius: 5,
-                        fill: true,
-                        tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 100,
-                            grid: {
-                                color: 'rgba(0,0,0,0.05)'
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false
-                            }
-                        }
-                    }
-                }
-            });
-        }
     }
     // 8. Prevent Google Translate from breaking Material Icons
     document.querySelectorAll('.material-symbols-outlined').forEach(icon => {
@@ -654,6 +651,18 @@ document.addEventListener('DOMContentLoaded', () => {
         discountForm.addEventListener('submit', (e) => {
             e.preventDefault();
             
+            const emailInput = document.getElementById('discount-email');
+            const email = emailInput ? emailInput.value : '';
+
+            // Enviar el correo al webhook de n8n
+            if (typeof window.sendToWebhook === 'function') {
+                window.sendToWebhook('NUEVO_LEAD_LANDING', {
+                    email: email,
+                    cupon: 'BIENVENIDA-15',
+                    origen: 'programa_bienestar'
+                });
+            }
+
             // Hide form, show success with smooth transition
             discountFormContainer.classList.add('opacity-0');
             setTimeout(() => {
@@ -709,3 +718,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 });
+
+
+// --- LOGICA DEL CUESTIONARIO MENSUAL ---
+

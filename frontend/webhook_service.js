@@ -1,84 +1,71 @@
 /**
- * Servicio Centralizado para Webhooks (Preparación para Backend / Automations)
+ * Servicio Centralizado de Conexiones Externas
  * 
- * Este archivo deja la estructura preparada para conectar la interfaz (Zero Backend)
- * con servicios externos reales (n8n, Make, Supabase Edge Functions, etc.) mediante Webhooks.
+ * Este archivo conecta el frontend directamente con Supabase para guardar leads,
+ * y opcionalmente notifica a n8n para disparar automatizaciones (correos de bienvenida, etc.).
  */
 
 const CONFIG = {
-    // URL temporal vacía. Cuando tengan el webhook real (ej. de n8n), reemplazar aquí.
-    N8N_WEBHOOK_URL: 'https://tu-servidor-n8n.com/webhook/endpoint',
+    // ===== SUPABASE (Conexión Directa - Principal) =====
+    SUPABASE_URL: 'https://api.antonellaepigenetica.online',
     
-    // Si se necesita autorización
-    API_KEY: '', 
-    
-    // Activar o desactivar el envío real para pruebas
-    ENABLE_REAL_REQUESTS: false 
+    // Anon Key (Firmada con la contraseña maestra real del servidor)
+    SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNjQxNzY5MjAwLCJleHAiOjE3OTk1MzU2MDB9.lDIgYJPmqDQuFSyRTkJAnUjpH6MhhYQvdFTvMR4LInE',
+
+    // ===== N8N (Automatizaciones - Secundario) =====
+    N8N_WEBHOOK_URL: 'https://n8n.antonellaepigenetica.online/webhook/correo-landing-page',
+    ENABLE_N8N_NOTIFICATION: true
 };
 
 /**
- * Función genérica para enviar datos a un Webhook
- * @param {string} action - El tipo de acción (ej. 'NUEVO_DIAGNOSTICO', 'CHECKIN_MENSUAL')
- * @param {object} payload - Los datos a enviar al webhook
- * @returns {Promise<boolean>}
+ * Guarda un lead directamente en Supabase (tabla 'leads')
  */
-window.sendToWebhook = async function(action, payload) {
-    const requestData = {
-        action: action,
-        timestamp: new Date().toISOString(),
-        data: payload
-    };
-
-    console.log(`[Webhook Mock] Intentando enviar la acción: ${action}`, requestData);
-
-    // Si la función está desactivada (modo Zero Backend actual), solo simulamos el éxito
-    if (!CONFIG.ENABLE_REAL_REQUESTS) {
-        console.log('[Webhook Mock] Modo simulación activo. No se realizó la petición HTTP real.');
-        return new Promise((resolve) => {
-            setTimeout(() => resolve(true), 500); // Simulamos latencia de red
-        });
-    }
-
-    // Código real de ejecución para cuando activen el Webhook
+window.saveLeadToSupabase = async function(email, source = 'programa_bienestar') {
     try {
-        const response = await fetch(CONFIG.N8N_WEBHOOK_URL, {
+        console.log('[Supabase] Guardando lead:', email);
+
+        const response = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/leads`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                // 'Authorization': `Bearer ${CONFIG.API_KEY}` // Descomentar si es necesario
+                'apikey': CONFIG.SUPABASE_ANON_KEY,
+                'Authorization': `Bearer ${CONFIG.SUPABASE_ANON_KEY}`,
+                'Prefer': 'return=minimal'
             },
-            body: JSON.stringify(requestData)
+            body: JSON.stringify({ email, source, status: 'processed' })
         });
 
-        if (!response.ok) {
-            console.error(`[Webhook Error] El servidor respondió con estado: ${response.status}`);
-            return false;
-        }
-
-        const result = await response.json();
-        console.log('[Webhook Success] Respuesta del servidor:', result);
-        return true;
-
+        if (response.ok) return { success: true };
+        if (response.status === 409) return { success: true }; // Ya existía
+        
+        return { success: false };
     } catch (error) {
-        console.error('[Webhook Exception] Error al intentar conectar con el webhook:', error);
-        return false;
+        return { success: false };
     }
 };
 
 /**
- * ==========================================
- * EJEMPLOS DE USO FUTURO
- * ==========================================
- * 
- * Cuando quieras conectar un formulario real, simplemente llamas a esta función 
- * desde tus Event Listeners en main.js o admin.js, así:
- * 
- * window.sendToWebhook('NUEVO_CUPON', {
- *     codigo: 'NUEVO2024',
- *     descuento: '25%',
- *     limite: 50
- * }).then(exito => {
- *     if(exito) showToast('Enviado a n8n correctamente');
- * });
- * 
+ * Notifica a n8n sobre un nuevo lead
  */
+window.notifyN8n = async function(action, payload) {
+    if (!CONFIG.ENABLE_N8N_NOTIFICATION) return true;
+    try {
+        await fetch(CONFIG.N8N_WEBHOOK_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action, timestamp: new Date().toISOString(), data: payload })
+        });
+        return true;
+    } catch (error) { return false; }
+};
+
+/**
+ * Función principal
+ */
+window.sendToWebhook = async function(action, payload) {
+    // 1. Guardar en Supabase directo
+    await window.saveLeadToSupabase(payload.email, payload.origen || 'programa_bienestar');
+    // 2. Notificar a n8n para el correo
+    window.notifyN8n(action, payload);
+    return true;
+};

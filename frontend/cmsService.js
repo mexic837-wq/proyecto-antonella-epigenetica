@@ -75,45 +75,110 @@ const DEFAULT_CONFIG = {
 };
 
 window.cmsService = {
-    /**
-     * Obtiene la configuración del sitio. Si no existe en localStorage, inicializa con DEFAULT_CONFIG.
-     */
     getSiteConfig: async () => {
-        return new Promise((resolve) => {
-            console.log('[cmsService] Ejecutando SELECT...');
-            setTimeout(() => {
-                const stored = localStorage.getItem('antonella_site_config');
-                if (stored) {
-                    try {
-                        const parsed = JSON.parse(stored);
-                        // Merge DEFAULT_CONFIG with parsed to ensure new keys (like educacion) exist
-                        const merged = { ...DEFAULT_CONFIG, ...parsed };
-                        // Deep merge for specific keys if needed, e.g., educacion
-                        if (!merged.educacion) merged.educacion = DEFAULT_CONFIG.educacion;
-                        if (!merged.promociones) merged.promociones = DEFAULT_CONFIG.promociones;
-                        resolve(merged);
-                    } catch (e) {
-                        resolve(JSON.parse(JSON.stringify(DEFAULT_CONFIG)));
-                    }
-                } else {
-                    localStorage.setItem('antonella_site_config', JSON.stringify(DEFAULT_CONFIG));
-                    resolve(JSON.parse(JSON.stringify(DEFAULT_CONFIG)));
+        console.log('[cmsService] Ejecutando SELECT...');
+        
+        // Supabase API details
+        const supabaseBaseUrl = 'https://api.antonellaepigenetica.online';
+        const anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNjQxNzY5MjAwLCJleHAiOjE3OTk1MzU2MDB9.lDIgYJPmqDQuFSyRTkJAnUjpH6MhhYQvdFTvMR4LInE';
+        const headers = { 'apikey': anonKey, 'Authorization': `Bearer ${anonKey}`, 'Content-Type': 'application/json' };
+
+        // Cargar configuración local de los otros módulos
+        let merged = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+        const stored = localStorage.getItem('antonella_site_config');
+        if (stored) {
+            try {
+                const parsed = JSON.parse(stored);
+                merged = { ...DEFAULT_CONFIG, ...parsed };
+                if (!merged.educacion) merged.educacion = DEFAULT_CONFIG.educacion;
+                if (!merged.promociones) merged.promociones = DEFAULT_CONFIG.promociones;
+            } catch (e) {
+                console.error('Error parseando config local', e);
+            }
+        } else {
+            localStorage.setItem('antonella_site_config', JSON.stringify(DEFAULT_CONFIG));
+        }
+
+        // Cargar planes desde Supabase
+        try {
+            const res = await fetch(`${supabaseBaseUrl}/rest/v1/subscription_plans?order=price.asc`, { headers });
+            if (res.ok) {
+                const plansDb = await res.json();
+                if (plansDb && plansDb.length > 0) {
+                    merged.planes = plansDb.map(p => ({
+                        id: p.id,
+                        nombre: p.name,
+                        precio: p.price,
+                        beneficios: p.features || []
+                    }));
+                    console.log('[cmsService] Planes cargados de Supabase:', merged.planes);
                 }
-            }, 500); // 0.5s de latencia simulada
-        });
+            }
+        } catch (err) {
+            console.error('Error cargando planes de Supabase', err);
+        }
+
+        return merged;
     },
 
     /**
-     * Actualiza la configuración global del sitio.
+     * Actualiza la configuración del sitio en el CMS (y en Supabase para los planes).
      */
     updateSiteConfig: async (newConfig) => {
-        return new Promise((resolve) => {
-            console.log('[cmsService] Ejecutando UPDATE...', newConfig);
-            setTimeout(() => {
-                localStorage.setItem('antonella_site_config', JSON.stringify(newConfig));
-                resolve(true);
-            }, 500);
-        });
+        console.log('[cmsService] Ejecutando UPDATE...', newConfig);
+        
+        // Supabase API details
+        const supabaseBaseUrl = 'https://api.antonellaepigenetica.online';
+        const anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNjQxNzY5MjAwLCJleHAiOjE3OTk1MzU2MDB9.lDIgYJPmqDQuFSyRTkJAnUjpH6MhhYQvdFTvMR4LInE';
+        const patchHeaders = { 
+            'apikey': anonKey, 
+            'Authorization': `Bearer ${anonKey}`, 
+            'Content-Type': 'application/json', 
+            'Prefer': 'return=representation' 
+        };
+
+        // Guardar planes en Supabase
+        try {
+            for (const plan of newConfig.planes) {
+                let updateUrl = null;
+
+                // Match by UUID if available
+                if (plan.id && plan.id.length > 20) {
+                    updateUrl = `${supabaseBaseUrl}/rest/v1/subscription_plans?id=eq.${plan.id}`;
+                } else {
+                    // Fallback: match by name
+                    updateUrl = `${supabaseBaseUrl}/rest/v1/subscription_plans?name=eq.${encodeURIComponent(plan.nombre)}`;
+                }
+
+                const patchBody = { price: plan.precio, features: plan.beneficios };
+                console.log('[cmsService] PATCH:', updateUrl, patchBody);
+                
+                const res = await fetch(updateUrl, {
+                    method: 'PATCH',
+                    headers: patchHeaders,
+                    body: JSON.stringify(patchBody)
+                });
+                
+                const responseText = await res.text();
+                console.log('[cmsService] Response status:', res.status, 'Body:', responseText);
+                
+                if (!res.ok) {
+                    console.error('[cmsService] Error Supabase:', res.status, responseText);
+                } else {
+                    console.log('[cmsService] Plan guardado:', plan.nombre);
+                }
+            }
+        } catch (err) {
+            console.error('[cmsService] Error de red:', err);
+        }
+
+        // Guardar resto de la config en localStorage
+        localStorage.setItem('antonella_site_config', JSON.stringify(newConfig));
+        
+        if (typeof window.showToast === 'function') {
+            window.showToast("Configuración guardada exitosamente");
+        }
+        return true;
     },
 
     /**
@@ -132,14 +197,47 @@ window.cmsService = {
     },
 
     /**
-     * Añade una nueva promoción
+     * Obtiene promociones desde Supabase
+     */
+    getPromociones: async () => {
+        try {
+            const url = 'https://api.antonellaepigenetica.online/rest/v1/promotions?select=*&order=created_at.desc';
+            const key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNjQxNzY5MjAwLCJleHAiOjE3OTk1MzU2MDB9.lDIgYJPmqDQuFSyRTkJAnUjpH6MhhYQvdFTvMR4LInE';
+            const res = await fetch(url, { headers: { 'apikey': key, 'Authorization': 'Bearer ' + key } });
+            if (!res.ok) throw new Error('Error al obtener promociones');
+            return await res.json();
+        } catch(e) {
+            console.error(e);
+            return [];
+        }
+    },
+
+    /**
+     * Añade una nueva promoción a Supabase
      */
     addPromocion: async (promoData) => {
-        const config = await window.cmsService.getSiteConfig();
-        if (!config.promociones) config.promociones = [];
-        
-        config.promociones.push(promoData);
-        await window.cmsService.updateSiteConfig(config);
-        return promoData;
+        try {
+            const url = 'https://api.antonellaepigenetica.online/rest/v1/promotions';
+            const key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNjQxNzY5MjAwLCJleHAiOjE3OTk1MzU2MDB9.lDIgYJPmqDQuFSyRTkJAnUjpH6MhhYQvdFTvMR4LInE';
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'apikey': key,
+                    'Authorization': 'Bearer ' + key,
+                    'Prefer': 'return=minimal'
+                },
+                body: JSON.stringify({
+                    code: promoData.codigo,
+                    discount_percentage: promoData.descuento,
+                    expiration_date: promoData.expiracion || null
+                })
+            });
+            if (!res.ok) throw new Error('Error al guardar en Supabase');
+            return promoData;
+        } catch (e) {
+            console.error(e);
+            throw e;
+        }
     }
 };

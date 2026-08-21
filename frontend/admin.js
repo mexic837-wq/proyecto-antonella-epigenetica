@@ -908,6 +908,213 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // ==========================================
+        // 12.5. PROMOCIONES (LEADS) & AUDITORÍA
+        // ==========================================
+        
+        // --- Leads ---
+        const initLeads = async () => {
+            const tbody = document.getElementById('tabla-leads');
+            const totalBadge = document.getElementById('total-leads-badge');
+            if (!tbody || !totalBadge) return;
+
+            tbody.innerHTML = '<tr><td colspan="4" class="px-6 py-8 text-center text-clinical-muted text-sm">Cargando leads desde Supabase...</td></tr>';
+
+            try {
+                // Obtenemos los leads reales desde la base de datos
+                const response = await fetch('https://api.antonellaepigenetica.online/rest/v1/leads?select=*&order=created_at.desc', {
+                    method: 'GET',
+                    headers: {
+                        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNjQxNzY5MjAwLCJleHAiOjE3OTk1MzU2MDB9.lDIgYJPmqDQuFSyRTkJAnUjpH6MhhYQvdFTvMR4LInE',
+                        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNjQxNzY5MjAwLCJleHAiOjE3OTk1MzU2MDB9.lDIgYJPmqDQuFSyRTkJAnUjpH6MhhYQvdFTvMR4LInE'
+                    }
+                });
+
+                if (!response.ok) throw new Error('Error al obtener leads');
+                
+                const realLeads = await response.json();
+                
+                tbody.innerHTML = '';
+                totalBadge.innerText = `${realLeads.length} Leads`;
+
+                if (realLeads.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" class="px-6 py-8 text-center text-clinical-muted text-sm">No hay leads registrados todavía.</td></tr>';
+                    return;
+                }
+
+                realLeads.forEach(lead => {
+                    // Formato de fecha USA (MM/DD/YYYY)
+                    const dateObj = new Date(lead.created_at);
+                    const formattedDate = dateObj.toLocaleString('en-US', { 
+                        month: '2-digit', 
+                        day: '2-digit', 
+                        year: 'numeric', 
+                        hour: '2-digit', 
+                        minute: '2-digit', 
+                        hour12: true 
+                    });
+
+                    // Formato amigable para el estado
+                    let statusText = lead.status;
+                    let statusColor = "bg-gray-100 text-gray-700";
+
+                    if (lead.status === 'processed') {
+                        statusText = "Email Enviado";
+                        statusColor = "bg-emerald-100 text-emerald-700";
+                    } else if (lead.status === 'pending_webhook') {
+                        statusText = "Pendiente de Envío";
+                        statusColor = "bg-amber-100 text-amber-700";
+                    } else if (lead.status === 'error') {
+                        statusText = "Error en Envío";
+                        statusColor = "bg-red-100 text-red-700";
+                    } else if (lead.status) {
+                        statusText = lead.status.toUpperCase();
+                    }
+
+                    const tr = document.createElement('tr');
+                    tr.className = "hover:bg-slate-50 transition-colors";
+                    tr.innerHTML = `
+                        <td class="px-6 py-4 font-medium text-clinical-text">${lead.email}</td>
+                        <td class="px-6 py-4 text-clinical-muted"><span class="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs">${lead.source}</span></td>
+                        <td class="px-6 py-4"><span class="${statusColor} px-2 py-1 rounded text-xs font-bold uppercase">${statusText}</span></td>
+                        <td class="px-6 py-4 text-clinical-muted text-sm">${formattedDate}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (error) {
+                console.error(error);
+                tbody.innerHTML = '<tr><td colspan="4" class="px-6 py-8 text-center text-red-500 text-sm">Error conectando con la base de datos.</td></tr>';
+            }
+        };
+
+        // --- Auditoría de Conversión (Chart.js) ---
+        const initAuditoria = async () => {
+            const ctx = document.getElementById('auditoriaChart');
+            const statsContainer = document.getElementById('auditoria-stats-container');
+            if (!ctx || !statsContainer) return;
+
+            try {
+                // Obtenemos el embudo de tráfico real
+                const response = await fetch('https://api.antonellaepigenetica.online/rest/v1/traffic_audit?select=last_section', {
+                    method: 'GET',
+                    headers: {
+                        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNjQxNzY5MjAwLCJleHAiOjE3OTk1MzU2MDB9.lDIgYJPmqDQuFSyRTkJAnUjpH6MhhYQvdFTvMR4LInE',
+                        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNjQxNzY5MjAwLCJleHAiOjE3OTk1MzU2MDB9.lDIgYJPmqDQuFSyRTkJAnUjpH6MhhYQvdFTvMR4LInE'
+                    }
+                });
+
+                if (!response.ok) throw new Error('Error al obtener datos para auditoría');
+                
+                const traffic = await response.json();
+                
+                // Agrupar por last_section
+                const counts = {};
+                traffic.forEach(session => {
+                    const src = session.last_section || 'Desconocido';
+                    counts[src] = (counts[src] || 0) + 1;
+                });
+
+                // Ordenar de mayor a menor retención
+                let sortedKeys = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+
+                // Diccionario para traducir IDs técnicos a nombres amigables para el equipo
+                const labelDictionary = {
+                    'login.html': 'Página de Login',
+                    'index.html': 'Landing Page (Raíz)',
+                    'hero': 'Inicio (Arriba)',
+                    'video_proceso': 'Sección Video',
+                    'programa_bienestar': 'Sección Bienestar',
+                    'especialidades': 'Sección Especialidades',
+                    'como_funciona': 'Sección Cómo Funciona',
+                    'asistente_triaje': 'Sección Asistente',
+                    'contacto': 'Sección Contacto',
+                    'onboarding.html': 'Formulario de Triaje'
+                };
+
+                let labels = sortedKeys.map(k => labelDictionary[k] || k.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()));
+                let data = sortedKeys.map(k => counts[k]);
+
+                // Si no hay datos, mostrar algo por defecto para que no se vea vacío
+                if (labels.length === 0) {
+                    labels = ['Sin tráfico'];
+                    data = [1];
+                }
+
+                // Destruir gráfico previo si existe para evitar superposiciones
+                if (window.auditoriaChartInstance) {
+                    window.auditoriaChartInstance.destroy();
+                }
+
+                // Paleta de colores clínicos (gradiente visual para el embudo)
+                const colorPalette = ['#0ea5e9', '#3b82f6', '#8b5cf6', '#ec4899', '#f43f5e', '#f59e0b', '#10b981'];
+                const bgColors = labels.map((_, i) => colorPalette[i % colorPalette.length]);
+
+                window.auditoriaChartInstance = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: data,
+                            backgroundColor: bgColors,
+                            borderWidth: 0,
+                            hoverOffset: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom' }
+                        },
+                        cutout: '70%'
+                    }
+                });
+
+                statsContainer.innerHTML = '';
+                const total = traffic.length || 1; // evitar dividir por 0
+                
+                if (traffic.length === 0) {
+                    statsContainer.innerHTML = '<p class="text-sm text-clinical-muted p-4 text-center">No hay tráfico registrado aún. Visita la página para generar datos.</p>';
+                    return;
+                }
+
+                labels.forEach((label, index) => {
+                    const perc = Math.round((data[index] / traffic.length) * 100);
+                    const color = bgColors[index];
+                    const formattedLabel = label;
+                    
+                    statsContainer.innerHTML += `
+                        <div class="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 transition-colors border border-transparent hover:border-clinical-border">
+                            <div class="flex items-center gap-3">
+                                <span class="w-3 h-3 rounded-full" style="background-color: ${color}"></span>
+                                <span class="text-sm font-medium text-clinical-text">${formattedLabel}</span>
+                            </div>
+                            <div class="flex gap-4">
+                                <span class="text-clinical-muted text-sm">${data[index]} vistas</span>
+                                <span class="font-bold text-clinical-text w-12 text-right">${perc}%</span>
+                            </div>
+                        </div>
+                    `;
+                });
+            } catch (error) {
+                console.error(error);
+                statsContainer.innerHTML = '<p class="text-sm text-red-500">Error al cargar datos.</p>';
+            }
+        };
+
+        // Listen for navigation clicks to init charts/tables only when needed
+        document.querySelectorAll('.admin-nav-item').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const target = btn.dataset.target;
+                if (target === 'admin-leads') {
+                    initLeads();
+                } else if (target === 'admin-auditorias') {
+                    // Small timeout to ensure display:block applies before chart measures dimensions
+                    setTimeout(initAuditoria, 50); 
+                }
+            });
+        });
+
+        // ==========================================
         // 13. FILTRO DE KPIs (RESUMEN CLÍNICA)
         // ==========================================
         const kpiPeriodo = document.getElementById('kpi-periodo');
@@ -976,183 +1183,351 @@ window.crearCupon = function(event) {
     }
 };
 
-// --- Admin Chat Interaction ---
-document.addEventListener('DOMContentLoaded', () => {
-    const adminChatInput = document.getElementById('crm-textarea');
-    const btnSendAdminMsg = document.getElementById('btn-send-admin-msg');
-    const adminChatMessages = document.getElementById('chat-messages-container');
 
-    if (adminChatInput && btnSendAdminMsg && adminChatMessages) {
-        const sendMessage = () => {
-            const text = adminChatInput.value.trim();
-            if (!text) return;
-
-            // Remove placeholder if it exists
-            const placeholder = adminChatMessages.querySelector('.text-center');
-            if(placeholder) placeholder.remove();
-
-            const now = new Date();
-            const timeString = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
-
-            const msgHtml = `
-                <div class="flex flex-col items-end w-full animate-fade-in mb-4">
-                    <div class="bg-primary-600 text-white rounded-2xl rounded-tr-sm p-3 max-w-[80%] text-sm shadow-sm text-left">
-                        ${text.replace(/\n/g, '<br>')}
-                    </div>
-                    <span class="text-[10px] text-clinical-muted mt-1">${timeString}</span>
-                </div>
-            `;
-            
-            adminChatMessages.insertAdjacentHTML('beforeend', msgHtml);
-            adminChatInput.value = '';
-            adminChatMessages.scrollTop = adminChatMessages.scrollHeight;
-        };
-
-        btnSendAdminMsg.addEventListener('click', sendMessage);
-        adminChatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
-    }
-});
-
-// ==========================================
-// 13. CHAT SYNC (ADMIN SIDE)
-// ==========================================
-document.addEventListener('DOMContentLoaded', () => {
-    const adminChatContainer = document.getElementById('chat-messages-container');
-    const adminChatInput = document.getElementById('crm-textarea');
-    const adminBtnSend = document.getElementById('btn-send-admin-msg');
-
-    if (adminChatContainer && adminChatInput && adminBtnSend) {
-        const loadAdminMessages = () => {
-            const saved = localStorage.getItem('antonella_chat_messages');
-            if (saved) {
-                const messages = JSON.parse(saved);
-                adminChatContainer.innerHTML = '';
-                messages.forEach(msg => {
-                    if (msg.role === 'user') {
-                        adminChatContainer.insertAdjacentHTML('beforeend', `
-                            <div class="flex items-start gap-3 w-full">
-                                <div class="w-8 h-8 rounded-full bg-slate-200 shrink-0 border border-clinical-border overflow-hidden flex items-center justify-center">
-                                    <span class="material-symbols-outlined text-[16px] text-clinical-muted">person</span>
-                                </div>
-                                <div class="bg-white border border-clinical-border rounded-2xl rounded-tl-sm px-4 py-3 max-w-[85%] shadow-sm">
-                                    <p class="text-sm text-clinical-text">${msg.text}</p>
-                                    <span class="text-[10px] text-clinical-muted block mt-1">${msg.time}</span>
-                                </div>
-                            </div>
-                        `);
-                    } else {
-                        adminChatContainer.insertAdjacentHTML('beforeend', `
-                            <div class="flex items-start justify-end gap-3 w-full">
-                                <div class="bg-primary-50 border border-primary-200 rounded-2xl rounded-tr-sm px-4 py-3 max-w-[85%] shadow-sm">
-                                    <p class="text-sm text-primary-900">${msg.text}</p>
-                                    <span class="text-[10px] text-primary-600/70 block text-right mt-1">${msg.time}</span>
-                                </div>
-                                <div class="w-8 h-8 rounded-full bg-primary-100 shrink-0 border border-primary-200 overflow-hidden flex items-center justify-center">
-                                    <span class="material-symbols-outlined text-[16px] text-primary-600">${msg.isDoctor ? 'medical_services' : 'auto_awesome'}</span>
-                                </div>
-                            </div>
-                        `);
-                    }
-                });
-                adminChatContainer.scrollTop = adminChatContainer.scrollHeight;
-            }
-        };
-
-        loadAdminMessages();
-        setInterval(loadAdminMessages, 3000);
-
-        adminBtnSend.addEventListener('click', () => {
-            const text = adminChatInput.value.trim();
-            if (!text) return;
-
-            const saved = localStorage.getItem('antonella_chat_messages');
-            const messages = saved ? JSON.parse(saved) : [];
-            const time = new Date().toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'});
-            messages.push({ role: 'ai', text, time, isDoctor: true });
-            localStorage.setItem('antonella_chat_messages', JSON.stringify(messages));
-            
-            loadAdminMessages();
-            adminChatInput.value = '';
-        });
-        
-        adminChatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                adminBtnSend.click();
-            }
-        });
-    }
-});
 
 // --- Gestor de Educación Interaction ---
 document.addEventListener('DOMContentLoaded', () => {
     const formAddClass = document.getElementById('form-add-class');
-    if (formAddClass && window.cmsService) {
+    // --- Configuración de Cloudinary ---
+    const cloudName = 'ojfvhrdd';
+    const uploadPreset = 'antonella-epigenetica';
+
+    const createWidget = (buttonId, hiddenInputId, successTextId, isVideo = false) => {
+        if (!document.getElementById(buttonId)) return null;
+        
+        return cloudinary.createUploadWidget({
+            cloudName: cloudName,
+            uploadPreset: uploadPreset,
+            resourceType: 'auto',
+            sources: ['local', 'url', 'camera', 'google_drive'],
+            multiple: false,
+            clientAllowedFormats: isVideo ? ['mp4', 'webm', 'mov', 'pdf'] : ['png', 'jpeg', 'jpg', 'webp'],
+            maxFileSize: 500000000, // 500MB
+            language: 'es',
+            text: {
+                es: {
+                    or: "O",
+                    menu: { files: "Mis Archivos", web: "Dirección Web", camera: "Cámara", gdrive: "Google Drive" },
+                    local: {
+                        browse: "Seleccionar",
+                        dd_title_single: "Arrastra y suelta tu archivo aquí"
+                    }
+                }
+            }
+        }, (error, result) => {
+            if (!error && result && result.event === "success") {
+                document.getElementById(hiddenInputId).value = result.info.secure_url;
+                
+                const btn = document.getElementById(buttonId);
+                btn.classList.remove('bg-primary-50', 'text-primary-700', 'border-primary-300');
+                btn.classList.add('bg-emerald-50', 'text-emerald-700', 'border-emerald-300');
+                btn.innerHTML = `<span class="material-symbols-outlined text-[24px]">check</span> ¡Subido correctamente!`;
+                
+                document.getElementById(successTextId).classList.remove('hidden');
+            }
+        });
+    };
+
+    let mediaWidget, thumbWidget;
+    // Debemos esperar a que Cloudinary esté cargado
+    setTimeout(() => {
+        if (typeof cloudinary !== 'undefined') {
+            mediaWidget = createWidget('btn-upload-media', 'class-media-url', 'media-success-text', true);
+            thumbWidget = createWidget('btn-upload-thumb', 'class-thumbnail-url', 'thumb-success-text', false);
+            
+            const btnMedia = document.getElementById('btn-upload-media');
+            if (btnMedia) btnMedia.addEventListener('click', () => { mediaWidget && mediaWidget.open(); }, false);
+            
+            const btnThumb = document.getElementById('btn-upload-thumb');
+            if (btnThumb) btnThumb.addEventListener('click', () => { thumbWidget && thumbWidget.open(); }, false);
+        }
+    }, 1000);
+
+    // --- Soporte para Drag & Drop Directo ---
+    const setupDragAndDrop = (buttonId, hiddenInputId, successTextId) => {
+        const dropZone = document.getElementById(buttonId);
+        if (!dropZone) return;
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => {
+                dropZone.classList.add('bg-primary-100', 'border-primary-500');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => {
+                dropZone.classList.remove('bg-primary-100', 'border-primary-500');
+            }, false);
+        });
+
+        dropZone.addEventListener('drop', async (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            
+            if (files && files.length > 0) {
+                const file = files[0];
+                const originalHtml = dropZone.innerHTML;
+                dropZone.innerHTML = 'Subiendo... <span class="material-symbols-outlined animate-spin text-[18px]">sync</span>';
+                
+                try {
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    formData.append('upload_preset', uploadPreset);
+                    
+                    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (!res.ok) throw new Error('Error al subir a Cloudinary');
+                    
+                    const data = await res.json();
+                    
+                    document.getElementById(hiddenInputId).value = data.secure_url;
+                    
+                    dropZone.classList.remove('bg-primary-50', 'text-primary-700', 'border-primary-300');
+                    dropZone.classList.add('bg-emerald-50', 'text-emerald-700', 'border-emerald-300');
+                    dropZone.innerHTML = `<span class="material-symbols-outlined text-[24px]">check</span> ¡Subido correctamente!`;
+                    
+                    document.getElementById(successTextId).classList.remove('hidden');
+                } catch (err) {
+                    console.error(err);
+                    alert('Hubo un error subiendo el archivo al arrastrar.');
+                    dropZone.innerHTML = originalHtml;
+                }
+            }
+        }, false);
+    };
+
+    setupDragAndDrop('btn-upload-media', 'class-media-url', 'media-success-text');
+    setupDragAndDrop('btn-upload-thumb', 'class-thumbnail-url', 'thumb-success-text');
+
+    // --- Envío del Formulario ---
+    if (formAddClass) {
         formAddClass.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const title = document.getElementById('class-title').value;
-            const desc = document.getElementById('class-desc').value;
-            const module = document.getElementById('class-module').value;
-            const url = document.getElementById('class-url').value || '#';
-
-            // Extract duration if possible, otherwise default
-            const newClass = {
-                titulo: title,
-                descripcion: desc,
-                modulo: module,
-                duracion: "10:00", // Default duration for mock
-                url: url
-            };
-
-            await window.cmsService.addMasterclass(newClass);
-            if(typeof showAdminToast === 'function') showAdminToast('Clase publicada y sincronizada.');
+            const btnSubmit = formAddClass.querySelector('button[type="submit"]');
+            const originalText = btnSubmit.innerHTML;
+            btnSubmit.innerHTML = 'Guardando... <span class="material-symbols-outlined animate-spin text-[18px]">sync</span>';
+            btnSubmit.disabled = true;
             
-            formAddClass.reset();
-            // TODO: Reload the admin classes list if we decide to render it dynamically in admin too
-            loadAdminDynamicContent();
+            try {
+                const title = document.getElementById('class-title').value;
+                const desc = document.getElementById('class-desc').value;
+                const module = document.getElementById('class-module').value;
+                
+                const mediaUrl = document.getElementById('class-media-url').value;
+                const thumbUrl = document.getElementById('class-thumbnail-url').value;
+                
+                if (!mediaUrl) {
+                    alert('Debes subir el archivo principal de la clase (Video o PDF).');
+                    return;
+                }
+
+                const supabaseBaseUrl = 'https://api.antonellaepigenetica.online';
+                const anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNjQxNzY5MjAwLCJleHAiOjE3OTk1MzU2MDB9.lDIgYJPmqDQuFSyRTkJAnUjpH6MhhYQvdFTvMR4LInE';
+
+                const headers = {
+                    'apikey': anonKey,
+                    'Authorization': `Bearer ${anonKey}`,
+                    'Content-Type': 'application/json'
+                };
+
+                const bodyData = {
+                    title: title,
+                    description: desc,
+                    module_type: module,
+                    media_url: mediaUrl,
+                    thumbnail_url: thumbUrl
+                };
+
+                const editId = formAddClass.dataset.editId;
+                let dbRes;
+
+                if (editId) {
+                    // MODO EDICIÓN: Actualizar registro existente
+                    dbRes = await fetch(`${supabaseBaseUrl}/rest/v1/education_content?id=eq.${editId}`, {
+                        method: 'PATCH',
+                        headers: headers,
+                        body: JSON.stringify(bodyData)
+                    });
+                } else {
+                    // MODO CREACIÓN: Insertar nuevo registro
+                    dbRes = await fetch(`${supabaseBaseUrl}/rest/v1/education_content`, {
+                        method: 'POST',
+                        headers: headers,
+                        body: JSON.stringify(bodyData)
+                    });
+                }
+
+                if(!dbRes.ok) throw new Error('Error al guardar los datos en la base de datos.');
+
+                if(typeof showAdminToast === 'function') showAdminToast(editId ? '¡Clase actualizada con éxito!' : '¡Clase publicada con éxito!');
+                
+                // Resetear form visualmente
+                formAddClass.reset();
+                delete formAddClass.dataset.editId;
+                document.getElementById('class-media-url').value = '';
+                document.getElementById('class-thumbnail-url').value = '';
+                
+                ['btn-upload-media', 'btn-upload-thumb'].forEach(id => {
+                    const btn = document.getElementById(id);
+                    if(btn) {
+                        btn.className = 'w-full py-4 bg-primary-50 border-2 border-dashed border-primary-300 rounded-xl text-primary-700 font-bold hover:bg-primary-100 transition-all flex items-center justify-center gap-2';
+                        btn.innerHTML = id === 'btn-upload-media' ? `<span class="material-symbols-outlined text-[24px]">cloud_upload</span> Haz clic o arrastra el Video/PDF aquí` : `<span class="material-symbols-outlined text-[24px]">add_photo_alternate</span> Haz clic o arrastra la Miniatura aquí`;
+                    }
+                });
+                document.getElementById('media-success-text').classList.add('hidden');
+                document.getElementById('thumb-success-text').classList.add('hidden');
+
+                // Recargar las tarjetas
+                loadAdminDynamicContent();
+
+            } catch (err) {
+                console.error(err);
+                alert(err.message);
+            } finally {
+                btnSubmit.innerHTML = '<span class="material-symbols-outlined text-[18px]">publish</span> Publicar Clase';
+                btnSubmit.disabled = false;
+            }
+        });
+    }
+
+    // --- Envío del Formulario: Resultados de Laboratorio ---
+    const formUploadResult = document.getElementById('form-upload-result');
+    if (formUploadResult) {
+        setupDragAndDrop('btn-upload-result-pdf', 'result-media-url', 'result-success-text', true); // true allows PDF
+        
+        formUploadResult.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const btnSubmit = formUploadResult.querySelector('button[type="submit"]');
+            const originalText = btnSubmit.innerHTML;
+            btnSubmit.innerHTML = 'Publicando... <span class="material-symbols-outlined animate-spin text-[18px]">sync</span>';
+            btnSubmit.disabled = true;
+            
+            try {
+                const reportType = document.getElementById('result-type-select').value;
+                const pdfUrl = document.getElementById('result-media-url').value;
+                
+                if (!pdfUrl) {
+                    alert('Debes subir el PDF del resultado.');
+                    return;
+                }
+
+                const supabaseBaseUrl = 'https://api.antonellaepigenetica.online';
+                const anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNjQxNzY5MjAwLCJleHAiOjE3OTk1MzU2MDB9.lDIgYJPmqDQuFSyRTkJAnUjpH6MhhYQvdFTvMR4LInE';
+
+                const dbRes = await fetch(`${supabaseBaseUrl}/rest/v1/results`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': anonKey,
+                        'Authorization': `Bearer ${anonKey}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        pdf_url: pdfUrl,
+                        report_type: reportType
+                    })
+                });
+
+                if(!dbRes.ok) throw new Error('Error al guardar el resultado.');
+
+                if(typeof showAdminToast === 'function') showAdminToast('¡Resultado publicado con éxito!');
+                
+                // Reset form
+                formUploadResult.reset();
+                document.getElementById('result-media-url').value = '';
+                
+                const btn = document.getElementById('btn-upload-result-pdf');
+                if(btn) {
+                    btn.className = 'w-full py-6 bg-primary-50 border-2 border-dashed border-primary-300 rounded-xl text-primary-700 font-bold hover:bg-primary-100 transition-all flex flex-col items-center justify-center gap-2';
+                    btn.innerHTML = `<span class="material-symbols-outlined text-[32px]">cloud_upload</span><span>Haz clic o arrastra el PDF aquí</span>`;
+                }
+                document.getElementById('result-success-text').classList.add('hidden');
+
+            } catch (err) {
+                console.error(err);
+                alert(err.message);
+            } finally {
+                btnSubmit.innerHTML = originalText;
+                btnSubmit.disabled = false;
+            }
         });
     }
 
     // --- Dynamic Content Rendering (CMS Sync) ---
     const loadAdminDynamicContent = async () => {
-        if (!window.cmsService) return;
-        
         try {
-            const config = await window.cmsService.getSiteConfig();
-            
-            // 1. Render Admin Masterclasses
+            const supabaseBaseUrl = 'https://api.antonellaepigenetica.online';
+            const anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNjQxNzY5MjAwLCJleHAiOjE3OTk1MzU2MDB9.lDIgYJPmqDQuFSyRTkJAnUjpH6MhhYQvdFTvMR4LInE';
+
+            // 1. Render Admin Masterclasses from Supabase
             const adminMcGrid = document.getElementById('admin-masterclasses-grid');
-            if (adminMcGrid && config.educacion && config.educacion.masterclasses) {
-                adminMcGrid.innerHTML = ''; // Clear fallback
+            let classes = [];
+            
+            const res = await fetch(`${supabaseBaseUrl}/rest/v1/education_content?order=created_at.desc`, {
+                headers: {
+                    'apikey': anonKey,
+                    'Authorization': `Bearer ${anonKey}`
+                }
+            });
+            
+            if (res.ok) {
+                classes = await res.json();
+            }
+
+            if (adminMcGrid) {
+                adminMcGrid.innerHTML = '';
                 
-                if (config.educacion.masterclasses.length === 0) {
-                    adminMcGrid.innerHTML = '<p class="text-sm text-clinical-muted col-span-full">No hay clases publicadas aún.</p>';
+                if (classes.length === 0) {
+                    adminMcGrid.innerHTML = '<p class="text-sm text-clinical-muted col-span-full py-8 text-center">No hay clases publicadas aún. ¡Sube la primera arriba!</p>';
                 } else {
-                    config.educacion.masterclasses.forEach(mc => {
-                        const cardHtml = `
-                        <div class="bg-clinical-surface border border-clinical-border rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow group">
-                            <div class="h-32 bg-slate-100 relative overflow-hidden">
-                                <div class="w-full h-full bg-gradient-to-br from-slate-200 to-primary-100 flex flex-col items-center justify-center text-primary-400">
+                    classes.forEach(mc => {
+                        const thumbHtml = mc.thumbnail_url 
+                            ? `<img src="${mc.thumbnail_url}" class="w-full h-full object-cover" alt="${mc.title}">`
+                            : `<div class="w-full h-full bg-gradient-to-br from-slate-200 to-primary-100 flex flex-col items-center justify-center text-primary-400">
                                     <span class="material-symbols-outlined text-3xl mb-1">movie</span>
-                                    <span class="text-[9px] font-bold uppercase tracking-wider">Próximamente</span>
-                                </div>
+                                    <span class="text-[9px] font-bold uppercase tracking-wider">Sin miniatura</span>
+                               </div>`;
+                        
+                        const isPdf = mc.media_url && mc.media_url.toLowerCase().includes('.pdf');
+                        const typeLabel = isPdf ? 'PDF / Artículo' : 'Video';
+
+                        const cardHtml = `
+                        <div class="bg-clinical-surface border border-clinical-border rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow group relative" data-edu-id="${mc.id}">
+                            <div class="h-36 bg-slate-100 relative overflow-hidden">
+                                ${thumbHtml}
                                 <div class="absolute top-3 left-3">
                                     <span class="px-2.5 py-1 bg-emerald-500 text-white text-[10px] font-bold uppercase rounded-md shadow-sm">Publicado</span>
+                                </div>
+                                <div class="absolute top-3 right-3 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button onclick="window._editEducation('${mc.id}')" class="w-8 h-8 bg-white/90 backdrop-blur-sm rounded-lg flex items-center justify-center text-blue-600 hover:bg-blue-50 shadow-sm border border-white/50 transition-colors" title="Editar">
+                                        <span class="material-symbols-outlined text-[16px]">edit</span>
+                                    </button>
+                                    <button onclick="window._deleteEducation('${mc.id}', '${mc.title.replace(/'/g, "\\'")}')" class="w-8 h-8 bg-white/90 backdrop-blur-sm rounded-lg flex items-center justify-center text-red-500 hover:bg-red-50 shadow-sm border border-white/50 transition-colors" title="Eliminar">
+                                        <span class="material-symbols-outlined text-[16px]">delete</span>
+                                    </button>
                                 </div>
                             </div>
                             <div class="p-5">
                                 <div class="flex justify-between items-start mb-2">
-                                    <span class="text-[10px] font-bold text-primary-600 uppercase tracking-wider">Video (${mc.duracion || '00:00'})</span>
-                                    <button class="text-clinical-muted hover:text-primary-600" onclick="showAdminToast('Opciones de contenido')"><span class="material-symbols-outlined text-[18px]">more_vert</span></button>
+                                    <span class="text-[10px] font-bold text-primary-600 uppercase tracking-wider">${typeLabel}</span>
+                                    <button class="text-clinical-muted hover:text-primary-600" onclick="window.open('${mc.media_url}', '_blank')"><span class="material-symbols-outlined text-[18px]">open_in_new</span></button>
                                 </div>
-                                <h3 class="font-bold text-clinical-text text-sm mb-1 leading-tight">${mc.titulo}</h3>
-                                <p class="text-xs text-clinical-muted line-clamp-2">${mc.descripcion}</p>
+                                <h3 class="font-bold text-clinical-text text-sm mb-1 leading-tight">${mc.title}</h3>
+                                <p class="text-xs text-clinical-muted line-clamp-2">${mc.description}</p>
+                                <p class="text-[10px] text-clinical-muted mt-2">${mc.module_type || ''}</p>
                             </div>
                         </div>`;
                         adminMcGrid.insertAdjacentHTML('beforeend', cardHtml);
@@ -1160,39 +1535,95 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
+            // --- Funciones globales de Editar y Borrar ---
+            window._eduClasses = classes;
+            
+            window._deleteEducation = async (id, title) => {
+                if (!confirm(`¿Estás seguro de eliminar "${title}"? Esta acción no se puede deshacer.`)) return;
+                
+                try {
+                    const delRes = await fetch(`${supabaseBaseUrl}/rest/v1/education_content?id=eq.${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'apikey': anonKey,
+                            'Authorization': `Bearer ${anonKey}`
+                        }
+                    });
+                    
+                    if (!delRes.ok) throw new Error('Error al eliminar');
+                    
+                    // Remover tarjeta del DOM
+                    const card = document.querySelector(`[data-edu-id="${id}"]`);
+                    if (card) card.remove();
+                    
+                    if (typeof showAdminToast === 'function') showAdminToast(`"${title}" eliminado correctamente.`);
+                } catch (err) {
+                    console.error(err);
+                    alert('Error al eliminar el contenido.');
+                }
+            };
+
+            window._editEducation = (id) => {
+                const item = window._eduClasses.find(c => c.id === id);
+                if (!item) return;
+
+                // Rellenar formulario con datos existentes
+                document.getElementById('class-title').value = item.title;
+                document.getElementById('class-desc').value = item.description;
+                document.getElementById('class-module').value = item.module_type || '';
+                document.getElementById('class-media-url').value = item.media_url || '';
+                document.getElementById('class-thumbnail-url').value = item.thumbnail_url || '';
+
+                // Actualizar botones de upload visualmente
+                if (item.media_url) {
+                    const btnMedia = document.getElementById('btn-upload-media');
+                    btnMedia.classList.remove('bg-primary-50', 'text-primary-700', 'border-primary-300');
+                    btnMedia.classList.add('bg-emerald-50', 'text-emerald-700', 'border-emerald-300');
+                    btnMedia.innerHTML = '<span class="material-symbols-outlined text-[24px]">check</span> Archivo actual cargado';
+                    document.getElementById('media-success-text').classList.remove('hidden');
+                }
+                if (item.thumbnail_url) {
+                    const btnThumb = document.getElementById('btn-upload-thumb');
+                    btnThumb.classList.remove('bg-primary-50', 'text-primary-700', 'border-primary-300');
+                    btnThumb.classList.add('bg-emerald-50', 'text-emerald-700', 'border-emerald-300');
+                    btnThumb.innerHTML = '<span class="material-symbols-outlined text-[24px]">check</span> Miniatura actual cargada';
+                    document.getElementById('thumb-success-text').classList.remove('hidden');
+                }
+
+                // Cambiar botón de "Publicar" a "Actualizar"
+                const btnSubmit = formAddClass.querySelector('button[type="submit"]');
+                btnSubmit.innerHTML = '<span class="material-symbols-outlined text-[18px]">save</span> Actualizar Clase';
+                formAddClass.dataset.editId = id;
+
+                // Scroll al formulario
+                formAddClass.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            };
+
             // 2. Render Admin Promociones
             const tablaPromo = document.getElementById('tabla-promociones');
-            if (tablaPromo && config.promociones) {
+            if (tablaPromo && window.cmsService) {
+                const promociones = await window.cmsService.getPromociones();
                 tablaPromo.innerHTML = '';
-                if (config.promociones.length === 0) {
-                    tablaPromo.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-sm text-clinical-muted">No hay cupones activos</td></tr>';
+                if (promociones.length === 0) {
+                    tablaPromo.innerHTML = `<tr><td colspan="4" class="px-6 py-4 text-center text-sm text-clinical-muted">No hay códigos activos.</td></tr>`;
                 } else {
-                    config.promociones.forEach(promo => {
-                        const trHtml = `
-                        <tr class="hover:bg-slate-50 transition-colors">
-                            <td class="px-6 py-4">
-                                <div class="flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-emerald-500 text-[18px]">sell</span>
-                                    <span class="font-bold text-sm text-clinical-text">${promo.codigo}</span>
-                                </div>
+                    promociones.forEach(promo => {
+                        const tr = document.createElement('tr');
+                        tr.className = 'hover:bg-slate-50/50 transition-colors group';
+                        tr.innerHTML = `
+                            <td class="px-6 py-3">
+                                <span class="font-mono font-bold text-primary-700 bg-primary-50 px-2 py-0.5 rounded border border-primary-100 text-xs">${promo.code}</span>
                             </td>
-                            <td class="px-6 py-4">
-                                <span class="text-xs text-clinical-muted">Admin Global</span>
-                            </td>
-                            <td class="px-6 py-4">
-                                <span class="px-2.5 py-1 bg-primary-50 text-primary-700 text-xs font-bold rounded-md">${promo.descuento}% OFF</span>
-                            </td>
-                            <td class="px-6 py-4">
-                                <span class="text-sm font-medium text-clinical-text">0</span>
-                                <span class="text-xs text-clinical-muted"> / ilimitado</span>
-                            </td>
-                            <td class="px-6 py-4 text-right">
-                                <button class="text-clinical-muted hover:text-red-500 transition-colors" onclick="showAdminToast('Desactivar cupón')">
-                                    <span class="material-symbols-outlined text-[20px]">delete</span>
+                            <td class="px-6 py-3 text-sm text-clinical-text font-medium">${promo.creator || 'Admin Global'}</td>
+                            <td class="px-6 py-3 text-sm text-clinical-text font-bold">${promo.discount_percentage}% OFF</td>
+                            <td class="px-6 py-3 text-sm text-clinical-muted">${promo.usage_count} / ilimitado</td>
+                            <td class="px-6 py-3 text-right">
+                                <button class="text-clinical-muted hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 p-1" onclick="showAdminToast('Deshabilitando cupón...')">
+                                    <span class="material-symbols-outlined text-[18px]">delete</span>
                                 </button>
                             </td>
-                        </tr>`;
-                        tablaPromo.insertAdjacentHTML('beforeend', trHtml);
+                        `;
+                        tablaPromo.appendChild(tr);
                     });
                 }
             }
@@ -1213,36 +1644,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // CMS Save Settings
-    const btnSaveConfig = document.getElementById('btn-save-config');
-    if (btnSaveConfig) {
-        btnSaveConfig.addEventListener('click', async () => {
-            const originalText = btnSaveConfig.innerHTML;
-            btnSaveConfig.innerHTML = '<span class="material-symbols-outlined text-[18px] animate-spin">sync</span> Guardando...';
-            btnSaveConfig.disabled = true;
-
-            try {
-                if (window.cmsService) {
-                    const config = await window.cmsService.getSiteConfig();
-                    
-                    if (!config.textos) config.textos = {};
-                    
-                    config.textos.bienvenida = document.getElementById('cfg-bienvenida').value;
-                    config.textos.avisoLegal = document.getElementById('cfg-avisoLegal').value;
-                    config.textos.triaje = document.getElementById('cfg-triaje').value;
-
-                    await window.cmsService.updateSiteConfig(config);
-                    showAdminToast('Configuración del sitio actualizada');
-                }
-            } catch (error) {
-                showAdminToast('Error al guardar configuración');
-                console.error(error);
-            } finally {
-                btnSaveConfig.innerHTML = originalText;
-                btnSaveConfig.disabled = false;
-            }
-        });
-    }
+    // CMS Save Settings - HANDLED in section 10.3 above (btn-save-config)
+    // (duplicate handler removed to prevent conflicts)
 
     // ==========================================
     // 12. CHARTS LOGIC
@@ -1304,6 +1707,116 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load on init
     loadAdminDynamicContent();
     initAdminCharts();
+
+    // ==========================================
+    // 13. ZELLE APPROVAL LOGIC
+    // ==========================================
+    const initZelleApprovals = async () => {
+        const tableBody = document.getElementById('table-zelle-pending');
+        if (!tableBody) return;
+
+        try {
+            // Fetch pending payments
+            const res = await fetch(`${supabaseBaseUrl}/rest/v1/payments?payment_method=eq.zelle&status=eq.pending`, { headers });
+            if (!res.ok) throw new Error('Failed to fetch payments');
+            
+            const payments = await res.json();
+            
+            if (payments.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-clinical-muted">No hay pagos de Zelle pendientes de validación.</td></tr>`;
+                return;
+            }
+
+            // Fetch planes for mapping names
+            const resPlans = await fetch(`${supabaseBaseUrl}/rest/v1/subscription_plans`, { headers });
+            const plans = resPlans.ok ? await resPlans.json() : [];
+            const planMap = {};
+            plans.forEach(p => planMap[p.id] = p.name);
+
+            tableBody.innerHTML = payments.map(payment => `
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="px-6 py-4">
+                        <div class="font-bold text-clinical-text">${payment.patient_email}</div>
+                        <div class="text-xs text-clinical-muted">${new Date(payment.created_at).toLocaleString()}</div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="font-medium text-primary-700 bg-primary-50 px-2 py-1 rounded-lg text-xs border border-primary-100">
+                            ${planMap[payment.plan_id] || 'Plan Personalizado'}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 font-bold text-clinical-text">$${payment.amount}</td>
+                    <td class="px-6 py-4">
+                        <a href="${payment.receipt_url}" target="_blank" class="text-blue-600 hover:underline flex items-center gap-1 text-sm font-medium">
+                            <span class="material-symbols-outlined text-[16px]">visibility</span> Ver Imagen
+                        </a>
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <button data-id="${payment.id}" data-email="${payment.patient_email}" data-plan="${payment.plan_id}" class="btn-approve-zelle bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg text-sm font-bold shadow-sm transition-colors">
+                            Aprobar
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Attach events
+            document.querySelectorAll('.btn-approve-zelle').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const paymentId = e.currentTarget.getAttribute('data-id');
+                    const email = e.currentTarget.getAttribute('data-email');
+                    const planId = e.currentTarget.getAttribute('data-plan');
+                    e.currentTarget.disabled = true;
+                    e.currentTarget.innerText = 'Cargando...';
+
+                    try {
+                        // 1. Update payment status to approved
+                        await fetch(`${supabaseBaseUrl}/rest/v1/payments?id=eq.${paymentId}`, {
+                            method: 'PATCH',
+                            headers,
+                            body: JSON.stringify({ status: 'approved' })
+                        });
+
+                        // 2. Update or insert subscription
+                        // First check if subscription exists
+                        const checkSub = await fetch(`${supabaseBaseUrl}/rest/v1/patient_subscriptions?patient_email=eq.${email}`, { headers });
+                        const subData = await checkSub.json();
+
+                        const now = new Date();
+                        const nextMonth = new Date(now.setMonth(now.getMonth() + 1)).toISOString();
+
+                        if (subData.length > 0) {
+                            await fetch(`${supabaseBaseUrl}/rest/v1/patient_subscriptions?patient_email=eq.${email}`, {
+                                method: 'PATCH',
+                                headers,
+                                body: JSON.stringify({ status: 'active', current_period_end: nextMonth, plan_id: planId })
+                            });
+                        } else {
+                            await fetch(`${supabaseBaseUrl}/rest/v1/patient_subscriptions`, {
+                                method: 'POST',
+                                headers,
+                                body: JSON.stringify({ patient_email: email, plan_id: planId, status: 'active', current_period_end: nextMonth })
+                            });
+                        }
+
+                        if (window.showToast) window.showToast('Pago aprobado y cuenta activada.');
+                        initZelleApprovals(); // Refresh
+
+                    } catch (err) {
+                        console.error('Error approving Zelle', err);
+                        alert('Error al aprobar.');
+                        e.currentTarget.disabled = false;
+                        e.currentTarget.innerText = 'Aprobar';
+                    }
+                });
+            });
+
+        } catch (err) {
+            console.error('Error loading zelle approvals', err);
+            tableBody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-red-500">Error cargando pagos.</td></tr>`;
+        }
+    };
+
+    // Run on load if in admin
+    initZelleApprovals();
 });
 
 // Window global handlers
