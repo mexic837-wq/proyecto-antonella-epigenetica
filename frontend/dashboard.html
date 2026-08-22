@@ -1760,7 +1760,27 @@ window.onunhandledrejection = function(event) {
         </div> <!-- End Real Content -->
 </main> <!-- End Main Container -->
 
-<!-- Toast Notification Container -->
+  <!-- Mobile Bottom Navigation (Instagram Style) -->
+  <nav id="mobile-bottom-nav" class="md:hidden fixed bottom-0 left-0 w-full bg-surface-container-lowest/90 backdrop-blur-md border-t border-outline-variant/30 z-50 flex justify-around items-center h-[68px] pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_24px_rgba(0,0,0,0.04)] dark:shadow-[0_-4px_24px_rgba(0,0,0,0.2)]">
+      <a href="#" class="nav-item-mobile flex flex-col items-center justify-center w-full h-full text-on-surface-variant hover:text-primary transition-colors active" data-target="view-mi-plan">
+          <span class="material-symbols-outlined text-[28px] transition-all" style="font-variation-settings: 'FILL' 1;">home</span>
+      </a>
+      <a href="#" class="nav-item-mobile flex flex-col items-center justify-center w-full h-full text-on-surface-variant hover:text-primary transition-colors" data-target="view-evaluaciones">
+          <span class="material-symbols-outlined text-[28px] transition-all" style="font-variation-settings: 'FILL' 0;">science</span>
+      </a>
+      <a href="#" class="nav-item-mobile flex flex-col items-center justify-center w-full h-full text-on-surface-variant hover:text-primary transition-colors" data-target="view-academia">
+          <span class="material-symbols-outlined text-[28px] transition-all" style="font-variation-settings: 'FILL' 0;">school</span>
+      </a>
+      <a href="#" class="nav-item-mobile flex flex-col items-center justify-center w-full h-full text-on-surface-variant hover:text-primary transition-colors relative" data-target="view-chat">
+          <span class="material-symbols-outlined text-[28px] transition-all" style="font-variation-settings: 'FILL' 0;">forum</span>
+          <span class="absolute top-3 right-[calc(50%-14px)] w-2.5 h-2.5 bg-error rounded-full border border-surface-container-lowest"></span>
+      </a>
+      <a href="#" class="nav-item-mobile flex flex-col items-center justify-center w-full h-full text-on-surface-variant hover:text-primary transition-colors" data-target="view-ajustes">
+          <span class="material-symbols-outlined text-[28px] transition-all" style="font-variation-settings: 'FILL' 0;">person</span>
+      </a>
+  </nav>
+
+  <!-- Toast Notification Container -->
 <div id="toast-container" class="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
 <!-- FAB Support Chatbot -->
@@ -2158,6 +2178,7 @@ window.onunhandledrejection = function(event) {
     <script src="/evaluaciones.js"></script>
 </body>
 </html>
+
 
 
 
