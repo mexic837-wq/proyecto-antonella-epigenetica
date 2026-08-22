@@ -1216,8 +1216,6 @@ window.onunhandledrejection = function(event) {
             <!-- PDF Card 1 (Estático: Recetario) -->
             <div class="bg-surface-container-lowest rounded-xl p-5 shadow-sm border border-surface-variant group hover:-translate-y-1 hover:shadow-md transition-all duration-300 flex flex-col h-full">
                 <div class="w-12 h-12 bg-secondary/10 text-secondary rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <span class="material-symbols-outlined text-2xl">picture_as_pdf</span>
-                </div>
                 <h3 class="font-bold text-on-surface text-sm mb-2">Recetario Antiinflamatorio Semanal</h3>
                 <p class="text-xs text-on-surface-variant mb-4 flex-1">Planes de comida adaptados a tu sensibilidad al gluten identificada en el test.</p>
                 <button id="btn-read-recipe" class="w-full py-2 bg-surface border border-outline-variant text-on-surface text-xs font-bold rounded-lg hover:bg-surface-variant transition-colors flex items-center justify-center gap-2">
@@ -1227,35 +1225,39 @@ window.onunhandledrejection = function(event) {
             <!-- Aquí se inyectarán PDFs dinámicos desde Supabase -->
         </div>
     </div>
-    <div id="view-mensajes" class="view-section hidden h-[calc(100vh-6rem)]">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+    <!-- ============================================== -->
+    <!-- VIEW: MENSAJES                                 -->
+    <!-- ============================================== -->
+    <div id="view-mensajes" class="view-section hidden h-[calc(100vh-140px)] md:h-[calc(100vh-6rem)] -mx-margin-mobile md:mx-0 -mt-4 md:mt-0">
+        <!-- Desktop Header (Hidden on Mobile) -->
+        <div class="hidden md:flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
             <div>
                 <h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface fade-in-up">Centro de Mensajes</h1>
                 <p class="text-on-surface-variant mt-2 fade-in-up delay-100">Comunicación directa y segura con tu equipo médico.</p>
             </div>
         </div>
 
-        <div class="bg-surface-container-lowest border border-surface-variant rounded-2xl shadow-sm overflow-hidden flex flex-col h-full max-h-[700px] fade-in-up delay-200">
+        <div class="bg-surface-container-lowest md:border border-surface-variant md:rounded-2xl shadow-sm overflow-hidden flex flex-col h-full fade-in-up delay-200">
             
             <!-- Chat Header -->
-            <div class="h-16 border-b border-surface-variant flex items-center justify-between px-6 bg-surface-container-lowest shrink-0">
+            <div class="h-16 border-b border-surface-variant flex items-center justify-between px-4 md:px-6 bg-surface/95 backdrop-blur-md shrink-0 sticky top-0 z-10 shadow-sm">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-primary-container text-on-primary-container rounded-full flex items-center justify-center font-bold relative">
+                    <div class="w-10 h-10 bg-gradient-to-tr from-primary to-secondary text-white rounded-full flex items-center justify-center font-bold relative shadow-md">
                         EQ
                         <span class="absolute bottom-0 right-0 w-3 h-3 bg-mint border-2 border-surface-container-lowest rounded-full"></span>
                     </div>
-                    <div>
-                        <h3 class="text-sm font-bold text-on-surface">Equipo Médico Antonella</h3>
-                        <p class="text-[11px] text-mint font-medium flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">verified</span> En línea</p>
+                    <div class="flex flex-col">
+                        <h3 class="text-[15px] font-bold text-on-surface leading-tight">Equipo Médico</h3>
+                        <p class="text-[11px] text-on-surface-variant font-medium flex items-center gap-1">Responderemos pronto...</p>
                     </div>
                 </div>
-                <div class="flex gap-2">
-                    <button class="w-8 h-8 rounded-full hover:bg-surface-variant flex items-center justify-center text-on-surface-variant transition-colors" onclick="showToast('Iniciando videollamada...')">
-                        <span class="material-symbols-outlined text-[20px]">videocam</span>
+                <div class="flex gap-1 md:gap-2">
+                    <button class="w-9 h-9 rounded-full hover:bg-surface-variant flex items-center justify-center text-primary transition-colors" onclick="showToast('Iniciando videollamada...')">
+                        <span class="material-symbols-outlined text-[22px]">videocam</span>
                     </button>
                     <div class="relative">
-                        <button class="w-8 h-8 rounded-full hover:bg-surface-variant flex items-center justify-center text-on-surface-variant transition-colors" onclick="const menu = this.nextElementSibling; menu.classList.toggle('hidden');">
-                            <span class="material-symbols-outlined text-[20px]">more_vert</span>
+                        <button class="w-9 h-9 rounded-full hover:bg-surface-variant flex items-center justify-center text-on-surface-variant transition-colors" onclick="const menu = this.nextElementSibling; menu.classList.toggle('hidden');">
+                            <span class="material-symbols-outlined text-[22px]">more_vert</span>
                         </button>
                         <!-- Dropdown Menu -->
                         <div class="absolute right-0 mt-2 w-48 bg-surface rounded-xl shadow-lg border border-outline-variant hidden z-50 py-2">
@@ -1275,31 +1277,54 @@ window.onunhandledrejection = function(event) {
             </div>
 
             <!-- Chat Messages Area -->
-            <div id="patient-chat-messages" class="flex-1 overflow-y-auto p-4 md:p-6 bg-surface-container-low flex flex-col gap-4">
+            <div id="patient-chat-messages" class="flex-1 overflow-y-auto p-4 bg-[#F0F2F5] dark:bg-[#0b141a] flex flex-col gap-3 relative">
                 
-                <div id="patient-chat-empty" class="h-full flex flex-col items-center justify-center text-center">
-                    <div class="w-16 h-16 bg-surface-variant text-outline-variant rounded-full flex items-center justify-center mb-4">
-                        <span class="material-symbols-outlined text-[32px]">speaker_notes_off</span>
+                <!-- Date Indicator -->
+                <div class="flex justify-center my-2">
+                    <span class="text-[11px] bg-white/60 dark:bg-black/40 text-on-surface-variant px-3 py-1 rounded-lg shadow-sm backdrop-blur-sm">Ayer</span>
+                </div>
+
+                <!-- Example Message (Received) -->
+                <div class="flex flex-col gap-1 max-w-[85%] self-start animate-fade-in">
+                    <div class="bg-white dark:bg-surface-container shadow-sm p-3 rounded-2xl rounded-tl-sm text-sm text-on-surface relative">
+                        <p>¡Hola Antonella! Bienvenida a tu programa epigenético. Estamos procesando tu muestra, te avisaremos cuando los resultados estén listos.</p>
+                        <span class="text-[10px] text-on-surface-variant/70 float-right mt-1 ml-3">10:42 AM</span>
                     </div>
-                    <h3 class="text-on-surface font-bold mb-1">No hay mensajes recientes</h3>
-                    <p class="text-on-surface-variant text-sm max-w-xs">Escribe aquí para comunicarte directamente con tu equipo médico asignado.</p>
+                </div>
+
+                <!-- Example Message (Sent) -->
+                <div class="flex flex-col gap-1 max-w-[85%] self-end animate-fade-in" style="animation-delay: 0.1s; animation-fill-mode: both;">
+                    <div class="bg-[#D4AF37] text-white shadow-sm p-3 rounded-2xl rounded-tr-sm text-sm relative">
+                        <p>¡Hola! Muchas gracias, estaré atenta. ¿Hay algo que deba hacer mientras tanto?</p>
+                        <div class="float-right mt-1 ml-3 flex items-center gap-1">
+                            <span class="text-[10px] text-white/80">11:15 AM</span>
+                            <span class="material-symbols-outlined text-[14px] text-white/80">done_all</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example Message (Received) -->
+                <div class="flex flex-col gap-1 max-w-[85%] self-start animate-fade-in" style="animation-delay: 0.2s; animation-fill-mode: both;">
+                    <div class="bg-white dark:bg-surface-container shadow-sm p-3 rounded-2xl rounded-tl-sm text-sm text-on-surface relative">
+                        <p>Por ahora solo te sugerimos revisar la sección de <strong>Educación</strong> en la app para ir preparándote para tu primera fase de detox. 😊</p>
+                        <span class="text-[10px] text-on-surface-variant/70 float-right mt-1 ml-3">11:18 AM</span>
+                    </div>
                 </div>
 
             </div>
 
             <!-- Input Area -->
-            <div class="p-4 border-t border-surface-variant bg-surface-container-lowest">
-                <div class="flex items-end gap-2 bg-surface border border-outline-variant rounded-2xl p-2 focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all">
-                    <input type="file" id="patient-chat-upload" class="hidden" accept="image/*,.pdf" onchange="if(this.files[0]) showToast('Archivo adjuntado: ' + this.files[0].name)">
-                    <button class="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-xl shrink-0" onclick="document.getElementById('patient-chat-upload').click()">
-                        <span class="material-symbols-outlined">attach_file</span>
+            <div class="p-3 bg-surface-container-lowest border-t border-surface-variant flex flex-col shrink-0">
+                <div class="flex items-end gap-2 bg-surface border border-outline-variant rounded-full px-2 py-1 shadow-sm focus-within:ring-2 focus-within:ring-primary/30 focus-within:border-primary transition-all">
+                    <button class="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-full shrink-0" onclick="document.getElementById('patient-chat-upload').click()">
+                        <span class="material-symbols-outlined text-[22px]">add</span>
                     </button>
-                    <textarea id="patient-chat-input" placeholder="Escribe un mensaje al equipo médico..." rows="1" class="flex-1 bg-transparent border-none resize-none focus:ring-0 text-sm py-2 max-h-32 min-h-[40px]"></textarea>
-                    <button id="btn-send-patient-msg" class="bg-primary hover:bg-secondary text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-sm shrink-0 transition-colors">
-                        <span class="material-symbols-outlined text-[20px] ml-1">send</span>
+                    <input type="file" id="patient-chat-upload" class="hidden" accept="image/*,.pdf" onchange="if(this.files[0]) showToast('Archivo adjuntado: ' + this.files[0].name)">
+                    <textarea id="patient-chat-input" placeholder="Mensaje..." rows="1" class="flex-1 bg-transparent border-none resize-none focus:ring-0 text-[15px] py-2.5 max-h-32 min-h-[40px] leading-tight m-0 placeholder:text-on-surface-variant/60 scrollbar-hide"></textarea>
+                    <button id="btn-send-patient-msg" class="bg-primary hover:bg-secondary text-white w-9 h-9 rounded-full flex items-center justify-center shadow-md shrink-0 transition-transform active:scale-95 my-1 mr-1">
+                        <span class="material-symbols-outlined text-[18px] ml-0.5">send</span>
                     </button>
                 </div>
-                <p class="text-[10px] text-center text-on-surface-variant mt-2">Mensajería encriptada de extremo a extremo (HIPAA Compliant).</p>
             </div>
         </div>
     </div>
