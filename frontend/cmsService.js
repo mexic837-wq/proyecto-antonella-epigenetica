@@ -80,7 +80,7 @@ window.cmsService = {
         
         // Supabase API details
         const supabaseBaseUrl = 'https://api.antonellaepigenetica.online';
-        const anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE';
+        const anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzAwMDAwMDAwLCJleHAiOjIwMDAwMDAwMDB9.ugacIKF0h6DVOgr71K0zyBuGc7mrEsoda9B3gHIjdXU';
         const headers = { 'apikey': anonKey, 'Authorization': `Bearer ${anonKey}`, 'Content-Type': 'application/json' };
 
         // Cargar configuración local de los otros módulos
@@ -129,7 +129,7 @@ window.cmsService = {
         
         // Supabase API details
         const supabaseBaseUrl = 'https://api.antonellaepigenetica.online';
-        const anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE';
+        const anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzAwMDAwMDAwLCJleHAiOjIwMDAwMDAwMDB9.ugacIKF0h6DVOgr71K0zyBuGc7mrEsoda9B3gHIjdXU';
         const patchHeaders = { 
             'apikey': anonKey, 
             'Authorization': `Bearer ${anonKey}`, 
@@ -202,7 +202,7 @@ window.cmsService = {
     getPromociones: async () => {
         try {
             const url = 'https://api.antonellaepigenetica.online/rest/v1/promotions?select=*&order=created_at.desc';
-            const key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE';
+            const key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzAwMDAwMDAwLCJleHAiOjIwMDAwMDAwMDB9.ugacIKF0h6DVOgr71K0zyBuGc7mrEsoda9B3gHIjdXU';
             const res = await fetch(url, { headers: { 'apikey': key, 'Authorization': 'Bearer ' + key } });
             if (!res.ok) throw new Error('Error al obtener promociones');
             return await res.json();
@@ -218,7 +218,7 @@ window.cmsService = {
     addPromocion: async (promoData) => {
         try {
             const url = 'https://api.antonellaepigenetica.online/rest/v1/promotions';
-            const key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE';
+            const key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzAwMDAwMDAwLCJleHAiOjIwMDAwMDAwMDB9.ugacIKF0h6DVOgr71K0zyBuGc7mrEsoda9B3gHIjdXU';
             const res = await fetch(url, {
                 method: 'POST',
                 headers: {
