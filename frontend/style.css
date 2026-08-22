@@ -350,6 +350,9 @@ input:checked + .slider:before {
 .pb-safe {
     padding-bottom: env(safe-area-inset-bottom, 20px);
 }
+.pt-safe {
+    padding-top: env(safe-area-inset-top, 0px);
+}
 
 /* Chat bubble animation */
 @keyframes chatFadeIn {
