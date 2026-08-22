@@ -310,10 +310,10 @@ window.onunhandledrejection = function(event) {
     <!-- VIEW: MI PLAN (PANEL PRINCIPAL)                -->
     <!-- ============================================== -->
     <div id="view-mi-plan" class="view-section">
-        <h1 id="dash-welcome-msg" class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface mb-lg fade-in-up">Hola, Antonella</h1>
+        <h1 id="dash-welcome-msg" class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface mb-lg ">Hola, Antonella</h1>
         
         <!-- Top Metrics Row -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-md mb-xl fade-in-up delay-100">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-md mb-xl  delay-100">
             <!-- Próxima Cita -->
             <div class="bg-surface-container-lowest rounded-xl p-md shadow-sm border border-surface-variant flex items-center gap-4 hover:shadow-md transition-shadow">
                 <div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container shrink-0">
@@ -353,7 +353,7 @@ window.onunhandledrejection = function(event) {
         </div>
 
         <!-- Main Grid: Roadmap & Check-ins -->
-        <div class="grid grid-cols-1 xl:grid-cols-12 gap-lg fade-in-up delay-200">
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-lg animate-fade-in">
             
             <!-- Roadmap de Hábitos (7 cols) -->
             <section class="xl:col-span-8 bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant overflow-hidden">
@@ -1123,19 +1123,19 @@ window.onunhandledrejection = function(event) {
     <!-- ============================================== -->
     <div id="view-citas" class="view-section hidden">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-lg gap-4">
-            <h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface fade-in-up">Mis Citas</h1>
+            <h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface ">Mis Citas</h1>
             <!-- TODO: Vincular con API de creación de citas de Google Calendar -->
-            <button class="bg-primary text-white px-5 py-2.5 rounded-lg font-bold hover:bg-secondary transition-all hover:shadow-md flex items-center gap-2 shadow-sm fade-in-up delay-100" onclick="showToast('Programando check-in automático...')">
+            <button class="bg-primary text-white px-5 py-2.5 rounded-lg font-bold hover:bg-secondary transition-all hover:shadow-md flex items-center gap-2 shadow-sm  delay-100" onclick="showToast('Programando check-in automático...')">
                 <span class="material-symbols-outlined text-[20px]">add</span> Programar Check-in Automático
             </button>
-            <button class="bg-primary text-white px-5 py-2.5 rounded-lg font-bold hover:bg-secondary transition-all hover:shadow-md flex items-center gap-2 shadow-sm fade-in-up delay-100" onclick="showToast('Abriendo calendario para agendar...')">
+            <button class="bg-primary text-white px-5 py-2.5 rounded-lg font-bold hover:bg-secondary transition-all hover:shadow-md flex items-center gap-2 shadow-sm  delay-100" onclick="showToast('Abriendo calendario para agendar...')">
                 <span class="material-symbols-outlined text-sm">add</span> Agendar Nueva Cita
             </button>
         </div>
 
         <div class="grid grid-cols-1 xl:grid-cols-12 gap-lg">
             <!-- Columna Izquierda: Cita Próxima e Historial -->
-            <div class="xl:col-span-8 flex flex-col gap-6 fade-in-up delay-200">
+            <div class="xl:col-span-8 flex flex-col gap-6 animate-fade-in">
                 <!-- Tarjeta de Próxima Cita -->
                 <div class="bg-surface-container-lowest rounded-xl p-lg shadow-sm border border-surface-variant relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -z-0"></div>
@@ -1159,7 +1159,7 @@ window.onunhandledrejection = function(event) {
             </div>
 
             <!-- Columna Derecha: Widget Informativo Calendar -->
-            <div class="xl:col-span-4 flex flex-col gap-6 fade-in-up delay-300">
+            <div class="xl:col-span-4 flex flex-col gap-6  delay-300">
                 <div class="bg-surface-container-lowest rounded-xl p-lg shadow-sm border border-surface-variant text-center relative overflow-hidden">
                     <!-- Decoración fondo -->
                     <div class="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-surface-variant/50 to-transparent pointer-events-none"></div>
@@ -1188,34 +1188,36 @@ window.onunhandledrejection = function(event) {
     <div id="view-educacion" class="view-section hidden">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-lg gap-4">
             <div>
-                <h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface fade-in-up">Academia Epigenética</h1>
-                <p class="text-on-surface-variant mt-2 fade-in-up delay-100">Contenido exclusivo para optimizar tu salud y complementar tu protocolo.</p>
+                <h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface ">Academia Epigenética</h1>
+                <p class="text-on-surface-variant mt-2  delay-100">Contenido exclusivo para optimizar tu salud y complementar tu protocolo.</p>
             </div>
             <!-- Barra de búsqueda rápida -->
-            <div class="relative w-full md:w-64 fade-in-up delay-100">
+            <div class="relative w-full md:w-64  delay-100">
                 <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
                 <input type="text" placeholder="Buscar temas, videos..." class="w-full bg-surface-container-lowest border border-surface-variant rounded-full pl-10 pr-4 py-2 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all shadow-sm">
             </div>
         </div>
 
         <!-- Categoría 1: Masterclasses (Videos) -->
-        <h2 class="font-headline-md font-bold text-on-surface mb-4 mt-8 fade-in-up delay-200 flex items-center gap-2">
+        <h2 class="font-headline-md font-bold text-on-surface mb-4 mt-8 animate-fade-in flex items-center gap-2">
             <span class="material-symbols-outlined text-primary">play_circle</span> Masterclasses y Hábitos
         </h2>
         
-        <div id="masterclasses-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 fade-in-up delay-300">
+        <div id="masterclasses-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6  delay-300">
             <!-- Dynamic content will be loaded here via main.js -->
         </div>
 
         <!-- Categoría 2: Recursos y Recetas (PDFs) -->
-        <h2 class="font-headline-md font-bold text-on-surface mb-4 mt-12 fade-in-up delay-200 flex items-center gap-2">
+        <h2 class="font-headline-md font-bold text-on-surface mb-4 mt-12 animate-fade-in flex items-center gap-2">
             <span class="material-symbols-outlined text-secondary">menu_book</span> Guías Nutricionales y PDFs
         </h2>
         
-        <div id="pdfs-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 fade-in-up delay-300 mb-8">
+        <div id="pdfs-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6  delay-300 mb-8">
             <!-- PDF Card 1 (Estático: Recetario) -->
             <div class="bg-surface-container-lowest rounded-xl p-5 shadow-sm border border-surface-variant group hover:-translate-y-1 hover:shadow-md transition-all duration-300 flex flex-col h-full">
                 <div class="w-12 h-12 bg-secondary/10 text-secondary rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <span class="material-symbols-outlined">picture_as_pdf</span>
+                </div>
                 <h3 class="font-bold text-on-surface text-sm mb-2">Recetario Antiinflamatorio Semanal</h3>
                 <p class="text-xs text-on-surface-variant mb-4 flex-1">Planes de comida adaptados a tu sensibilidad al gluten identificada en el test.</p>
                 <button id="btn-read-recipe" class="w-full py-2 bg-surface border border-outline-variant text-on-surface text-xs font-bold rounded-lg hover:bg-surface-variant transition-colors flex items-center justify-center gap-2">
@@ -1228,16 +1230,16 @@ window.onunhandledrejection = function(event) {
     <!-- ============================================== -->
     <!-- VIEW: MENSAJES                                 -->
     <!-- ============================================== -->
-    <div id="view-mensajes" class="view-section hidden h-[calc(100vh-140px)] md:h-[calc(100vh-6rem)] -mx-margin-mobile md:mx-0 -mt-4 md:mt-0">
+    <div id="view-mensajes" class="view-section hidden flex flex-col h-[calc(100vh-140px)] md:h-[calc(100vh-6rem)] -mx-margin-mobile md:mx-0 -mt-4 md:mt-0">
         <!-- Desktop Header (Hidden on Mobile) -->
         <div class="hidden md:flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
             <div>
-                <h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface fade-in-up">Centro de Mensajes</h1>
-                <p class="text-on-surface-variant mt-2 fade-in-up delay-100">Comunicación directa y segura con tu equipo médico.</p>
+                <h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface ">Centro de Mensajes</h1>
+                <p class="text-on-surface-variant mt-2  delay-100">Comunicación directa y segura con tu equipo médico.</p>
             </div>
         </div>
 
-        <div class="bg-surface-container-lowest md:border border-surface-variant md:rounded-2xl shadow-sm overflow-hidden flex flex-col h-full fade-in-up delay-200">
+        <div class="bg-surface-container-lowest md:border border-surface-variant md:rounded-2xl shadow-sm overflow-hidden flex flex-col flex-1 relative ">
             
             <!-- Chat Header -->
             <div class="h-16 border-b border-surface-variant flex items-center justify-between px-4 md:px-6 bg-surface/95 backdrop-blur-md shrink-0 sticky top-0 z-10 shadow-sm">
@@ -1333,9 +1335,9 @@ window.onunhandledrejection = function(event) {
     <!-- VIEW: DATOS PERSONALES                         -->
     <!-- ============================================== -->
     <div id="view-datos-personales" class="view-section hidden">
-        <h1 class="font-display-lg text-display-lg text-on-surface mb-lg fade-in-up">Datos Personales</h1>
+        <h1 class="font-display-lg text-display-lg text-on-surface mb-lg ">Datos Personales</h1>
         
-        <div class="bg-surface-container-lowest rounded-2xl p-xl shadow-sm border border-surface-variant fade-in-up delay-100">
+        <div class="bg-surface-container-lowest rounded-2xl p-xl shadow-sm border border-surface-variant  delay-100">
             <form onsubmit="event.preventDefault(); showToast('Datos actualizados exitosamente');">
                 <div class="flex flex-col md:flex-row gap-8 mb-8">
                     <!-- Foto de Perfil -->
@@ -1400,9 +1402,9 @@ window.onunhandledrejection = function(event) {
     <!-- VIEW: HISTORIAL MÉDICO                         -->
     <!-- ============================================== -->
     <div id="view-historial-medico" class="view-section hidden">
-        <h1 class="font-display-lg text-display-lg text-on-surface mb-lg fade-in-up">Historial Médico</h1>
+        <h1 class="font-display-lg text-display-lg text-on-surface mb-lg ">Historial Médico</h1>
         
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 fade-in-up delay-100">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6  delay-100">
             
             <!-- Resumen Clínico -->
             <div class="lg:col-span-2 flex flex-col gap-6">
@@ -1478,9 +1480,9 @@ window.onunhandledrejection = function(event) {
     <!-- VIEW: FACTURACIÓN                              -->
     <!-- ============================================== -->
     <div id="view-facturacion" class="view-section hidden">
-        <h1 class="font-display-lg text-display-lg text-on-surface mb-lg fade-in-up">Facturación y Suscripciones</h1>
+        <h1 class="font-display-lg text-display-lg text-on-surface mb-lg ">Facturación y Suscripciones</h1>
         
-        <div class="flex flex-col gap-8 fade-in-up delay-100">
+        <div class="flex flex-col gap-8  delay-100">
             <!-- Métodos de Pago -->
             <div class="bg-surface-container-lowest rounded-2xl p-xl shadow-sm border border-surface-variant flex flex-col gap-md mb-6">
                 <h2 class="font-headline-sm text-headline-sm text-on-surface mb-4">Métodos de Pago</h2>
@@ -1589,9 +1591,9 @@ window.onunhandledrejection = function(event) {
     <!-- VIEW: AJUSTES                                  -->
     <!-- ============================================== -->
     <div id="view-ajustes" class="view-section hidden">
-        <h1 class="font-display-lg text-display-lg text-on-surface mb-lg fade-in-up">Ajustes</h1>
+        <h1 class="font-display-lg text-display-lg text-on-surface mb-lg ">Ajustes</h1>
         
-        <div class="flex flex-col md:flex-row gap-8 fade-in-up delay-100">
+        <div class="flex flex-col md:flex-row gap-8  delay-100">
             <!-- Sidebar Tabs -->
             <div class="w-full md:w-64 flex flex-col gap-2 shrink-0 border-r border-surface-variant pr-0 md:pr-4">
                 <button class="ajustes-tab active flex items-center gap-3 w-full p-3 rounded-lg bg-primary-container text-on-primary-container font-bold text-left transition-colors" data-tab="tab-cuenta">
@@ -1731,9 +1733,9 @@ window.onunhandledrejection = function(event) {
     <!-- VIEW: FACTURACIÓN                              -->
     <!-- ============================================== -->
     <div id="view-facturacion" class="view-section hidden">
-        <h2 class="font-display-lg text-display-lg text-on-surface mb-lg fade-in-up">Facturación y Pagos</h2>
+        <h2 class="font-display-lg text-display-lg text-on-surface mb-lg ">Facturación y Pagos</h2>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-lg fade-in-up delay-100">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-lg  delay-100">
             <!-- Zelle Option -->
             <div class="bg-surface-container-lowest rounded-xl p-lg shadow-sm border border-surface-variant flex flex-col h-full hover:shadow-md transition-shadow">
                 <div class="flex items-center gap-4 mb-6">
@@ -1772,7 +1774,7 @@ window.onunhandledrejection = function(event) {
         </div>
 
         <!-- Historial de Pagos (Empty State) -->
-        <div class="mt-lg bg-surface-container-lowest rounded-xl p-lg shadow-sm border border-surface-variant fade-in-up delay-200">
+        <div class="mt-lg bg-surface-container-lowest rounded-xl p-lg shadow-sm border border-surface-variant animate-fade-in">
             <h3 class="font-headline-md text-on-surface mb-6 flex items-center gap-2">
                 <span class="material-symbols-outlined text-primary">receipt_long</span> Historial de Transacciones
             </h3>
