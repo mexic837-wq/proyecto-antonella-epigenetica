@@ -485,11 +485,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 e.preventDefault();
 
                 // Update active state on nav items
-                navItems.forEach(nav => nav.classList.remove('active', 'bg-primary-container', 'text-on-primary-container'));
+                navItems.forEach(nav => {
+                    nav.classList.remove('active', 'bg-primary-container', 'text-on-primary-container');
+                    if(nav.classList.contains('nav-item')) {
+                        nav.classList.add('text-on-surface-variant');
+                    }
+                    if(nav.classList.contains('nav-item-mobile')) {
+                        nav.classList.add('text-on-surface-variant');
+                    }
+                });
                 
                 // For sidebar
                 if(item.classList.contains('nav-item')) {
                     item.classList.add('active', 'bg-primary-container', 'text-on-primary-container');
+                    item.classList.remove('text-on-surface-variant');
+                } else if(item.classList.contains('nav-item-mobile')) {
+                    item.classList.add('active');
                     item.classList.remove('text-on-surface-variant');
                 }
                 

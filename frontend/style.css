@@ -339,3 +339,14 @@ input:checked + .slider:before {
 .dna-strand:nth-child(15) { animation-delay: -2.8s; width: 140px; }
 .dna-strand:nth-child(16) { animation-delay: -3.0s; width: 100px; }
 .dna-strand:nth-child(17) { animation-delay: -3.2s; width: 60px; }
+
+/* Mobile Bottom Navigation */
+.nav-item-mobile.active {
+    color: #D4AF37 !important; /* text-primary */
+}
+.nav-item-mobile.active .material-symbols-outlined {
+    font-variation-settings: 'FILL' 1 !important;
+}
+.pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 20px);
+}
