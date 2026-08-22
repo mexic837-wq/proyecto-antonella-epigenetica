@@ -4,7 +4,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     const supabaseUrl = 'https://api.antonellaepigenetica.online/rest/v1/education_content';
-    const anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzAwMDAwMDAwLCJleHAiOjIwMDAwMDAwMDB9.ugacIKF0h6DVOgr71K0zyBuGc7mrEsoda9B3gHIjdXU';
+    const anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzAwMDAwMDAwLCJleHAiOjIwMDAwMDAwMDB9.fm5I5GcFD8hz6FFYkaUJnISe1FIgg_PVsANqMIIxuZ0';
 
     // Lógica para el Recetario Fijo
     const btnRecipe = document.getElementById('btn-read-recipe');

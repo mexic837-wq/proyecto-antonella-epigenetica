@@ -19,7 +19,7 @@
 
     // Función para enviar el ping a Supabase
     const supabaseUrl = 'https://api.antonellaepigenetica.online/rest/v1/traffic_audit';
-    const anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzAwMDAwMDAwLCJleHAiOjIwMDAwMDAwMDB9.ugacIKF0h6DVOgr71K0zyBuGc7mrEsoda9B3gHIjdXU';
+    const anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzAwMDAwMDAwLCJleHAiOjIwMDAwMDAwMDB9.fm5I5GcFD8hz6FFYkaUJnISe1FIgg_PVsANqMIIxuZ0';
 
     async function pingSection(sectionName) {
         try {

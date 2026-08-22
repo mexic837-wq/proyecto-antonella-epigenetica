@@ -3,7 +3,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     const supabaseBaseUrl = 'https://api.antonellaepigenetica.online';
-    const anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzAwMDAwMDAwLCJleHAiOjIwMDAwMDAwMDB9.ugacIKF0h6DVOgr71K0zyBuGc7mrEsoda9B3gHIjdXU';
+    const anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzAwMDAwMDAwLCJleHAiOjIwMDAwMDAwMDB9.fm5I5GcFD8hz6FFYkaUJnISe1FIgg_PVsANqMIIxuZ0';
     
     const headers = {
         'apikey': anonKey,

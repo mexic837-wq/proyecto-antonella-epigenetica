@@ -10,7 +10,7 @@ const CONFIG = {
     SUPABASE_URL: 'https://api.antonellaepigenetica.online',
     
     // Anon Key (Firmada con la contraseña maestra real del servidor)
-    SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzAwMDAwMDAwLCJleHAiOjIwMDAwMDAwMDB9.ugacIKF0h6DVOgr71K0zyBuGc7mrEsoda9B3gHIjdXU',
+    SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzAwMDAwMDAwLCJleHAiOjIwMDAwMDAwMDB9.fm5I5GcFD8hz6FFYkaUJnISe1FIgg_PVsANqMIIxuZ0',
 
     // ===== N8N (Automatizaciones - Secundario) =====
     N8N_WEBHOOK_URL: 'https://n8n.antonellaepigenetica.online/webhook/correo-landing-page',
